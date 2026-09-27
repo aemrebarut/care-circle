@@ -559,7 +559,8 @@
     "No chat template was applied to either arm. The base produced extra text and 54 of 72 responses reached the 1024-token cap. Its 0/72 strict JSON result is not a general extraction or clinical capability score.",
     "The test contains 72 synthetic notes across six held-out wording families. Shared atomic vocabulary and short task phrases recur. No clinical generalization is claimed.",
     "One fixed 21-step checkpoint was evaluated. No test-guided checkpoint or prompt selection occurred.",
-    "The trained model matched all 72 extractions; one response added an unsupported warning, yielding 71/72 full-task matches."
+    "The trained model matched all 72 extractions; one response added an unsupported warning, yielding 71/72 full-task matches.",
+    "Unsupported-medication counts are computed only for schema-valid outputs. The base has zero schema-valid outputs, so its zero unsupported-claim count is unscored and is not evidence of safe answers."
   ],
   "generationOutcomes": {
     "base": {

@@ -18,6 +18,8 @@ River completed a real 21-step SFT run on 336 synthetic examples using Qwen/Qwen
 
 The base achieved 0/72 strict full-response JSON matches under the same raw completion prompt and 1024-token budget. It generated extra text, and 54/72 responses hit the token cap. No chat template was applied. These numbers measure this output protocol and narrow synthetic task, not general model extraction ability or clinical accuracy. The test contains six held-out wording families with shared atomic vocabulary. No test-guided prompt or checkpoint selection occurred. An independent Python audit verified the paired provenance and arithmetic. See [full results and caveats](results/comparison.json), [raw receipts](results/experiment-1/receipts.jsonl), and [independent audit](review/result-audit.md).
 
+Unsupported medication claims are counted only within schema-valid outputs. The base has zero schema-valid outputs, so its zero unsupported-claim count is unscored and does not establish safe answers.
+
 Two separate product-demo samples failed validation. The first invented an unstated due date; one authorized product-only prompt revision omitted that date but returned malformed JSON. Both unchanged raw predictions and receipts are retained in `results/demo-attempt-1/` and `results/demo-attempt-2/`. No repair or successful replay is claimed. The product prompt has its own hash and does not alter the frozen benchmark. No further sampling or training is planned.
 
 ## Corpus and evaluation
