@@ -1,0 +1,13 @@
+{
+  "name": "@care-circle/ingest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Conservative synthetic note extraction and committed GBrain ingest",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "smoke": "node smoke.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
