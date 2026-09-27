@@ -1,0 +1,12 @@
+{
+  "name": "@care-circle/e2e",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node acceptance.mjs --read-only",
+    "health": "node acceptance.mjs --health-only",
+    "acceptance": "node acceptance.mjs --full --cycles 2",
+    "check": "node --check acceptance.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
