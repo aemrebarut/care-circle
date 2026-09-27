@@ -20,6 +20,8 @@ Owner: cc-lead. Date: 2026-09-27. All HTTP binds are 127.0.0.1. JSON uses camelC
 
 Each HTTP service: `node services/<name>/server.mjs`, `GET /health` returns `{ok:true,service:"<name>",...}`. Package script `npm test` runs smoke checks; can also expose `smoke.mjs`. Use Node builtin APIs where practical. Python River training is optional, not required for its HTTP fallback. Errors: non-2xx `{error:{code,message}}`. Each request must have bounded body size and timeout. Allow loopback browser origin http://127.0.0.1:4700 only if CORS is necessary. Web proxies simplify this.
 
+Temporary test port reservations: ingest 4713/4714, runtime 4715/4716, brief 4717/4718, web 4719. Coordinate 4707 through 4712 with cc-runtime before using them. Persistent service processes are started by runtime, with exact PID receipts; component owners coordinate restarts with runtime.
+
 ## Common objects
 
 Page: `{id,type,title,body,fields,links,updatedAt}`. `id` is a slash-separated GBrain slug; `type` is patient, person, doctor, medication, visit, lab, insurer-call, question, or pharmacy. `body` is source markdown. `fields` carries typed data. `links` is an array of `{target,type}`. Use built-in GBrain mention/attended link types unless custom types were explicitly installed. Preserve app semantic types in fields and links even when GBrain extraction provides mentions.
@@ -31,6 +33,8 @@ Seed package exports JSON at `packages/world/seed.json` with `{patientId,pages}`
 Stable IDs: `people/rose-alvarez`, `people/ana-alvarez`, `people/ben-alvarez`, `people/celia-alvarez`; `doctors/nephrologist`, `doctors/cardiologist`, `doctors/primary-care`, `doctors/endocrinologist`; `medications/lisinopril` plus six others owned by world. Nephrologist last visit is 2026-09-15. Initial recorded lisinopril dose 10 mg daily, pharmacy record 10 mg daily. Demo cardiology visit on 2026-09-27 records 20 mg daily and potassium recheck. This is a fictional source claim, never a treatment instruction.
 
 Medication fields: `{name,dose,frequency,status:"active",claims:[{dose,frequency,sourceId,date,attendeeIds,kind}]}`. Claims preserve old and conflicting source records. Doctor fields: `{specialty,lastVisitDate,nextVisitDate}`. Visit fields: `{date,doctorId,attendeeIds,summary,medicationChanges,followUps}`. Question fields: `{doctorId,text,status:"open",sourceId}`. Lab fields: `{date,name,value,unit,sourceId}`. No invented clinical interpretation.
+
+A newer visit does not reconcile an unequal pharmacy claim. Every such discrepancy remains unresolved until a separate source-cited reconciliation action exists; v1 implements no reconciliation action. Latest recorded dose is a display of a visit source claim, never a recommendation or an assertion that the conflict is settled.
 
 ## Brain API, 4701
 
@@ -69,6 +73,7 @@ Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg da
 - `POST /v1/procedure/capture` with `{actorId?}` -> `{procedureId,steps,mode,evidence}`. Synthetic prior-auth tool trace only.
 - `POST /v1/procedure/replay` with `{procedureId?,actorId?}` -> `{procedureId,actorId,steps,result,mode,evidence}`. Distinct sibling replay.
 - `POST /v1/clinic/fetch` with `{}` -> `{clinic:{name,hours,phone,address?},sourceUrl,fetchedAt,mode,evidence}`. Fetch only allowlisted 127.0.0.1:4706 site. Actual browser trace if feasible. No real clinic scraping. UFO extension assets may be prepared; do not claim official extension execution unless verified.
+- `POST /v1/reset` with `{}` -> `{ok:true}` clears ephemeral local procedure captures and replay state for repeatable demos.
 - 4706 `GET /` synthetic clinic website and `/health`. Clinic and pharmacy details visibly fictional. External sponsor SDK interactions remain gated on approval.
 
 ## Web, runtime, and acceptance
