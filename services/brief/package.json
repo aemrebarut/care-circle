@@ -1,0 +1,13 @@
+{
+  "name": "@care-circle/brief",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Graph-grounded synthetic family brief and source discrepancy service",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs",
+    "smoke": "node smoke.mjs"
+  },
+  "engines": { "node": ">=22" }
+}
