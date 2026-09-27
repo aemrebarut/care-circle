@@ -2,9 +2,19 @@
 
 ## Needs Emre
 
-None. Any Memorable/UFO account creation or remote submission will be listed here before execution.
+- Memorable approval requested: may the sponsors lane send one POST to `https://memorable-extraction-api.memorable.workers.dev/v1/extract` containing the exact synthetic six-step trace in `services/sponsors/procedure/assets/memorable-request.json`? The reviewed payload is 3189 bytes, SHA256 `994c84515254b5e26114a7249ef3bf56e106503ac1e21560fccd2ab620c0bf32`. It contains only fictional administrative inputs/results. No request has run. If approved, please supply `MEMORABLE_API_KEY` in the sponsors process environment; agents will not read credential files or print the key. Local capture/replay already works without this optional action.
 
 ## Log
+
+### 15:05 Pacific early integration
+
+- World delivery independently reviewed clean: 30 pages, 120 resolving links, 21 exact medication citations. `npm test --prefix packages/world` passes per owner and reviewer.
+- Lead verified HTTP 200 health on 4702 ingest, 4704 River, 4705 sponsors, and 4706 sponsors-clinic. Brain, brief and web are still being integrated.
+- Ingest committed with 46 tests passing. Evidence guards cover optional model output; prospective, declined, historical and qualified changes are not silently committed.
+- River real metadata access succeeded. Synthetic split has 336 train, 72 development, 72 test records; final split/tokenization review precedes first training, targeted around 15:10. No trained-model accuracy claimed.
+- Sponsor local capture/replay and fixed clinic HTTP fetch pass smoke checks. Official Memorable and UFO execution have not run. Exact optional Memorable request is now listed above for approval.
+- Test now: `curl http://127.0.0.1:4702/health`, `curl http://127.0.0.1:4704/v1/status`, `npm test --prefix packages/world`. Full app demo is not ready yet.
+- Next scheduled STATUS update by 15:25 Pacific, with M1 gate review at 15:15.
 
 ### 14:57 Pacific River key ready
 
