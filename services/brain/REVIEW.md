@@ -42,3 +42,7 @@ GBrain storage, native markdown import, typed metadata persistence, and link ext
 - A 1,609-character source note reproduced a citation that omitted both medication and dose after clipping. The fix selects a literal window around the relevant evidence and repairs previously clipped citations from the retained source note. Regressions include long prefixes and suffixes, dose-first wording, and Unicode prefixes.
 - `npm test --prefix services/brain`: 36 passing tests. These changes await a runtime-controlled restart after the QA browser mutation window; no shared state was mutated by this follow-up work.
 - Independent follow-up review found malformed ownership metadata could coerce null, false, or empty counters to zero, and absent host IDs could compare equal. Quiescence now requires numeric zero or canonical string `0`; import requires explicit nonempty matching host IDs. Missing thin-client metadata is also rejected. Missing/null/malformed counter and identity regressions bring the full suite to 38 passing tests.
+
+## M2, 15:35 Pacific
+
+Runtime loaded the reviewed build through `e171089` into owned brain PID 4515. Exact HTTP state equality preserved revision 10, 32 pages and 132 graph edges. All-service and owner smokes passed. The brain lane independently ran `node services/brain/smoke.mjs`: all seven medications and their literal source citations passed. New storage containment and managed-import quiescence checks passed on the actual setup. No reset occurred during maintenance. QA's consecutive end-to-end cycles remain a separate upcoming gate.
