@@ -36,6 +36,8 @@ Medication fields: `{name,dose,frequency,status:"active",claims:[{dose,frequency
 
 A newer visit does not reconcile an unequal pharmacy claim. Every such discrepancy remains unresolved until a separate source-cited reconciliation action exists; v1 implements no reconciliation action. Latest recorded dose is a display of a visit source claim, never a recommendation or an assertion that the conflict is settled.
 
+Temporal comparison rule: for each pharmacy claim, compare the latest visit claim at or before that pharmacy date and all subsequent visit claims. Preserve unequal pharmacy/visit pairs, including when a still-later visit returns to the pharmacy dose. Old visit-only changes do not create a conflict. A past unresolved discrepancy should be labeled as such, without implying it determines the current dose.
+
 ## Brain API, 4701
 
 - `GET /v1/state` -> `{patientId,pages,graph,revision}`.
