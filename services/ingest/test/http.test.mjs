@@ -114,7 +114,7 @@ test('River failure, invalid provenance and deterministic mode explicitly fall b
   }
 });
 
-test('River may label verified identical extraction; normalized source metadata sent', async () => {
+test('River without required execution provenance falls back even if extraction matches', async () => {
   const good = extractDeterministic({ note: DEMO_NOTE });
   await withServer({ useRiver: true, fetchImpl: async (url, options) => {
     assert.equal(url, 'http://127.0.0.1:4704/v1/extract');
@@ -122,7 +122,8 @@ test('River may label verified identical extraction; normalized source metadata 
     return reply({ ...good, method: 'river' });
   } }, async () => {
     const result = await post('/v1/extract', { note: DEMO_NOTE });
-    assert.equal(result.data.method, 'river');
+    assert.equal(result.data.method, 'deterministic');
+    assert.equal(result.data.provenance, undefined);
     assert.deepEqual(result.data.extraction, good.extraction);
   });
 });

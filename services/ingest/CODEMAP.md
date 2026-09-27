@@ -43,3 +43,6 @@ M1 durability follow-up: runtime proved revision 2, 32 pages and 132 edges survi
 
 
 Optional replay metadata: accepted source-equal River responses retain validated cached-replay provenance, including liveInference false and exact input digest. Preview and save label the saved prediction explicitly. Invalid provenance or unsupported inferred due dates fall back deterministically. The observed first trained demo prediction invented a dueDate and remains rejected; no grammar or fact gate was weakened.
+
+
+Additive truth contract requires complete cached replay provenance for every method river result, restricted to the exact canonical demo input. Missing provenance or any other input falls back deterministically even if Extraction matches. No generic unproven live-River success is accepted.

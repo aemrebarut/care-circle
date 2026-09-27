@@ -2,7 +2,7 @@ import http from 'node:http';
 import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
-import { HOST, PORTS } from '../../contract/index.mjs';
+import { HOST, PORTS, DEMO_NOTE, DEMO_DATE, IDS } from '../../contract/index.mjs';
 import { IngestError, normalizeInput, extractDeterministic, defaultIdempotencyKey } from './extract.mjs';
 
 const MAX_BODY_BYTES = 64 * 1024;
@@ -99,7 +99,7 @@ function validApplied(value) {
 }
 
 function validatedProvenance(value, input) {
-  if (value === undefined) return undefined;
+  if (input.note !== DEMO_NOTE || input.authorId !== IDS.ana || input.date !== DEMO_DATE) throw new Error('Cached replay is limited to the exact synthetic demo input');
   if (!value || typeof value !== 'object' || Array.isArray(value) || value.mode !== 'cached-replay' || value.liveInference !== false) throw new Error('Invalid River replay provenance');
   const textKeys = ['model', 'checkpoint', 'requestId', 'sampledAt'];
   const hashKeys = ['inputSha256', 'promptSha256', 'outputSha256'];
@@ -139,8 +139,8 @@ export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstre
           if (!river.ok || river.data.method !== 'river' || !isDeepStrictEqual(river.data.extraction, result.extraction) || !Array.isArray(river.data.warnings) || !river.data.warnings.every(warning => typeof warning === 'string')) throw new Error('Unverified River extraction');
           const provenance = validatedProvenance(river.data.provenance, riverInput);
           const warnings = [...result.warnings, ...river.data.warnings];
-          if (provenance) warnings.push('This is a saved River prediction for the exact synthetic input. No live inference occurred.');
-          result = { extraction: result.extraction, method: 'river', warnings, ...(provenance ? { provenance } : {}) };
+          warnings.push('This is a saved River prediction for the exact synthetic input. No live inference occurred.');
+          result = { extraction: result.extraction, method: 'river', warnings, provenance };
         } catch {
           result.warnings.push('River was unavailable or its output could not be verified against the source. Used deterministic extraction.');
         }
