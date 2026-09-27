@@ -46,3 +46,13 @@ Full runtime regression suite passes 56/56. Independent HTTP acceptance passed i
 After explicit UI release, runtime refreshed the brain storage guards, ingest provenance validation, and River status/no-cache source. Exact state equality passed across those owned restarts: revision 10, 32 pages, 132 edges. Receipt: `.runtime/managed/post-ui-maintenance-check.json`. All-service smoke plus brain, ingest and River owner smoke passed. Optional River attempts remain disabled; River is deterministic fallback with extraction unavailable. Sponsor capture/replay counts survived unchanged.
 
 QA has read-only reprint access. Sponsors has a separate explicit grant for exactly three local proof POSTs, with no brain writes, reset, restart or remote submission. Two consecutive full QA cycles follow both releases. Remote Memorable submission was explicitly declined. Runtime has made no external sponsor submissions.
+
+## Paused wrap, 15:58 Pacific
+
+Emre paused the track. No automatic continuation toward the freeze time. All runtime-owned services remain running. Both native runtime subagents were notified; runtime owns no Herdr child agents.
+
+Completed evidence: the final already-running package suite passed 63/63, including the bounded Bun setup checks. The corrected one-page PDF and browser focus checks passed. The final sponsor refresh loaded explicit remote-denial status and passed GET-only assertions. Approved local sponsor proof calls completed and released. Existing test output and three exact-state restart receipts are preserved under `packages/runtime/evidence/`.
+
+The final two-cycle HTTP gate is incomplete and aborted at Emre's pause. QA stopped its exact automated driver after the first reset and an accepted temporal write. A minimal health check at 2026-09-27T22:57:57Z confirmed the accepted operation settled: HTTP 200, ready, revision 12, 31 pages. That is partial QA state, not a clean demo baseline. No retry, reset, or restart followed.
+
+All queued restarts, resets and maintenance are canceled, including the unperformed PATH-only brain restart. On explicit resume, lead and QA must reassess the preserved state, any environment refresh needed, a fresh exclusive two-cycle acceptance gate, and the desired final demo state before authorizing new actions. Never accept the Xcode license or change global settings; use the per-invocation Command Line Tools PATH for Git. Lead owns `docs/NEXT_STEPS.md`. Runtime is fully paused after committing this wrap evidence.

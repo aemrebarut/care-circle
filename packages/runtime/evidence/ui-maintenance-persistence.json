@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "checkedAt": "2026-09-27T22:34:38.442Z",
+  "revision": 10,
+  "pages": 32,
+  "graphEdges": 132,
+  "stateSha256": "37422fc883d9c46d96f3bba70ee753575e970e7f8df5dd37b788a6e351940633",
+  "method": "UI state preserved across owned brain, River, ingest maintenance restarts"
+}

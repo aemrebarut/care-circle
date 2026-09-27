@@ -1,0 +1,80 @@
+
+> @care-circle/runtime@0.1.0 test
+> node --test *.test.mjs
+
+✔ fresh installation works from another directory and is idempotent (3968.138083ms)
+▶ fresh setup gates hook installation on the Bun prerequisite
+  ✔ older Bun (1801.176708ms)
+  ✔ minimum Bun (2052.85ms)
+  ✔ newer Bun (2033.27375ms)
+  ✔ invalid version (827.80025ms)
+  ✔ failed executable (965.716916ms)
+✔ fresh setup gates hook installation on the Bun prerequisite (7681.788291ms)
+✔ a stuck Bun version probe is bounded and leaves hooks unmodified (6152.079791ms)
+✔ an identical original hook is preserved and made executable (919.804292ms)
+✔ an unfamiliar existing hook is refused and preserved (1095.5255ms)
+✔ an unfamiliar hook symlink is refused and preserved (615.916333ms)
+✔ an unfamiliar hook directory is refused and preserved (395.76775ms)
+✔ an unfamiliar hook pipe is refused without waiting for a writer (459.563833ms)
+✔ configured hook paths are preserved and require manual integration (439.032958ms)
+✔ a non-repository fails without creating Git metadata (848.481ms)
+▶ every existing credential filename restriction rejects commits
+  ✔ filename restriction 1 (1461.46025ms)
+  ✔ filename restriction 2 (1165.18875ms)
+  ✔ filename restriction 3 (1072.625875ms)
+  ✔ filename restriction 4 (1112.922958ms)
+  ✔ filename restriction 5 (1019.215625ms)
+  ✔ filename restriction 6 (886.741291ms)
+  ✔ filename restriction 7 (866.385125ms)
+  ✔ filename restriction 8 (953.852375ms)
+  ✔ filename restriction 9 (899.233667ms)
+  ✔ filename restriction 10 (933.70675ms)
+✔ every existing credential filename restriction rejects commits (10372.883333ms)
+▶ every existing added-content restriction rejects without printing matches
+  ✔ provider token (1336.812917ms)
+  ✔ classic repository token (755.344167ms)
+  ✔ fine-grained repository token (805.735375ms)
+  ✔ cloud identifier (805.776459ms)
+  ✔ chat token b (835.973833ms)
+  ✔ chat token a (946.35275ms)
+  ✔ chat token p (980.180167ms)
+  ✔ chat token r (864.376458ms)
+  ✔ chat token s (901.344625ms)
+  ✔ private key header (704.669875ms)
+  ✔ typed private key header (932.209125ms)
+  ✔ quoted assignment apiKey (754.784292ms)
+  ✔ quoted assignment api_key (812.481792ms)
+  ✔ quoted assignment api-key (1122.933667ms)
+  ✔ quoted assignment secret (813.820458ms)
+  ✔ quoted assignment token (959.736541ms)
+  ✔ quoted assignment PASSWORD (858.694583ms)
+✔ every existing added-content restriction rejects without printing matches (15193.542916ms)
+✔ staged content is checked even after the working copy becomes safe (1187.880042ms)
+✔ unstaged synthetic matches do not reject a safe staged snapshot (1151.140625ms)
+▶ runtime lifecycle safety
+  ✔ owned start is idempotent and stop removes only its exact process receipt (5374.975833ms)
+  ✔ healthy external listener is reused without ownership and survives stop (999.265291ms)
+  ✔ unhealthy external listener is refused and left alive (1457.599584ms)
+  ✔ a mismatched healthy listener is refused and left alive (711.138167ms)
+  ✔ partial sponsor-style group never starts a competing process (1315.636833ms)
+  ✔ one receipt owns both endpoints of a sponsor-style process group (802.713208ms)
+  ✔ stale process identity never sends a signal to the recorded PID (857.876708ms)
+  ✔ readiness timeout retains a verifiable receipt so later stop can clean up (1266.405416ms)
+  ✔ early process exit is reported without claiming successful startup (569.132417ms)
+  ✔ HTTP redirects are rejected without visiting their target (568.844417ms)
+  ✔ HTTP response size and elapsed time are bounded (680.040167ms)
+  ✔ concurrent operations cannot enter a live lock and release restores access (308.001375ms)
+  ✔ a verified dead lock owner can be recovered without signaling a listener (552.058833ms)
+  ✔ recovery contenders recheck ownership and serialize after a dead owner (2589.395583ms)
+  ✔ aborted lock operation releases ownership and permits the next command (69.041333ms)
+  ✔ missing and malformed lock owner receipts fail closed (30.019708ms)
+  ✔ a live PID with malformed or changed-command identity keeps its lock (446.174958ms)
+✔ runtime lifecycle safety (18605.62775ms)
+ℹ tests 63
+ℹ suites 1
+ℹ pass 63
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 51214.084916

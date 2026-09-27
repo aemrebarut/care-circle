@@ -1,0 +1,9 @@
+{
+  "ok": true,
+  "checkedAt": "2026-09-27T22:12:55.587Z",
+  "revision": 1,
+  "pages": 30,
+  "graphEdges": 120,
+  "stateSha256": "fbe0b38e69bedb67768ae2a01a5cbf01be5fa11dbd639e8696b3bfee1f74dadc",
+  "method": "HTTP snapshot equality across runtime-owned graceful restart"
+}
