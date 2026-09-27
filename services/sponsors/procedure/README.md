@@ -50,6 +50,18 @@ Preparation explicitly downloads the pinned official npm package with install sc
 
 The proof requires Node 26 with network permission enforcement. A child process first proves that filesystem reads and writes, network connections and child processes are denied. Only then does the unmodified CLI run with read access to the downloaded package and owned synthetic fixture folder. All writes, network and child processes remain denied. Its environment contains only four explicit non-credential settings, with no inherited values and no HOME override. The fixture consent is read-only; no login, enable, initialization, hooks or credential store is used. CLI `ingest` and `record` require hosted extraction and were not run.
 
+## Capture to official recall to Ben replay
+
+The standalone bridge connects the actual synthetic capture to official recall and then to replay, without changing the service API:
+
+```sh
+npm --prefix services/sponsors/procedure run proof:bridge
+```
+
+It captures Ana's trace in process, serializes that trace into a local Memorable procedure row, runs the pinned official CLI under the same isolation, parses the returned procedure ID, and passes that exact ID to Ben's simulated replay. It refuses missing or ambiguous recall results and verifies that replay's `captureTraceId` equals Ana's capture trace. `assets/memorable-bridge-proof.json` records this successful offline chain with capture/replay response hashes and official command output. No service state or listener is touched. The row is authored from the capture by Care Circle; `manualSerialization:true` and `officialLearning:false` remain explicit.
+
+An optional `--live --runtime-window-reference ACTUAL_PARENT_GRANTED_WINDOW` invocation of `memorable-bridge.mjs` is reserved for a safe window explicitly granted by the parent and runtime coordinator. It makes exactly two bounded local requests: capture `{}` at `http://127.0.0.1:4705/v1/procedure/capture`, then replay with the officially recalled ID and Ben's actor ID at `/v1/procedure/replay`. It makes no reset, brain, restart or remote sponsor requests. Each local request has an 8-second timeout, a 128 KiB response limit, redirect refusal and no retries. The official CLI still has no network permission. Live evidence, if authorized and run, is written to ignored `.runtime/live-bridge/receipt.json`. No live invocation occurred while building the offline bridge.
+
 ## Pending single-request runner
 
 `memorable-submit.mjs` is a prepared CLI, not an authorization. It refuses by default. Only cc-lead may write `contract/memorable-approval.json`, using `assets/memorable-approval-template.json` after an actual Emre approval. The record must authorize one synthetic extraction, name the exact payload hash and byte count, name `MEMORABLE_API_KEY`, and supply a real approval reference and timestamp. The template's `approved:false` cannot authorize a request.

@@ -6,10 +6,11 @@
   "description": "Synthetic prior-authorization rehearsal and local Memorable trace export",
   "exports": "./index.mjs",
   "scripts": {
-    "test": "node --test test.mjs submit.test.mjs",
+    "test": "node --test test.mjs submit.test.mjs bridge.test.mjs",
     "export": "node export.mjs",
     "build:assets": "node build-assets.mjs",
     "proof:memorable": "node memorable-local-proof.mjs",
+    "proof:bridge": "node memorable-bridge.mjs",
     "prepare:memorable": "node prepare-memorable-local.mjs",
     "submit:memorable": "node memorable-submit.mjs"
   },
