@@ -1,0 +1,13 @@
+{
+  "name": "@care-circle/world",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic, source-cited Rose Alvarez demo records",
+  "exports": { "./seed.json": "./seed.json" },
+  "scripts": {
+    "build": "node build.mjs",
+    "test": "node smoke.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

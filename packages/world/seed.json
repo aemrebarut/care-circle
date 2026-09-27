@@ -1,0 +1,1595 @@
+{
+  "patientId": "people/rose-alvarez",
+  "pages": [
+    {
+      "id": "people/rose-alvarez",
+      "type": "patient",
+      "title": "Rose Alvarez",
+      "body": "# Rose Alvarez\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nRose is 81 on the demo reference date, September 27, 2026. Her three adult children are siblings to one another: [[people/ana-alvarez]], [[people/ben-alvarez]], and [[people/celia-alvarez]].\n\nHer fictional care team includes [[doctors/primary-care]], [[doctors/cardiologist]], [[doctors/nephrologist]], and [[doctors/endocrinologist]].\n\nThe notebook records what source documents say. The recorded list is not confirmation of what Rose actually takes. Source conflicts remain visible for the family to discuss with the care team.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Rose Alvarez",
+        "age": 81,
+        "dateOfBirth": "1945-04-12",
+        "referenceDate": "2026-09-27",
+        "childIds": [
+          "people/ana-alvarez",
+          "people/ben-alvarez",
+          "people/celia-alvarez"
+        ],
+        "doctorIds": [
+          "doctors/nephrologist",
+          "doctors/cardiologist",
+          "doctors/primary-care",
+          "doctors/endocrinologist"
+        ],
+        "context": "Three adult children share a source-cited family care notebook."
+      },
+      "links": [
+        {
+          "target": "doctors/cardiologist",
+          "type": "mentions"
+        },
+        {
+          "target": "doctors/endocrinologist",
+          "type": "mentions"
+        },
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "doctors/primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "people/ana-alvarez",
+      "type": "person",
+      "title": "Ana Alvarez",
+      "body": "# Ana Alvarez\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nAna accompanies Rose to cardiology and helps capture after-visit notes.\n\nFamily: [[people/rose-alvarez]], [[people/ben-alvarez]], [[people/celia-alvarez]]. This is a fictional family role, not a professional care role.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Ana Alvarez",
+        "patientId": "people/rose-alvarez",
+        "relationship": "daughter",
+        "role": "Daughter; appointment notes"
+      },
+      "links": [
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "people/ben-alvarez",
+      "type": "person",
+      "title": "Ben Alvarez",
+      "body": "# Ben Alvarez\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nBen keeps pharmacy source records and insurer call notes.\n\nFamily: [[people/rose-alvarez]], [[people/ana-alvarez]], [[people/celia-alvarez]]. This is a fictional family role, not a professional care role.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Ben Alvarez",
+        "patientId": "people/rose-alvarez",
+        "relationship": "son",
+        "role": "Son; pharmacy and insurer records"
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "people/celia-alvarez",
+      "type": "person",
+      "title": "Celia Alvarez",
+      "body": "# Celia Alvarez\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nCelia gathers questions before nephrology appointments and coordinates the family notebook.\n\nFamily: [[people/rose-alvarez]], [[people/ana-alvarez]], [[people/ben-alvarez]]. This is a fictional family role, not a professional care role.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Celia Alvarez",
+        "patientId": "people/rose-alvarez",
+        "relationship": "daughter",
+        "role": "Daughter; visit preparation"
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "doctors/nephrologist",
+      "type": "doctor",
+      "title": "Dr. Mira Patel",
+      "body": "# Dr. Mira Patel\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nSpecialty: Nephrology. Fictional care team member for [[people/rose-alvarez]].\n\nLast recorded visit: 2026-09-15. Next appointment on the family calendar: 2026-09-29.\n\nAn appointment date does not establish that a visit has happened or that a recommendation was made.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Dr. Mira Patel",
+        "specialty": "Nephrology",
+        "lastVisitDate": "2026-09-15",
+        "nextVisitDate": "2026-09-29",
+        "patientId": "people/rose-alvarez"
+      },
+      "links": [
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "doctors/cardiologist",
+      "type": "doctor",
+      "title": "Dr. Evelyn Chen",
+      "body": "# Dr. Evelyn Chen\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nSpecialty: Cardiology. Fictional care team member for [[people/rose-alvarez]].\n\nLast recorded visit: 2026-09-23. Next appointment on the family calendar: 2026-09-27.\n\nAn appointment date does not establish that a visit has happened or that a recommendation was made.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Dr. Evelyn Chen",
+        "specialty": "Cardiology",
+        "lastVisitDate": "2026-09-23",
+        "nextVisitDate": "2026-09-27",
+        "patientId": "people/rose-alvarez"
+      },
+      "links": [
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "doctors/primary-care",
+      "type": "doctor",
+      "title": "Dr. Luis Romero",
+      "body": "# Dr. Luis Romero\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nSpecialty: Primary care. Fictional care team member for [[people/rose-alvarez]].\n\nLast recorded visit: 2026-09-21. Next appointment on the family calendar: 2026-10-05.\n\nAn appointment date does not establish that a visit has happened or that a recommendation was made.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Dr. Luis Romero",
+        "specialty": "Primary care",
+        "lastVisitDate": "2026-09-21",
+        "nextVisitDate": "2026-10-05",
+        "patientId": "people/rose-alvarez"
+      },
+      "links": [
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "doctors/endocrinologist",
+      "type": "doctor",
+      "title": "Dr. Nora Okafor",
+      "body": "# Dr. Nora Okafor\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nSpecialty: Endocrinology. Fictional care team member for [[people/rose-alvarez]].\n\nLast recorded visit: 2026-09-10. Next appointment on the family calendar: 2026-10-08.\n\nAn appointment date does not establish that a visit has happened or that a recommendation was made.\n",
+      "fields": {
+        "synthetic": true,
+        "name": "Dr. Nora Okafor",
+        "specialty": "Endocrinology",
+        "lastVisitDate": "2026-09-10",
+        "nextVisitDate": "2026-10-08",
+        "patientId": "people/rose-alvarez"
+      },
+      "links": [
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-03-primary-care",
+      "type": "visit",
+      "title": "Primary care medication reconciliation, September 3",
+      "body": "# Primary care medication reconciliation, September 3\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-03. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/primary-care]].\n\nAttendees: [[people/ana-alvarez]].\n\n## Source record\n\nLisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. Atorvastatin is recorded as 20 mg nightly. Metformin is recorded as 500 mg twice daily. Levothyroxine is recorded as 50 mcg each morning. Vitamin D3 is recorded as 1000 IU daily. Acetaminophen is recorded as 500 mg once daily as needed for pain. Ana copied these entries from the fictional visit medication list. No administration log is available.\n\nRecorded follow-up: Bring the family medication notebook to the next specialist visit.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-03",
+        "doctorId": "doctors/primary-care",
+        "attendeeIds": [
+          "people/ana-alvarez"
+        ],
+        "summary": "Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. Atorvastatin is recorded as 20 mg nightly. Metformin is recorded as 500 mg twice daily. Levothyroxine is recorded as 50 mcg each morning. Vitamin D3 is recorded as 1000 IU daily. Acetaminophen is recorded as 500 mg once daily as needed for pain. Ana copied these entries from the fictional visit medication list. No administration log is available.",
+        "medicationChanges": [],
+        "followUps": [
+          {
+            "text": "Bring the family medication notebook to the next specialist visit."
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "doctors/primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ana-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-08-cardiology",
+      "type": "visit",
+      "title": "Cardiology source review, September 8",
+      "body": "# Cardiology source review, September 8\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-08. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/cardiologist]].\n\nAttendees: [[people/ana-alvarez]].\n\n## Source record\n\nDr. Chen reviewed the family medication notebook with Ana. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. This visit records no medication change.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-08",
+        "doctorId": "doctors/cardiologist",
+        "attendeeIds": [
+          "people/ana-alvarez"
+        ],
+        "summary": "Dr. Chen reviewed the family medication notebook with Ana. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. This visit records no medication change.",
+        "medicationChanges": [],
+        "followUps": []
+      },
+      "links": [
+        {
+          "target": "doctors/cardiologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ana-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-10-endocrinology",
+      "type": "visit",
+      "title": "Endocrinology visit, September 10",
+      "body": "# Endocrinology visit, September 10\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-10. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/endocrinologist]].\n\nAttendees: [[people/ben-alvarez]].\n\n## Source record\n\nBen attended the endocrinology visit. Metformin is recorded as 500 mg twice daily. Levothyroxine is recorded as 50 mcg each morning. The source records an A1c sample on September 10 without an interpretation in this notebook.\n\nRecorded follow-up: Keep the A1c source result with the visit notes.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-10",
+        "doctorId": "doctors/endocrinologist",
+        "attendeeIds": [
+          "people/ben-alvarez"
+        ],
+        "summary": "Ben attended the endocrinology visit. Metformin is recorded as 500 mg twice daily. Levothyroxine is recorded as 50 mcg each morning. The source records an A1c sample on September 10 without an interpretation in this notebook.",
+        "medicationChanges": [],
+        "followUps": [
+          {
+            "text": "Keep the A1c source result with the visit notes."
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "doctors/endocrinologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-15-nephrology",
+      "type": "visit",
+      "title": "Nephrology visit, September 15",
+      "body": "# Nephrology visit, September 15\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-15. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/nephrologist]].\n\nAttendees: [[people/celia-alvarez]].\n\n## Source record\n\nCelia attended the nephrology visit. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. The fictional source requested a chemistry lab draw for September 16 and listed the next nephrology appointment as September 29.\n\nRecorded follow-up: Chemistry lab draw recorded in the source. Source target date: 2026-09-16.\n\nRecorded follow-up: Next nephrology appointment on the family calendar. Source target date: 2026-09-29.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-15",
+        "doctorId": "doctors/nephrologist",
+        "attendeeIds": [
+          "people/celia-alvarez"
+        ],
+        "summary": "Celia attended the nephrology visit. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 2.5 mg daily. The fictional source requested a chemistry lab draw for September 16 and listed the next nephrology appointment as September 29.",
+        "medicationChanges": [],
+        "followUps": [
+          {
+            "text": "Chemistry lab draw recorded in the source.",
+            "dueDate": "2026-09-16"
+          },
+          {
+            "text": "Next nephrology appointment on the family calendar.",
+            "dueDate": "2026-09-29"
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-21-primary-care",
+      "type": "visit",
+      "title": "Primary care paperwork visit, September 21",
+      "body": "# Primary care paperwork visit, September 21\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-21. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/primary-care]].\n\nAttendees: [[people/ben-alvarez]].\n\n## Source record\n\nBen brought the family notebook to primary care. Atorvastatin is recorded as 20 mg nightly. Vitamin D3 is recorded as 1000 IU daily. Acetaminophen is recorded as 500 mg once daily as needed for pain. No medication change is recorded. Ben asked the office to send the fictional referral attachment requested by the insurer.\n\nRecorded follow-up: Office to confirm that the requested referral attachment was sent.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-21",
+        "doctorId": "doctors/primary-care",
+        "attendeeIds": [
+          "people/ben-alvarez"
+        ],
+        "summary": "Ben brought the family notebook to primary care. Atorvastatin is recorded as 20 mg nightly. Vitamin D3 is recorded as 1000 IU daily. Acetaminophen is recorded as 500 mg once daily as needed for pain. No medication change is recorded. Ben asked the office to send the fictional referral attachment requested by the insurer.",
+        "medicationChanges": [],
+        "followUps": [
+          {
+            "text": "Office to confirm that the requested referral attachment was sent."
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "doctors/primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "visits/2026-09-23-cardiology",
+      "type": "visit",
+      "title": "Cardiology visit, September 23",
+      "body": "# Cardiology visit, September 23\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-23. Patient: [[people/rose-alvarez]]. Doctor: [[doctors/cardiologist]].\n\nAttendees: [[people/ana-alvarez]].\n\n## Source record\n\nAna attended cardiology with Dr. Chen. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 5 mg daily. The source records an amlodipine change from the earlier 2.5 mg daily entry. A follow-up cardiology appointment was placed on the family calendar for September 27.\n\nAmlodipine: the visit records a change from 2.5 mg daily to 5 mg daily. Medication page: [[medications/amlodipine]].\n\nRecorded follow-up: Family to bring the updated medication source list to nephrology.\n\nThis is a fictional visit record, not a treatment instruction.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-23",
+        "doctorId": "doctors/cardiologist",
+        "attendeeIds": [
+          "people/ana-alvarez"
+        ],
+        "summary": "Ana attended cardiology with Dr. Chen. Lisinopril is recorded as 10 mg daily. Amlodipine is recorded as 5 mg daily. The source records an amlodipine change from the earlier 2.5 mg daily entry. A follow-up cardiology appointment was placed on the family calendar for September 27.",
+        "medicationChanges": [
+          {
+            "medicationId": "medications/amlodipine",
+            "name": "Amlodipine",
+            "previousDose": "2.5 mg",
+            "previousFrequency": "daily",
+            "dose": "5 mg",
+            "frequency": "daily"
+          }
+        ],
+        "followUps": [
+          {
+            "text": "Family to bring the updated medication source list to nephrology."
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "doctors/cardiologist",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/amlodipine",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ana-alvarez",
+          "type": "attended"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "pharmacy/2026-09-24-medication-record",
+      "type": "pharmacy",
+      "title": "Fictional pharmacy medication record, September 24",
+      "body": "# Fictional pharmacy medication record, September 24\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-24. Recorded by [[people/ben-alvarez]] for [[people/rose-alvarez]].\n\n## Source record\n\nLisinopril: the pharmacy record lists 10 mg daily. [[medications/lisinopril]].\n\nAmlodipine: the pharmacy record lists 5 mg daily. [[medications/amlodipine]].\n\nAtorvastatin: the pharmacy record lists 20 mg nightly. [[medications/atorvastatin]].\n\nMetformin: the pharmacy record lists 500 mg twice daily. [[medications/metformin]].\n\nLevothyroxine: the pharmacy record lists 50 mcg each morning. [[medications/levothyroxine]].\n\nVitamin D3: the pharmacy record lists 1000 IU daily. [[medications/vitamin-d3]].\n\nAcetaminophen: the pharmacy record lists 500 mg once daily as needed for pain. [[medications/acetaminophen]].\n\nThis fictional pharmacy list agrees with the latest visit claims at seed time. It is not proof of dispensing, adherence, or current administration. Later source discrepancies should be shown with both sources.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-24",
+        "recordedBy": "people/ben-alvarez",
+        "attendeeIds": [
+          "people/ben-alvarez"
+        ],
+        "pharmacyName": "Demo Circle Pharmacy",
+        "records": [
+          {
+            "medicationId": "medications/lisinopril",
+            "name": "Lisinopril",
+            "dose": "10 mg",
+            "frequency": "daily"
+          },
+          {
+            "medicationId": "medications/amlodipine",
+            "name": "Amlodipine",
+            "dose": "5 mg",
+            "frequency": "daily"
+          },
+          {
+            "medicationId": "medications/atorvastatin",
+            "name": "Atorvastatin",
+            "dose": "20 mg",
+            "frequency": "nightly"
+          },
+          {
+            "medicationId": "medications/metformin",
+            "name": "Metformin",
+            "dose": "500 mg",
+            "frequency": "twice daily"
+          },
+          {
+            "medicationId": "medications/levothyroxine",
+            "name": "Levothyroxine",
+            "dose": "50 mcg",
+            "frequency": "each morning"
+          },
+          {
+            "medicationId": "medications/vitamin-d3",
+            "name": "Vitamin D3",
+            "dose": "1000 IU",
+            "frequency": "daily"
+          },
+          {
+            "medicationId": "medications/acetaminophen",
+            "name": "Acetaminophen",
+            "dose": "500 mg",
+            "frequency": "once daily as needed for pain"
+          }
+        ],
+        "recordKind": "pharmacy-record",
+        "verifiesAdministration": false
+      },
+      "links": [
+        {
+          "target": "medications/acetaminophen",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/amlodipine",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/atorvastatin",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/levothyroxine",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/lisinopril",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/metformin",
+          "type": "mentions"
+        },
+        {
+          "target": "medications/vitamin-d3",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/lisinopril",
+      "type": "medication",
+      "title": "Lisinopril",
+      "body": "# Lisinopril\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nLisinopril is recorded as 10 mg daily in [[visits/2026-09-23-cardiology]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 10 mg daily; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-23: 10 mg daily; visit source [[visits/2026-09-23-cardiology]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-24: 10 mg daily; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Lisinopril",
+        "dose": "10 mg",
+        "frequency": "daily",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "10 mg",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "10 mg",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-23-cardiology",
+            "date": "2026-09-23",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "10 mg",
+            "frequency": "daily",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-23-cardiology",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Lisinopril is recorded as 10 mg daily.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-23-cardiology",
+            "title": "Cardiology visit, September 23",
+            "quote": "Lisinopril is recorded as 10 mg daily.",
+            "date": "2026-09-23",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Lisinopril: the pharmacy record lists 10 mg daily.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-23-cardiology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/amlodipine",
+      "type": "medication",
+      "title": "Amlodipine",
+      "body": "# Amlodipine\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nAmlodipine is recorded as 5 mg daily in [[visits/2026-09-23-cardiology]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 2.5 mg daily; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-23: 5 mg daily; visit source [[visits/2026-09-23-cardiology]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-24: 5 mg daily; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Amlodipine",
+        "dose": "5 mg",
+        "frequency": "daily",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "2.5 mg",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "5 mg",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-23-cardiology",
+            "date": "2026-09-23",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "5 mg",
+            "frequency": "daily",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-23-cardiology",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Amlodipine is recorded as 2.5 mg daily.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-23-cardiology",
+            "title": "Cardiology visit, September 23",
+            "quote": "Amlodipine is recorded as 5 mg daily.",
+            "date": "2026-09-23",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Amlodipine: the pharmacy record lists 5 mg daily.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-23-cardiology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/atorvastatin",
+      "type": "medication",
+      "title": "Atorvastatin",
+      "body": "# Atorvastatin\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nAtorvastatin is recorded as 20 mg nightly in [[visits/2026-09-21-primary-care]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 20 mg nightly; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-21: 20 mg nightly; visit source [[visits/2026-09-21-primary-care]]; family recorder or attendee [[people/ben-alvarez]].\n- 2026-09-24: 20 mg nightly; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Atorvastatin",
+        "dose": "20 mg",
+        "frequency": "nightly",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "20 mg",
+            "frequency": "nightly",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "20 mg",
+            "frequency": "nightly",
+            "sourceId": "visits/2026-09-21-primary-care",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "20 mg",
+            "frequency": "nightly",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-21-primary-care",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Atorvastatin is recorded as 20 mg nightly.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-21-primary-care",
+            "title": "Primary care paperwork visit, September 21",
+            "quote": "Atorvastatin is recorded as 20 mg nightly.",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Atorvastatin: the pharmacy record lists 20 mg nightly.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-21-primary-care",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/metformin",
+      "type": "medication",
+      "title": "Metformin",
+      "body": "# Metformin\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nMetformin is recorded as 500 mg twice daily in [[visits/2026-09-10-endocrinology]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 500 mg twice daily; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-10: 500 mg twice daily; visit source [[visits/2026-09-10-endocrinology]]; family recorder or attendee [[people/ben-alvarez]].\n- 2026-09-24: 500 mg twice daily; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Metformin",
+        "dose": "500 mg",
+        "frequency": "twice daily",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "500 mg",
+            "frequency": "twice daily",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "500 mg",
+            "frequency": "twice daily",
+            "sourceId": "visits/2026-09-10-endocrinology",
+            "date": "2026-09-10",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "500 mg",
+            "frequency": "twice daily",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-10-endocrinology",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Metformin is recorded as 500 mg twice daily.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-10-endocrinology",
+            "title": "Endocrinology visit, September 10",
+            "quote": "Metformin is recorded as 500 mg twice daily.",
+            "date": "2026-09-10",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Metformin: the pharmacy record lists 500 mg twice daily.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-10-endocrinology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/levothyroxine",
+      "type": "medication",
+      "title": "Levothyroxine",
+      "body": "# Levothyroxine\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nLevothyroxine is recorded as 50 mcg each morning in [[visits/2026-09-10-endocrinology]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 50 mcg each morning; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-10: 50 mcg each morning; visit source [[visits/2026-09-10-endocrinology]]; family recorder or attendee [[people/ben-alvarez]].\n- 2026-09-24: 50 mcg each morning; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Levothyroxine",
+        "dose": "50 mcg",
+        "frequency": "each morning",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "50 mcg",
+            "frequency": "each morning",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "50 mcg",
+            "frequency": "each morning",
+            "sourceId": "visits/2026-09-10-endocrinology",
+            "date": "2026-09-10",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "50 mcg",
+            "frequency": "each morning",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-10-endocrinology",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Levothyroxine is recorded as 50 mcg each morning.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-10-endocrinology",
+            "title": "Endocrinology visit, September 10",
+            "quote": "Levothyroxine is recorded as 50 mcg each morning.",
+            "date": "2026-09-10",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Levothyroxine: the pharmacy record lists 50 mcg each morning.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-10-endocrinology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/vitamin-d3",
+      "type": "medication",
+      "title": "Vitamin D3",
+      "body": "# Vitamin D3\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nVitamin D3 is recorded as 1000 IU daily in [[visits/2026-09-21-primary-care]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active.\n\n## Source history\n\n- 2026-09-03: 1000 IU daily; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-21: 1000 IU daily; visit source [[visits/2026-09-21-primary-care]]; family recorder or attendee [[people/ben-alvarez]].\n- 2026-09-24: 1000 IU daily; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Vitamin D3",
+        "dose": "1000 IU",
+        "frequency": "daily",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "1000 IU",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "1000 IU",
+            "frequency": "daily",
+            "sourceId": "visits/2026-09-21-primary-care",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "1000 IU",
+            "frequency": "daily",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-21-primary-care",
+        "asNeeded": false,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Vitamin D3 is recorded as 1000 IU daily.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-21-primary-care",
+            "title": "Primary care paperwork visit, September 21",
+            "quote": "Vitamin D3 is recorded as 1000 IU daily.",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Vitamin D3: the pharmacy record lists 1000 IU daily.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-21-primary-care",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "medications/acetaminophen",
+      "type": "medication",
+      "title": "Acetaminophen",
+      "body": "# Acetaminophen\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Recorded medication entry\n\nAcetaminophen is recorded as 500 mg once daily as needed for pain in [[visits/2026-09-21-primary-care]]. This is a source claim, not a recommendation.\n\nStatus in the fictional source list: active; as-needed use is recorded, not scheduled administration.\n\n## Source history\n\n- 2026-09-03: 500 mg once daily as needed for pain; visit source [[visits/2026-09-03-primary-care]]; family recorder or attendee [[people/ana-alvarez]].\n- 2026-09-21: 500 mg once daily as needed for pain; visit source [[visits/2026-09-21-primary-care]]; family recorder or attendee [[people/ben-alvarez]].\n- 2026-09-24: 500 mg once daily as needed for pain; pharmacy source [[pharmacy/2026-09-24-medication-record]]; family recorder or attendee [[people/ben-alvarez]].\n\nHistorical entries are retained. A changed visit entry does not erase a pharmacy source. The family notebook does not determine what Rose should take.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "name": "Acetaminophen",
+        "dose": "500 mg",
+        "frequency": "once daily as needed for pain",
+        "status": "active",
+        "claims": [
+          {
+            "dose": "500 mg",
+            "frequency": "once daily as needed for pain",
+            "sourceId": "visits/2026-09-03-primary-care",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "500 mg",
+            "frequency": "once daily as needed for pain",
+            "sourceId": "visits/2026-09-21-primary-care",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "visit"
+          },
+          {
+            "dose": "500 mg",
+            "frequency": "once daily as needed for pain",
+            "sourceId": "pharmacy/2026-09-24-medication-record",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ],
+            "kind": "pharmacy"
+          }
+        ],
+        "recordedSourceId": "visits/2026-09-21-primary-care",
+        "asNeeded": true,
+        "citations": [
+          {
+            "pageId": "visits/2026-09-03-primary-care",
+            "title": "Primary care medication reconciliation, September 3",
+            "quote": "Acetaminophen is recorded as 500 mg once daily as needed for pain.",
+            "date": "2026-09-03",
+            "attendeeIds": [
+              "people/ana-alvarez"
+            ]
+          },
+          {
+            "pageId": "visits/2026-09-21-primary-care",
+            "title": "Primary care paperwork visit, September 21",
+            "quote": "Acetaminophen is recorded as 500 mg once daily as needed for pain.",
+            "date": "2026-09-21",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          },
+          {
+            "pageId": "pharmacy/2026-09-24-medication-record",
+            "title": "Fictional pharmacy medication record, September 24",
+            "quote": "Acetaminophen: the pharmacy record lists 500 mg once daily as needed for pain.",
+            "date": "2026-09-24",
+            "attendeeIds": [
+              "people/ben-alvarez"
+            ]
+          }
+        ]
+      },
+      "links": [
+        {
+          "target": "people/ana-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "pharmacy/2026-09-24-medication-record",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-03-primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-21-primary-care",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "labs/2026-09-10-a1c",
+      "type": "lab",
+      "title": "Hemoglobin A1c source result, 2026-09-10",
+      "body": "# Hemoglobin A1c source result, 2026-09-10\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Original synthetic lab report\n\nHemoglobin A1c is recorded as 7.2 % on 2026-09-10.\n\nThis page is the original fictional result source, not a transcription of a result from the associated visit note.\n\nFamily recorder: [[people/ben-alvarez]]. Associated visit: [[visits/2026-09-10-endocrinology]]. Patient: [[people/rose-alvarez]].\n\nThe value is synthetic. No reference interval, trend conclusion, diagnosis, or clinical interpretation is supplied. This result predates the September 27 demo note and cannot establish completion of any later request.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-10",
+        "name": "Hemoglobin A1c",
+        "value": 7.2,
+        "unit": "%",
+        "sourceId": "labs/2026-09-10-a1c",
+        "associatedVisitId": "visits/2026-09-10-endocrinology",
+        "recordedBy": "people/ben-alvarez",
+        "interpretation": null,
+        "recordKind": "original-synthetic-lab-report"
+      },
+      "links": [
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-10-endocrinology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "labs/2026-09-16-potassium",
+      "type": "lab",
+      "title": "Potassium source result, 2026-09-16",
+      "body": "# Potassium source result, 2026-09-16\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Original synthetic lab report\n\nPotassium is recorded as 4.6 mmol/L on 2026-09-16.\n\nThis page is the original fictional result source, not a transcription of a result from the associated visit note.\n\nFamily recorder: [[people/celia-alvarez]]. Associated visit: [[visits/2026-09-15-nephrology]]. Patient: [[people/rose-alvarez]].\n\nThe value is synthetic. No reference interval, trend conclusion, diagnosis, or clinical interpretation is supplied. This result predates the September 27 demo note and cannot establish completion of any later request.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-16",
+        "name": "Potassium",
+        "value": 4.6,
+        "unit": "mmol/L",
+        "sourceId": "labs/2026-09-16-potassium",
+        "associatedVisitId": "visits/2026-09-15-nephrology",
+        "recordedBy": "people/celia-alvarez",
+        "interpretation": null,
+        "recordKind": "original-synthetic-lab-report"
+      },
+      "links": [
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-15-nephrology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "labs/2026-09-16-creatinine",
+      "type": "lab",
+      "title": "Creatinine source result, 2026-09-16",
+      "body": "# Creatinine source result, 2026-09-16\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Original synthetic lab report\n\nCreatinine is recorded as 1.2 mg/dL on 2026-09-16.\n\nThis page is the original fictional result source, not a transcription of a result from the associated visit note.\n\nFamily recorder: [[people/celia-alvarez]]. Associated visit: [[visits/2026-09-15-nephrology]]. Patient: [[people/rose-alvarez]].\n\nThe value is synthetic. No reference interval, trend conclusion, diagnosis, or clinical interpretation is supplied. This result predates the September 27 demo note and cannot establish completion of any later request.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-16",
+        "name": "Creatinine",
+        "value": 1.2,
+        "unit": "mg/dL",
+        "sourceId": "labs/2026-09-16-creatinine",
+        "associatedVisitId": "visits/2026-09-15-nephrology",
+        "recordedBy": "people/celia-alvarez",
+        "interpretation": null,
+        "recordKind": "original-synthetic-lab-report"
+      },
+      "links": [
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-15-nephrology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "insurer-calls/2026-09-18-prior-authorization",
+      "type": "insurer-call",
+      "title": "Synthetic insurer call, September 18",
+      "body": "# Synthetic insurer call, September 18\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-18. Caller: [[people/ben-alvarez]]. Patient: [[people/rose-alvarez]]. Visit context: [[doctors/nephrologist]] and [[visits/2026-09-15-nephrology]].\n\n## Source call note\n\nDemo Family Health Plan case DEMO-PA-2026-0918 is recorded as pending documentation for the nephrology follow-up referral. The synthetic representative reported that the referral attachment was missing. No approval or coverage guarantee was given.\n\nRecorded procedure: identify the fictional case reference, record the missing attachment, ask the referring office for it, then record the follow-up reference and status.\n\nThis is a fabricated call transcript summary. No insurer was contacted and no document was sent.\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-18",
+        "actorId": "people/ben-alvarez",
+        "attendeeIds": [
+          "people/ben-alvarez"
+        ],
+        "insurerName": "Demo Family Health Plan",
+        "reference": "DEMO-PA-2026-0918",
+        "request": "Nephrology follow-up referral authorization",
+        "status": "pending-documentation",
+        "doctorId": "doctors/nephrologist",
+        "steps": [
+          "Identify the fictional case reference.",
+          "Record which referral attachment is missing.",
+          "Ask the referring office for the attachment.",
+          "Record the follow-up reference and status."
+        ],
+        "summary": "The synthetic representative reported that the referral attachment was missing. No approval or coverage guarantee was given."
+      },
+      "links": [
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-15-nephrology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "insurer-calls/2026-09-22-follow-up",
+      "type": "insurer-call",
+      "title": "Synthetic insurer follow-up, September 22",
+      "body": "# Synthetic insurer follow-up, September 22\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\nDate: 2026-09-22. Caller: [[people/celia-alvarez]]. Patient: [[people/rose-alvarez]]. Earlier call: [[insurer-calls/2026-09-18-prior-authorization]]. Office follow-up context: [[visits/2026-09-21-primary-care]].\n\n## Source call note\n\nCelia used the same fictional case reference, DEMO-PA-2026-0918. The synthetic representative reported the attachment received and the request under review. No approval or coverage guarantee was given.\n\nThe notebook contains two sequential status records, not a verified insurance determination. No insurer was contacted and no document was sent.\n\n## Related source pages\n\n[[doctors/nephrologist]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "date": "2026-09-22",
+        "actorId": "people/celia-alvarez",
+        "attendeeIds": [
+          "people/celia-alvarez"
+        ],
+        "insurerName": "Demo Family Health Plan",
+        "reference": "DEMO-PA-2026-0918",
+        "previousCallId": "insurer-calls/2026-09-18-prior-authorization",
+        "request": "Nephrology follow-up referral authorization",
+        "status": "under-review",
+        "doctorId": "doctors/nephrologist",
+        "steps": [
+          "Use the existing fictional case reference.",
+          "Confirm the attachment status in the synthetic record.",
+          "Record that review is pending.",
+          "Save the follow-up note for the family."
+        ],
+        "summary": "The synthetic representative reported the attachment received and the request under review. No approval or coverage guarantee was given."
+      },
+      "links": [
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "insurer-calls/2026-09-18-prior-authorization",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-21-primary-care",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "questions/nephrology-medication-notebook",
+      "type": "question",
+      "title": "Can the nephrology team review the medication source list updated at cardiology on September 23?",
+      "body": "# Can the nephrology team review the medication source list updated at cardiology on September 23?\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Open family question\n\nCan the nephrology team review the medication source list updated at cardiology on September 23?\n\nFor: [[doctors/nephrologist]]. Family owner: [[people/celia-alvarez]]. Source context: [[visits/2026-09-23-cardiology]].\n\nThis is a family question for the care team, not a clinical recommendation or a completed follow-up.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "doctorId": "doctors/nephrologist",
+        "text": "Can the nephrology team review the medication source list updated at cardiology on September 23?",
+        "status": "open",
+        "sourceId": "visits/2026-09-23-cardiology",
+        "ownerId": "people/celia-alvarez"
+      },
+      "links": [
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-23-cardiology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "questions/nephrology-lab-records",
+      "type": "question",
+      "title": "Does the office have the September 16 lab source records for the September 29 appointment?",
+      "body": "# Does the office have the September 16 lab source records for the September 29 appointment?\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Open family question\n\nDoes the office have the September 16 lab source records for the September 29 appointment?\n\nFor: [[doctors/nephrologist]]. Family owner: [[people/celia-alvarez]]. Source context: [[visits/2026-09-15-nephrology]].\n\nThis is a family question for the care team, not a clinical recommendation or a completed follow-up.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "doctorId": "doctors/nephrologist",
+        "text": "Does the office have the September 16 lab source records for the September 29 appointment?",
+        "status": "open",
+        "sourceId": "visits/2026-09-15-nephrology",
+        "ownerId": "people/celia-alvarez"
+      },
+      "links": [
+        {
+          "target": "doctors/nephrologist",
+          "type": "mentions"
+        },
+        {
+          "target": "people/celia-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "visits/2026-09-15-nephrology",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    },
+    {
+      "id": "questions/primary-care-referral-status",
+      "type": "question",
+      "title": "Can the office confirm the referral attachment status recorded in the September 22 insurer call?",
+      "body": "# Can the office confirm the referral attachment status recorded in the September 22 insurer call?\n\nAll people, providers, records, and events on this page are fictional demo data. Care Circle organizes source records and does not recommend doses or treatments. Not medical advice.\n\n## Open family question\n\nCan the office confirm the referral attachment status recorded in the September 22 insurer call?\n\nFor: [[doctors/primary-care]]. Family owner: [[people/ben-alvarez]]. Source context: [[insurer-calls/2026-09-22-follow-up]].\n\nThis is a family question for the care team, not a clinical recommendation or a completed follow-up.\n\n## Related source pages\n\n[[people/rose-alvarez]].\n",
+      "fields": {
+        "synthetic": true,
+        "patientId": "people/rose-alvarez",
+        "doctorId": "doctors/primary-care",
+        "text": "Can the office confirm the referral attachment status recorded in the September 22 insurer call?",
+        "status": "open",
+        "sourceId": "insurer-calls/2026-09-22-follow-up",
+        "ownerId": "people/ben-alvarez"
+      },
+      "links": [
+        {
+          "target": "doctors/primary-care",
+          "type": "mentions"
+        },
+        {
+          "target": "insurer-calls/2026-09-22-follow-up",
+          "type": "mentions"
+        },
+        {
+          "target": "people/ben-alvarez",
+          "type": "mentions"
+        },
+        {
+          "target": "people/rose-alvarez",
+          "type": "mentions"
+        }
+      ],
+      "updatedAt": "2026-09-27T12:00:00.000Z"
+    }
+  ]
+}
