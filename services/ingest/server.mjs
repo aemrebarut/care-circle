@@ -3,7 +3,7 @@ import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { HOST, PORTS, DEMO_NOTE, DEMO_DATE, IDS } from '../../contract/index.mjs';
-import { IngestError, normalizeInput, extractDeterministic, defaultIdempotencyKey } from './extract.mjs';
+import { IngestError, normalizeInput, extractDeterministic, defaultIdempotencyKey, validDate } from './extract.mjs';
 
 const MAX_BODY_BYTES = 64 * 1024;
 const MAX_UPSTREAM_BYTES = 1024 * 1024;
@@ -105,7 +105,8 @@ function validatedProvenance(value, input) {
   const hashKeys = ['inputSha256', 'promptSha256', 'outputSha256'];
   if (textKeys.some(key => typeof value[key] !== 'string' || !value[key].trim() || value[key].length > 256 || /[\u0000-\u001f]/.test(value[key]))) throw new Error('Invalid River provenance field');
   if (hashKeys.some(key => typeof value[key] !== 'string' || !/^[a-f0-9]{64}$/.test(value[key]))) throw new Error('Invalid River provenance digest');
-  if (!Number.isFinite(Date.parse(value.sampledAt)) || !value.checkpoint.startsWith('river://')) throw new Error('Invalid River model provenance');
+  const utcTimestamp = /^\d{4}-\d{2}-\d{2}T(?:[01]\d|2[0-3]):[0-5]\d:[0-5]\d(?:\.\d{1,9})?(?:Z|\+00:00)$/;
+  if (!utcTimestamp.test(value.sampledAt) || !validDate(value.sampledAt.slice(0, 10)) || !Number.isFinite(Date.parse(value.sampledAt)) || !value.checkpoint.startsWith('river://') || !value.checkpoint.slice(8).trim()) throw new Error('Invalid River model provenance');
   // River's provenance uses sorted keys for this flat canonical input object.
   const expectedInput = createHash('sha256').update(JSON.stringify({ authorId: input.authorId, date: input.date, note: input.note })).digest('hex');
   if (value.inputSha256 !== expectedInput) throw new Error('River provenance belongs to another source input');

@@ -22,7 +22,7 @@ The ingest lane used an independent gpt-6-astra reviewer with xhigh reasoning fo
 
 ## Evidence
 
-`npm --prefix services/ingest test` passes 54 tests, including the exact contract demo, adversarial source cases, full source preservation, effective authorship, stable retry keys, mutation-free preview, upstream 409/422/503, timeouts, disconnects, invalid or oversized upstream bodies, River fallback, and incomplete uploads.
+`npm --prefix services/ingest test` passes 55 tests, including the exact contract demo, adversarial source cases, full source preservation, effective authorship, stable retry keys, mutation-free preview, upstream 409/422/503, timeouts, disconnects, invalid or oversized upstream bodies, River fallback, and incomplete uploads.
 
 Track review independently reported all then-current extractor cases passing, including semicolon/newline qualifiers and separate corrections. That bounded recheck found no further material issue. Later as-of date guards have dedicated unit and HTTP regressions.
 

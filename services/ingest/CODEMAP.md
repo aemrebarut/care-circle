@@ -33,7 +33,7 @@ No credentials or external APIs. INGEST_USE_RIVER=1 only enables loopback River;
 
 ## Milestone evidence
 
-M1: 54 unit and HTTP tests pass. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime owns the live service; read-only smoke passed. Added JSON 408 for incomplete body uploads and split-qualifier guards for questions and follow-ups.
+M1: 55 unit and HTTP tests pass. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime owns the live service; read-only smoke passed. Added JSON 408 for incomplete body uploads and split-qualifier guards for questions and follow-ups.
 
 
 M1 live integration: runtime baseline survived a real GBrain restart, then the reserved canonical ingest and identical retry passed at revision 2 with visit visits/ingest-70c7a8a9face7c4158c7be49. Exactly one source visit and one new 20 mg claim; original 10 mg retained. Original note, author, attendance, pending potassium wording, question and citation all verified over HTTP. No reset performed. Mutation window released to runtime and QA with source intact for independent audit. Latest implementation commits: ab0b640, 48fa839, 291d739; verification script a6fbaeb.

@@ -10,6 +10,15 @@ import { extractDeterministic } from '../extract.mjs';
 const URL = 'http://127.0.0.1:4713';
 const receipt = { ok: true, visitId: 'visits/synthetic-test', changedPageIds: ['visits/synthetic-test', IDS.lisinopril], revision: 7 };
 const reply = (data, status = 200) => new Response(JSON.stringify(data), { status, headers: { 'content-type': 'application/json' } });
+function replayProvenance(input = { authorId: IDS.ana, date: '2026-09-27', note: DEMO_NOTE }) {
+  return {
+    mode: 'cached-replay', liveInference: false,
+    model: 'synthetic-test-model', checkpoint: 'river://synthetic-test-checkpoint', requestId: 'synthetic-request',
+    sampledAt: '2026-09-27T22:17:26.724780+00:00',
+    inputSha256: createHash('sha256').update(JSON.stringify(input)).digest('hex'),
+    promptSha256: 'a'.repeat(64), outputSha256: 'b'.repeat(64),
+  };
+}
 async function withServer(options, fn) {
   const server = createIngestServer(options);
   server.listen(4713, '127.0.0.1');
@@ -98,9 +107,11 @@ test('River failure, invalid provenance and deterministic mode explicitly fall b
   const good = extractDeterministic({ note: DEMO_NOTE });
   const hallucinated = structuredClone(good);
   hallucinated.method = 'river';
+  hallucinated.provenance = replayProvenance();
   hallucinated.extraction.medicationChanges[0].dose = '80 mg';
   const inferredDate = structuredClone(good);
   inferredDate.method = 'river';
+  inferredDate.provenance = replayProvenance();
   inferredDate.extraction.followUps[0].dueDate = '2026-09-30';
   for (const response of [reply({ error: { code: 'unavailable' } }, 503), reply(hallucinated), reply(inferredDate), reply(good)]) {
     await withServer({ useRiver: true, fetchImpl: async () => response }, async () => {
@@ -148,13 +159,7 @@ test('unfinished body gets bounded JSON 408 without touching upstream', async ()
 
 test('validated cached provenance survives preview and save without a live-inference claim', async () => {
   const input = { authorId: IDS.ana, date: '2026-09-27', note: DEMO_NOTE };
-  const provenance = {
-    mode: 'cached-replay', liveInference: false,
-    model: 'synthetic-test-model', checkpoint: 'river://synthetic-test-checkpoint', requestId: 'synthetic-request',
-    sampledAt: '2026-09-27T22:17:26.724780+00:00',
-    inputSha256: createHash('sha256').update(JSON.stringify(input)).digest('hex'),
-    promptSha256: 'a'.repeat(64), outputSha256: 'b'.repeat(64),
-  };
+  const provenance = replayProvenance(input);
   const good = { ...extractDeterministic(input), method: 'river', provenance };
   await withServer({ useRiver: true, fetchImpl: async url => url.includes(':4704/') ? reply(good) : reply(receipt) }, async () => {
     for (const path of ['/v1/extract', '/v1/ingest']) {
@@ -165,11 +170,23 @@ test('validated cached provenance survives preview and save without a live-infer
       assert.ok(result.data.warnings.some(value => value.includes('No live inference occurred')));
     }
   });
-  for (const invalid of [{ ...provenance, liveInference: true }, { ...provenance, inputSha256: '0'.repeat(64) }, { ...provenance, requestId: '' }, { ...provenance, promptSha256: ['a'.repeat(64)] }, { ...provenance, outputSha256: ['b'.repeat(64)] }]) {
+  for (const invalid of [{ ...provenance, liveInference: true }, { ...provenance, inputSha256: '0'.repeat(64) }, { ...provenance, requestId: '' }, { ...provenance, promptSha256: ['a'.repeat(64)] }, { ...provenance, outputSha256: ['b'.repeat(64)] }, { ...provenance, sampledAt: '2026-09-27' }, { ...provenance, checkpoint: 'river://' }]) {
     await withServer({ useRiver: true, fetchImpl: async () => reply({ ...good, provenance: invalid }) }, async () => {
       const result = await post('/v1/extract', input);
       assert.equal(result.data.method, 'deterministic');
       assert.equal(result.data.provenance, undefined);
     });
   }
+});
+
+
+test('source-equal model response for another author still falls back', async () => {
+  const input = { authorId: IDS.ben, date: '2026-09-27', note: DEMO_NOTE };
+  const output = { ...extractDeterministic(input), method: 'river', provenance: replayProvenance(input) };
+  await withServer({ useRiver: true, fetchImpl: async () => reply(output) }, async () => {
+    const result = await post('/v1/extract', input);
+    assert.equal(result.status, 200);
+    assert.equal(result.data.method, 'deterministic');
+    assert.equal(result.data.provenance, undefined);
+  });
 });
