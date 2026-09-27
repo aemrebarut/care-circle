@@ -43,3 +43,6 @@ The River lane retained a real trained canonical-demo prediction that added `due
 
 
 Accepted source-equal cached responses now retain validated replay provenance for both preview and committed-ingest responses. The metadata check enforces cached-replay mode, liveInference false, bounded model/request metadata and matching canonical input SHA-256. Tests cover preservation, required no-live-inference wording, wrong-input rejection and false execution-mode rejection. This does not accept the rejected inferred-date output or enable River attempts by itself.
+
+
+Final product decision: no structural repair or medication-name case normalization ships. Independent offline review found that deleting one premature brace in the second actual demo output would recover the existing fields, but its name casing would still fail the unchanged strict gate. No repaired artifact was written or enabled by this lane. Product extraction remains deterministic and River attempts stay off. The frozen benchmark and original outputs remain unchanged.

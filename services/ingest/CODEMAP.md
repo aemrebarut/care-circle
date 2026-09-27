@@ -46,3 +46,6 @@ Optional replay metadata: accepted source-equal River responses retain validated
 
 
 Additive truth contract requires complete cached replay provenance for every method river result, restricted to the exact canonical demo input. Missing provenance or any other input falls back deterministically even if Extraction matches. No generic unproven live-River success is accepted.
+
+
+M2 checkpoint: 55 tests pass, including 9 HTTP tests. Canonical committed ingest and postrestart retry proofs are retained in evidence/. Live GET /health reported healthy deterministic mode with riverEnabled false before runtime's scheduled refresh. QA/UI released the shared state to runtime for an exact-state-preserving service refresh; ingest did not mutate or restart anything. Final lead decision: no structural repair or case normalization ships, no cached model success, no more model calls. Both rejected actual demo outputs and frozen benchmark remain untouched. Current guard stays strict and dormant with River off.
