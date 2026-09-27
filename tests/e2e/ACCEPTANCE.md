@@ -2,6 +2,8 @@
 
 Owner: cc-qa. All evidence refers to synthetic local data. This log separates source review, owner-reported tests, and independent live execution.
 
+Current disposition: **paused by Emre at 15:56 Pacific**. The final two-cycle gate was interrupted and is incomplete. No automatic continuation is authorized. See the pause receipt below; the earlier 32/32 single-cycle result and browser evidence remain valid historical observations.
+
 ## Initial implementation, 15:08 Pacific
 
 Committed runner: `778b1a0`. `node --check tests/e2e/acceptance.mjs` passes. First health receipt at 15:00 had no services available. The 15:04 receipt has four healthy endpoints: ingest, River, sponsors and clinic. Runtime reports six of seven ready, with real GBrain initialization and restart pending. No full acceptance or browser family demo is claimed yet.
@@ -64,3 +66,11 @@ The independent River artifact audit passed and is documented in `RIVER_AUDIT.md
 `UI-P2-PRINT-DOSES` is closed. The isolated Chromium reprint after `45a2295` is exactly one A4 page according to `pdfinfo`. The reviewer, QA root and lead visually inspected its rendered page: 20 mg daily from the September 27 visit and 10 mg daily from the September 24 pharmacy record each have an explicit source citation. All eight unique source references, the synthetic notice and the non-advice footer fit without clipping. This is actual browser PDF output, not an HTML modal claim.
 
 Receipt: `tests/e2e/results/ui/ui-final-reprint-receipt.json`. Corrected PDF: `tests/e2e/results/ui/ui-nephrology-brief-final.pdf`. Render: `tests/e2e/results/ui/ui-nephrology-brief-final-page-1.png`. The original failed print is preserved separately. Reprint performed no family or sponsor mutation and kept revision 10.
+
+## Pause wrap, 15:57 Pacific
+
+The authorized final `--full --cycles 2` run completed the first reset and all seven health checks. Its first temporal regression write was already accepted when Emre paused the track. QA stopped only its exact test driver, preventing further requests or a second cycle; no service or GBrain process was signaled, and no write was retried.
+
+A minimal health read at 2026-09-27T22:57:41.166Z returned HTTP 200, ready, revision 12 and 31 pages. The accepted backend operation therefore drained. This is a partial regression-fixture state, not a clean baseline or completed canonical demo. It was preserved without reset. The test process did not produce its normal completion receipt because it was terminated to prevent queued writes. The explicit partial receipt is [paused-two-cycle-receipt.json](evidence/paused-two-cycle-receipt.json).
+
+No final two-cycle pass is claimed. Both reviewers acknowledged pause with no operations in flight and no uncommitted authored evidence. Existing services remain running. All further tests, mutations, restarts, milestones and external calls wait for Emre's explicit resume. A devbrain map capture accepted before pause returned pending request `24b2d392-8a1c-4968-aad4-c87c0d54d92f`; it was not retried and its completion was not verified during wrap.

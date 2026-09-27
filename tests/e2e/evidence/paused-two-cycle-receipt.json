@@ -1,0 +1,41 @@
+{
+  "status": "interrupted-by-user-pause",
+  "command": "node tests/e2e/acceptance.mjs --full --cycles 2",
+  "qaImplementationCommit": "bba8408",
+  "transport": "web-proxy",
+  "cyclesRequested": 2,
+  "cyclesCompleted": 0,
+  "completedChecks": [
+    "cycle 1: Runtime startup and first reset",
+    "cycle 1: brain health",
+    "cycle 1: ingest health",
+    "cycle 1: brief health",
+    "cycle 1: river health",
+    "cycle 1: sponsors health",
+    "cycle 1: web health",
+    "cycle 1: clinic health"
+  ],
+  "pendingAtPause": "First temporal regression ingest was accepted by brain; its response and clinical assertions were not completed by the driver.",
+  "driverStopped": true,
+  "driverControl": "Exact owned acceptance process was suspended to prevent new requests, then terminated under the explicit pause-wrap directive.",
+  "serviceProcessesSignaled": false,
+  "mutationRetried": false,
+  "secondCycleStarted": false,
+  "acceptedOperationDrained": true,
+  "finalMinimalHealthObservation": {
+    "observedAt": "2026-09-27T22:57:41.166Z",
+    "httpStatus": 200,
+    "ok": true,
+    "service": "brain",
+    "status": "ready",
+    "storage": "gbrain",
+    "revision": 12,
+    "pages": 31,
+    "externalSubmissions": false
+  },
+  "stateDisposition": "Partial temporal regression fixture preserved. Not reset to baseline and not a completed canonical demo.",
+  "normalRunnerCompletionReceipt": false,
+  "finalTwoCycleGate": "incomplete",
+  "automaticContinuationAuthorized": false,
+  "resumeRequirement": "Explicit Emre resume"
+}
