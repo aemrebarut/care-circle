@@ -98,12 +98,16 @@ test('River failure, invalid provenance and deterministic mode explicitly fall b
   const hallucinated = structuredClone(good);
   hallucinated.method = 'river';
   hallucinated.extraction.medicationChanges[0].dose = '80 mg';
-  for (const response of [reply({ error: { code: 'unavailable' } }, 503), reply(hallucinated), reply(good)]) {
+  const inferredDate = structuredClone(good);
+  inferredDate.method = 'river';
+  inferredDate.extraction.followUps[0].dueDate = '2026-09-30';
+  for (const response of [reply({ error: { code: 'unavailable' } }, 503), reply(hallucinated), reply(inferredDate), reply(good)]) {
     await withServer({ useRiver: true, fetchImpl: async () => response }, async () => {
       const result = await post('/v1/extract', { note: DEMO_NOTE });
       assert.equal(result.status, 200);
       assert.equal(result.data.method, 'deterministic');
       assert.equal(result.data.extraction.medicationChanges[0].dose, '20 mg');
+      assert.equal(result.data.extraction.followUps[0].dueDate, undefined);
       assert.ok(result.data.warnings.some(value => value.includes('River was unavailable')));
     });
   }

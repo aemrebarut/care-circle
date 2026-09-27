@@ -35,3 +35,8 @@ Full repeated reset-to-demo evidence belongs to runtime and QA; this lane does n
 ## Limits
 
 This is a narrow deterministic parser. Passing tests do not establish general language understanding or clinical safety. Unsupported forms fail closed or remain only in the verbatim source with warnings. Optional local River output cannot expand the accepted facts: it must match the deterministic Extraction exactly. No remote inference or training was performed by this lane.
+
+
+## River demo source check
+
+The River lane retained a real trained canonical-demo prediction that added `dueDate: "2026-09-30"` despite no explicit ISO date in the note. Ingest's existing strict evidence match rejects that addition. A focused HTTP regression confirms deterministic fallback keeps dueDate absent. The raw response was not rewritten into a successful model extraction, and no validation rule was weakened. This finding concerns the separately sampled demo output, not a change to the frozen held-out evaluation.
