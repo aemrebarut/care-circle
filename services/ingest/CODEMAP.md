@@ -33,7 +33,7 @@ No credentials or external APIs. INGEST_USE_RIVER=1 only enables loopback River;
 
 ## Milestone evidence
 
-M1: 55 unit and HTTP tests pass. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime owns the live service; read-only smoke passed. Added JSON 408 for incomplete body uploads and split-qualifier guards for questions and follow-ups.
+M1: 53 unit and HTTP tests passed at the initial integration checkpoint. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime owns the live service; read-only smoke passed. Added JSON 408 for incomplete body uploads and split-qualifier guards for questions and follow-ups.
 
 
 M1 live integration: runtime baseline survived a real GBrain restart, then the reserved canonical ingest and identical retry passed at revision 2 with visit visits/ingest-70c7a8a9face7c4158c7be49. Exactly one source visit and one new 20 mg claim; original 10 mg retained. Original note, author, attendance, pending potassium wording, question and citation all verified over HTTP. No reset performed. Mutation window released to runtime and QA with source intact for independent audit. Latest implementation commits: ab0b640, 48fa839, 291d739; verification script a6fbaeb.
@@ -52,3 +52,6 @@ M2 checkpoint: 55 tests pass, including 9 HTTP tests. Canonical committed ingest
 
 
 M2 runtime refresh confirmation at 15:35 Pacific: current ingest PID 15708 loaded by runtime with River attempts disabled. Runtime reports all-service and owner smokes passed, preserving exact brain state revision 10 with 32 pages and 132 edges. Ingest remains read-only through sponsor and QA windows.
+
+
+M3 stabilization checkpoint: no new capabilities planned. The last full suite passed 55 tests, including 9 HTTP tests. Read-only live smoke passed again after the Git environment notice; no brain mutation was repeated. Current shipping mode remains deterministic with River attempts disabled, all raw model failures and benchmark outputs retained. Runtime owns the running app and all restarts. Pending track acceptance and public evidence are coordinated by runtime/QA/lead; only a reproducible release defect will reopen ingest implementation. Future repo commands use the Command Line Tools Git path per invocation, with no global Xcode changes.
