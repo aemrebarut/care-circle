@@ -6,6 +6,7 @@ Paused by Emre on September 27, 2026 at about 15:56 Pacific. The earlier instruc
 
 - Public repo: https://github.com/aemrebarut/care-circle, shared `main`.
 - App: http://127.0.0.1:4700. Runtime-owned services are being left running on 4700-4706.
+- Runtime's recorded pause PIDs are brain 4515, River 15568, ingest 15708, brief 56383, web 56463, and sponsors 64962 (serving both sponsor endpoints). These are historical receipts; runtime must verify ownership again before any future process action.
 - The final two-cycle HTTP acceptance run is **incomplete**. QA stopped and terminated its exact driver PID 70213. The first reset and health checks passed; one temporal regression mutation had already been accepted. It drained successfully: QA observed brain `200 ready` at 15:57:41, revision 12 with 31 pages; lead independently observed the same healthy state at 15:59. This is a partial acceptance fixture, not a clean demo seed. No second cycle or retry ran after the driver stopped.
 - The queued PATH-only brain restart is canceled while paused. No license agreement or global Xcode setting was changed.
 - No open Emre approval questions. Remote Memorable submission was explicitly declined and its production command refuses before credential access. No more River training or inference calls are planned.
@@ -23,6 +24,7 @@ Public evidence:
 
 - [One-page brief PDF](../tests/e2e/evidence/ui-nephrology-brief-final.pdf), [rendered page](../tests/e2e/evidence/ui-nephrology-brief-final-page-1.png), [family room](../tests/e2e/evidence/ui-final-desktop.png), [browser receipt](../tests/e2e/evidence/ui-acceptance-receipt.md), committed in `fd82772`.
 - [HTTP acceptance status](../tests/e2e/ACCEPTANCE.md) and [review findings](reviews/findings.md).
+- [Interrupted two-cycle receipt](../tests/e2e/evidence/paused-two-cycle-receipt.json) and [runtime persistence/test receipts](../packages/runtime/evidence/).
 - [River comparison](../services/river/results/comparison.json), [Memorable local bridge](../services/sponsors/procedure/assets/memorable-live-bridge-proof.json), and [UFO SDK local proof](../services/sponsors/extension/ufo-package/evidence/sdk-live.json).
 
 ## Resume checklist, in order
@@ -43,4 +45,6 @@ Public evidence:
 
 `cc-runtime` owns service PIDs and lifecycle; `cc-qa` owns the acceptance driver and evidence. Brain, ingest, brief, web, River and sponsors own their service directories; world owns its package; review owns docs/reviews; lead owns root/shared docs and contract. Parent lanes propagate pause to their native and Herdr subagents.
 
-Temporary runtime receipts, browser tooling, local databases, virtual environments and keys remain ignored and local. They are not public repository artifacts. Tracked source, documentation and selected synthetic evidence are being committed and pushed as the pause wrap-up.
+All lanes and their subagents acknowledged pause. No agent-owned work remains in flight. Tracked source, documentation and selected synthetic evidence are committed and pushed as the pause wrap-up. Temporary runtime receipts, browser tooling, local databases, virtual environments and keys remain ignored and local.
+
+Remaining verification limits: browser reload after an unknown save outcome is covered by in-memory tests, but was not exercised live. Screen-reader audio, physical mobile hardware, physical printing and a full fresh-machine installation were not tested. These limits are separate from the unfinished required two-cycle acceptance gate.
