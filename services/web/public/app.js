@@ -1,0 +1,266 @@
+const $ = (selector, root = document) => root.querySelector(selector);
+const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
+const state = { pages: [], graph: null, medications: [], contradictions: [], graphView: 'care', revision: null, preview: null, noteKey: null, noteSnapshot: null, procedureId: null, refreshing: false };
+const demoNote = 'Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.';
+const dateFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
+const longDateFormat = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
+const typeLabels = { person: 'Family member', patient: 'Family record', doctor: 'Care team', medication: 'Medication record', visit: 'Visit note', question: 'Open question', pharmacy: 'Pharmacy record', lab: 'Lab record', 'insurer-call': 'Insurance call' };
+
+function el(tag, attrs = {}, ...children) {
+  const node = document.createElement(tag);
+  for (const [key, value] of Object.entries(attrs)) {
+    if (value == null || value === false) continue;
+    if (key === 'class') node.className = value;
+    else if (key === 'text') node.textContent = value;
+    else if (key.startsWith('on') && typeof value === 'function') node.addEventListener(key.slice(2).toLowerCase(), value);
+    else if (key === 'disabled') node.disabled = Boolean(value);
+    else node.setAttribute(key, String(value));
+  }
+  for (const child of children.flat(Infinity)) if (child != null && typeof child !== 'boolean') node.append(child instanceof Node ? child : document.createTextNode(String(child)));
+  return node;
+}
+function replace(target, ...children) { const node = typeof target === 'string' ? $(target) : target; node.replaceChildren(...children.flat(Infinity).filter(Boolean)); }
+function textValue(value) { if (value == null) return ''; return typeof value === 'string' ? value : typeof value === 'object' ? JSON.stringify(value) : String(value); }
+function dateLabel(value, long = false) { if (!value) return ''; const parsed = new Date(value.length === 10 ? `${value}T12:00:00Z` : value); return Number.isNaN(parsed.getTime()) ? String(value) : (long ? longDateFormat : dateFormat).format(parsed); }
+function pageById(id) { return state.pages.find(page => page.id === id); }
+function titleFor(id) { return pageById(id)?.title || String(id || '').split('/').at(-1)?.replaceAll('-', ' ') || 'Source record'; }
+function errorMessage(error) { return error?.message || 'The service could not complete this request.'; }
+function setStatus(target, message, kind = '') { const node = $(target); node.textContent = message; node.className = `inline-status ${kind}`; }
+function busy(button, isBusy, label) { if (isBusy) { button.dataset.originalLabel = button.textContent; button.textContent = label; } else { button.textContent = button.dataset.originalLabel || button.textContent; } button.disabled = isBusy; button.setAttribute('aria-busy', String(isBusy)); }
+async function api(path, { method = 'GET', body, timeout = 135000 } = {}) {
+  let response;
+  try { response = await fetch(`/api/${path}`, { method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(timeout), cache: 'no-store' }); }
+  catch (error) { throw new Error(error.name === 'TimeoutError' ? 'This is taking longer than expected. The family brain may still be working. Refresh to check before trying again.' : 'The local service is not reachable. Please try again when it is available.'); }
+  let payload;
+  try { payload = await response.json(); } catch { throw new Error('The service returned an unreadable response. Nothing has been confirmed.'); }
+  if (!response.ok || payload?.error) throw new Error(payload?.error?.message || `The service returned HTTP ${response.status}.`);
+  return payload;
+}
+function errorBlock(error, retry) { return el('div', { class: 'error-state', role: 'alert' }, el('p', {}, errorMessage(error)), retry && el('button', { class: 'button button-outline small', type: 'button', onClick: retry }, 'Try again')); }
+function empty(message) { return el('p', { class: 'empty-state' }, message); }
+function sourceButton(citation, label) {
+  const source = typeof citation === 'string' ? { pageId: citation, title: titleFor(citation) } : citation || {};
+  if (!source.pageId) return el('span', { class: 'quiet' }, 'Source unavailable');
+  return el('button', { type: 'button', class: 'source-button', title: `Open source: ${source.title || titleFor(source.pageId)}`, onClick: () => openSource(source.pageId, source) }, label || source.title || titleFor(source.pageId));
+}
+function citationChips(citations = []) { return el('div', { class: 'source-chips' }, citations.map(citation => sourceButton(citation))); }
+function evidenceDetails(evidence, title = 'View local evidence') { return el('details', {}, el('summary', {}, title), el('pre', {}, JSON.stringify(evidence, null, 2))); }
+
+async function loadFamily() {
+  try {
+    const data = await api('brain/state');
+    if (!Array.isArray(data.pages) || !Array.isArray(data.graph?.nodes) || !Array.isArray(data.graph?.edges)) throw new Error('The family record has not returned its pages and graph yet.');
+    state.pages = data.pages; state.graph = data.graph; state.revision = data.revision;
+    const patient = pageById(data.patientId) || data.pages.find(page => page.type === 'patient');
+    const firstName = patient?.title?.split(' ')[0] || 'Rose';
+    $('#circle-heading').textContent = `${firstName}'s circle`;
+    const members = data.pages.filter(page => page.type === 'person' && page.id !== data.patientId);
+    replace('#family-avatars', members.slice(0, 3).map(member => el('span', { class: 'avatar', title: member.title }, member.title?.split(' ').map(name => name[0]).slice(0, 2).join(''))));
+    $('#family-summary').textContent = members.length ? `${members.map(member => member.title?.split(' ')[0]).join(', ')}. One circle of care.` : 'A shared place for the family record.';
+    const status = $('#connection-status'); status.textContent = 'Connected to the family brain'; status.className = 'connection-status online';
+    const author = $('#note-author'); const previous = author.value;
+    replace(author, members.length ? members.map(member => el('option', { value: member.id }, member.title)) : [el('option', { value: '' }, 'No family members available')]);
+    if (members.some(member => member.id === previous)) author.value = previous;
+    else if (members.some(member => member.id === 'people/ana-alvarez')) author.value = 'people/ana-alvarez';
+    author.disabled = !members.length;
+    const nephrologist = pageById('doctors/nephrologist');
+    $('#next-visit-detail').textContent = nephrologist ? `${nephrologist.fields?.nextVisitDate ? dateLabel(nephrologist.fields.nextVisitDate, true) : 'Next nephrology visit'} with ${nephrologist.title}. Gather what changed since the last visit.` : 'Gather the recorded changes and open questions for the next nephrology appointment.';
+    renderGraph();
+    return true;
+  } catch (error) {
+    replace('#graph', errorBlock(error, refreshData));
+    $('#graph-count').textContent = 'Record unavailable'; $('#graph-summary').textContent = '';
+    $('#connection-status').textContent = 'Family brain unavailable'; $('#connection-status').className = 'connection-status offline';
+    if (!state.pages.length) { $('#family-summary').textContent = 'Waiting for the family record.'; $('#next-visit-detail').textContent = 'Appointment details will appear when the family brain is connected.'; }
+    return false;
+  }
+}
+async function loadMedications() {
+  try { const data = await api('brain/medications'); if (!Array.isArray(data.medications)) throw new Error('Medication records are not available yet.'); state.medications = data.medications; renderMedications(); return true; }
+  catch (error) { replace('#medication-list', errorBlock(error, loadMedications)); return false; }
+}
+async function loadAlerts() {
+  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; renderAlerts(); if (state.medications.length) renderMedications(); return true; }
+  catch (error) { replace('#alerts', errorBlock(error, loadAlerts)); return false; }
+}
+async function refreshData() { if (state.refreshing) return false; state.refreshing = true; const results = await Promise.allSettled([loadFamily(), loadMedications(), loadAlerts()]); state.refreshing = false; return results.every(result => result.status === 'fulfilled' && result.value); }
+
+function graphLabel(node) {
+  if (node.type === 'person' || node.type === 'patient') return node.title?.split(' ')[0] || node.title;
+  if (node.type === 'doctor') return pageById(node.id)?.fields?.specialty || node.title;
+  return node.title?.length > 23 ? `${node.title.slice(0, 21)}…` : node.title;
+}
+function renderGraph() {
+  if (!state.graph) return;
+  const graph = state.graph;
+  const patient = graph.nodes.find(node => node.type === 'patient') || graph.nodes.find(node => node.id === 'people/rose-alvarez');
+  const care = new Set(['patient', 'person', 'doctor', 'medication']);
+  const visible = graph.nodes.filter(node => state.graphView === 'all' || care.has(node.type));
+  const others = visible.filter(node => node.id !== patient?.id).sort((a, b) => ['doctor','person','medication'].indexOf(a.type) - ['doctor','person','medication'].indexOf(b.type));
+  const positions = new Map();
+  if (patient) positions.set(patient.id, { x: 50, y: 47 });
+  const count = others.length;
+  others.forEach((node, index) => {
+    const all = state.graphView === 'all';
+    const inner = all && index >= Math.ceil(count * .64);
+    const ringIndex = inner ? index - Math.ceil(count * .64) : index;
+    const ringCount = inner ? count - Math.ceil(count * .64) : all ? Math.ceil(count * .64) : count;
+    const angle = (ringIndex / Math.max(1, ringCount)) * Math.PI * 2 - Math.PI / 2 + (inner ? .2 : 0);
+    positions.set(node.id, { x: 50 + Math.cos(angle) * (inner ? 26 : 42), y: 47 + Math.sin(angle) * (inner ? 25 : 37) });
+  });
+  const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg'); svg.setAttribute('viewBox', '0 0 100 100'); svg.setAttribute('preserveAspectRatio', 'none'); svg.setAttribute('aria-hidden', 'true');
+  let visibleEdges = 0;
+  for (const edge of graph.edges) {
+    const source = positions.get(edge.source), target = positions.get(edge.target);
+    if (!source || !target) continue;
+    const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    for (const [key, value] of Object.entries({x1:source.x,y1:source.y,x2:target.x,y2:target.y,class:'graph-line','vector-effect':'non-scaling-stroke'})) line.setAttribute(key,String(value));
+    svg.append(line); visibleEdges++;
+  }
+  const nodes = visible.map(node => {
+    const position = positions.get(node.id); if (!position) return null;
+    const initials = node.type === 'patient' ? node.title?.split(' ').map(part => part[0]).slice(0,2).join('') : node.type === 'person' ? node.title?.[0] : node.type === 'doctor' ? '+' : node.type === 'medication' ? '•' : '↗';
+    const button = el('button', {type:'button',class:`graph-node ${node.type}`,title:`${node.title}: ${typeLabels[node.type] || 'Source record'}`,'aria-label':`Open ${node.title}, ${typeLabels[node.type] || 'source record'}`,onClick:()=>openSource(node.id)},el('span',{class:`node-orb ${node.type}`},initials),el('span',{},graphLabel(node)),node.type === 'patient' && el('small',{},'At the heart of it all'));
+    button.style.left = `${position.x}%`; button.style.top = `${position.y}%`; return button;
+  });
+  $('#graph').className = `graph-stage ${state.graphView === 'all' ? 'all-records' : ''}`;
+  replace('#graph', svg, nodes);
+  $('#graph-count').textContent = `${graph.nodes.length} connected records`;
+  $('#graph-summary').textContent = `${visible.length} pages · ${visibleEdges} visible links`;
+  replace('#graph-list', graph.nodes.map(node => sourceButton(node.id, node.title)));
+}
+function renderMedications() {
+  if (!state.medications.length) { replace('#medication-list', empty('No medication records have been returned by the family brain.')); return; }
+  const table = el('table',{class:'medication-table'},el('caption',{class:'skip-link'},'Recorded medication doses and their sources'),el('thead',{},el('tr',{},['Medication','Recorded dose','Source'].map(label=>el('th',{scope:'col'},label)))));
+  table.append(el('tbody',{},state.medications.map(medication=>{
+    const conflict = state.contradictions.find(item=>item.medicationId === medication.id);
+    const citations = medication.citations || [];
+    return el('tr',{},el('td',{},el('span',{class:'medication-name'},medication.name),el('span',{class:'medication-meta'},medication.status === 'active' ? 'Recorded as active' : medication.status || 'Recorded medication'),conflict && el('span',{class:'conflict-tag'},'Sources disagree')),el('td',{},el('span',{class:'dose'},medication.dose || 'Not recorded'),el('span',{class:'medication-meta'},medication.frequency || 'Frequency not recorded')),el('td',{},citations.length ? citationChips(citations) : el('span',{class:'quiet'},'Citation not returned')));
+  })));
+  replace('#medication-list', table);
+}
+function renderAlerts() {
+  if (!state.contradictions.length) { replace('#alerts', el('div',{class:'status-good'},el('span',{'aria-hidden':'true'},'✓'),el('p',{},'No unresolved medication source differences were returned. Every new note is checked against the record.'))); return; }
+  replace('#alerts', state.contradictions.map(item=>el('article',{class:'alert-item'},el('h3',{},item.title || 'Medication sources disagree'),el('p',{},item.description || 'These source records show different doses. The difference remains unresolved.'),el('p',{class:'tiny'},'A newer visit does not resolve a different pharmacy record.'),citationChips((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))));
+}
+
+let sourceRequest = 0;
+async function openSource(id, citation) {
+  const request = ++sourceRequest;
+  const dialog = $('#source-drawer');
+  replace('#source-content', el('h2',{id:'source-title'},citation?.title || titleFor(id)),el('div',{class:'loading-state'},'Opening the original record...'));
+  if (!dialog.open) dialog.showModal();
+  try {
+    const data = await api(`brain/pages/${encodeURIComponent(id)}`);
+    if (request !== sourceRequest) return;
+    const page = data.page; if (!page) throw new Error('This source record was not returned.');
+    const sourceDate = citation?.date || page.fields?.date;
+    const attendees = citation?.attendeeIds || page.fields?.attendeeIds || [];
+    const fields = Object.entries(page.fields || {}).filter(([key,value])=>!['claims','summary','medicationChanges','followUps'].includes(key) && ['string','number','boolean'].includes(typeof value));
+    replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},String(value))])),el('h3',{},'Original source'),el('div',{class:'source-body'},page.body || 'This source has no narrative text.'),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
+  } catch(error) { if (request === sourceRequest) replace('#source-content',el('h2',{id:'source-title'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
+}
+function invalidateNote() { state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
+function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').value || undefined,date:'2026-09-27'}; }
+function renderPreview(result) {
+  const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. Nothing has been saved.');
+  const warnings = Array.isArray(result.warnings) ? result.warnings : [];
+  const preview = $('#note-preview'); preview.hidden = false;
+  const list = (items) => el('ul',{},items.map(item=>el('li',{},item)));
+  replace(preview,el('h3',{},'A moment to review'),el('span',{class:`pill ${result.method === 'river' ? '' : 'warning'}`},result.method === 'river' ? 'River extraction' : 'Deterministic extraction'),el('p',{},extraction.visit.summary || 'Visit extracted from your note.'),warnings.length && el('div',{class:'warning-box'},el('strong',{},'Please check these limitations.'),list(warnings.map(textValue))),el('h4',{},'Medication source claims'),extraction.medicationChanges?.length ? list(extraction.medicationChanges.map(change=>`${change.name || titleFor(change.medicationId)}: ${change.dose}, ${change.frequency || 'frequency not specified'}`)) : el('p',{},'No medication change extracted.'),extraction.questions?.length && [el('h4',{},'Questions to carry forward'),list(extraction.questions.map(question=>question.text))],extraction.followUps?.length && [el('h4',{},'Follow-ups in the note'),list(extraction.followUps.map(item=>item.text))],el('p',{class:'tiny'},'This adds a source claim. It does not resolve differing pharmacy records or recommend a treatment.'),el('button',{type:'button',class:'button button-primary full-width',id:'save-note',onClick:saveNote},'Save to the family brain'));
+}
+async function reviewNote(event) {
+  event.preventDefault(); const payload = notePayload(); if (!payload.note) return;
+  const button = $('#review-note'); busy(button,true,'Reading your note...'); $('#note-preview').hidden = true; setStatus('#note-status','Extracting details for your review. Nothing has been saved yet.');
+  try { const result = await api('ingest/extract',{method:'POST',body:payload}); if (JSON.stringify(payload) !== JSON.stringify(notePayload())) { setStatus('#note-status','The note changed while it was being read. Review it again to see the latest details.'); return; } state.preview = result; state.noteSnapshot = payload; state.noteKey ||= crypto.randomUUID(); renderPreview(result); setStatus('#note-status','Review the extracted details below. The family record is unchanged.'); }
+  catch(error) { setStatus('#note-status',errorMessage(error),'error'); }
+  finally { busy(button,false); }
+}
+async function saveNote() {
+  if (!state.preview || !state.noteSnapshot || JSON.stringify(state.noteSnapshot) !== JSON.stringify(notePayload())) { invalidateNote(); setStatus('#note-status','The note changed. Review it again before saving.','error'); return; }
+  const button = $('#save-note'); busy(button,true,'Saving the source and its links...'); $('#review-note').disabled = true; $('#note-input').disabled = true; $('#note-author').disabled = true; $('#sample-note').disabled = true; setStatus('#note-status','Saving to the family brain. This may take a moment.');
+  try {
+    const result = await api('ingest/ingest',{method:'POST',body:{...state.noteSnapshot,idempotencyKey:state.noteKey}});
+    if (!result.applied?.ok || !result.applied?.visitId) throw new Error('The service has not confirmed this note was saved. Check the record before retrying.');
+    state.preview = null; $('#note-preview').hidden = true;
+    setStatus('#note-status','Note saved. Refreshing the connected family record...','success');
+    const refreshed = await refreshData();
+    replace('#note-status', el('span',{},refreshed ? `Saved to the family brain. ${result.applied.changedPageIds?.length || 'Connected'} records updated. ` : 'The note was saved, but some views could not refresh. '),sourceButton(result.applied.visitId,'Open saved visit'));
+    $('#note-status').className = `inline-status ${refreshed ? 'success' : 'error'}`;
+    $('#medication-answer').hidden = true;
+  } catch(error) { setStatus('#note-status',`${errorMessage(error)} Your note is still here. Retrying the same reviewed note uses the same save key.`,'error'); busy(button,false); }
+  finally { $('#review-note').disabled = false; $('#note-input').disabled = false; $('#note-author').disabled = !state.pages.some(page=>page.type === 'person'); $('#sample-note').disabled = false; }
+}
+
+async function askMedications() {
+  const button = $('#ask-medications'); busy(button,true,'Reading the cited answer...'); const box = $('#medication-answer'); box.hidden = false; replace(box,el('p',{},'Asking the family record...'));
+  try { const result = await api('brief/answer/medications'); if (!result.answer) throw new Error('No grounded answer was returned.'); replace(box,el('p',{},result.answer),result.citations?.length && citationChips(result.citations)); }
+  catch(error) { replace(box,errorBlock(error,askMedications)); }
+  finally { busy(button,false); }
+}
+async function generateBrief() {
+  const button = $('#generate-brief'); busy(button,true,'Gathering connected records...'); setStatus('#brief-status','Following the source graph since the last nephrology visit.');
+  try { const brief = await api('brief/previsit',{method:'POST',body:{doctorId:'doctors/nephrologist'}}); if (!brief.title || !Array.isArray(brief.medicationChanges)) throw new Error('The service did not return a complete visit brief.'); renderBrief(brief); $('#brief-dialog').showModal(); setStatus('#brief-status','Brief ready, with linked sources.','success'); }
+  catch(error) { setStatus('#brief-status',errorMessage(error),'error'); }
+  finally { busy(button,false); }
+}
+function renderBrief(brief) {
+  const citations = new Map();
+  const remember = items => { for (const citation of items || []) if (citation?.pageId) citations.set(citation.pageId,citation); return citationChips(items); };
+  function section(title, items, emptyText) { return el('section',{class:'brief-section'},el('h3',{},title),items?.length ? items.map(item=>el('div',{class:'brief-item'},el('p',{},item.text),remember(item.citations || []))) : empty(emptyText)); }
+  const content = [el('div',{class:'brief-heading'},el('div',{},el('p',{class:'eyebrow'},'CARE CIRCLE · SYNTHETIC FAMILY RECORD'),el('h2',{id:'brief-title'},brief.title),el('p',{class:'brief-subtitle'},`For ${titleFor(brief.doctorId)} · Changes since ${dateLabel(brief.since) || 'the last recorded visit'}`),el('p',{class:'brief-subtitle'},`Generated ${dateLabel(brief.generatedAt, true)} from the family source graph.`)),el('span',{class:'brand-mark','aria-hidden':'true'},el('i'),el('i'),el('i'))),section('Medication changes in the record',brief.medicationChanges,'No medication changes were returned for this period.'),section('Other visits since the last appointment',brief.otherVisits,'No other visits were returned for this period.'),section('Questions to bring',brief.openQuestions,'No open questions were returned.'),el('section',{class:'brief-section'},el('h3',{},'Unresolved differences between sources'),brief.contradictions?.length ? brief.contradictions.map(item=>el('div',{class:'brief-item brief-conflict'},el('p',{},el('strong',{},item.title),'. ',item.description || 'Different source claims remain unresolved.'),remember((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))) : empty('No unresolved source differences were returned.'))];
+  content.push(el('div',{class:'print-sources'},el('strong',{},'Source references'),[...citations.values()].map(citation=>el('p',{},`${citation.title || titleFor(citation.pageId)}${citation.date ? ` (${dateLabel(citation.date)})` : ''} [${citation.pageId}]`))),el('p',{class:'brief-footer'},'All data is synthetic. This brief organizes recorded information and questions. A newer visit does not reconcile a different pharmacy claim. Confirm the record with the care team. Not medical advice.'));
+  if (brief.traversal) content.push(el('details',{class:'brief-traversal'},el('summary',{},'How the source graph was followed'),el('pre',{},JSON.stringify(brief.traversal,null,2))));
+  replace('#brief-content',content);
+}
+
+function modeLabel(mode) { return ({'local-simulation':'Local simulation','local-http-fetch':'Local HTTP lookup','deterministic':'Deterministic fallback','river':'River connected','not-connected':'Not connected','unavailable':'Unavailable'})[mode] || String(mode || 'Not connected').replaceAll('-',' '); }
+function setMode(selector, mode) { $(selector).textContent = modeLabel(mode); $(selector).className = `pill ${['river','live','connected'].includes(mode) ? '' : 'warning'}`; }
+function limitationsText(value) { return Array.isArray(value) ? value.map(textValue).join(' ') : textValue(value); }
+async function loadSponsorStatus() {
+  const results = await Promise.allSettled([api('river/status',{timeout:20000}),api('sponsors/status',{timeout:20000})]);
+  const river = results[0];
+  if (river.status === 'fulfilled') {
+    const result = river.value; setMode('#river-mode',result.mode);
+    replace('#river-details',el('p',{},result.trainingStatus ? `Training: ${textValue(result.trainingStatus)}` : 'Training status not reported.'),el('p',{},limitationsText(result.limitations)),result.metrics ? evidenceDetails(result.metrics,'View measured evaluation results') : el('p',{},'No measured model comparison has been reported.'));
+  } else { setMode('#river-mode','unavailable'); replace('#river-details',errorBlock(river.reason,loadSponsorStatus)); }
+  const sponsors = results[1];
+  if (sponsors.status === 'fulfilled') {
+    const result = sponsors.value;
+    setMode('#procedure-mode',result.memorable?.mode); setMode('#clinic-mode',result.ufo?.mode);
+    replace('#procedure-details',el('p',{},result.memorable?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.memorable?.limitations)));
+    replace('#clinic-details',el('p',{},result.ufo?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.ufo?.limitations)));
+  } else { setMode('#procedure-mode','unavailable'); setMode('#clinic-mode','unavailable'); replace('#procedure-details',errorBlock(sponsors.reason,loadSponsorStatus)); replace('#clinic-details',errorBlock(sponsors.reason,loadSponsorStatus)); }
+}
+async function procedureAction(action) {
+  const button = $(`#${action}-procedure`); busy(button,true,action === 'capture' ? 'Capturing local steps...' : 'Replaying local steps...'); $('#capture-procedure').disabled = true; $('#replay-procedure').disabled = true;
+  replace('#procedure-details',el('p',{},'Working through the synthetic local procedure...'));
+  try { const result = await api(`sponsors/procedure/${action}`,{method:'POST',body:action === 'capture' ? {actorId:'people/ana-alvarez'} : {actorId:'people/ben-alvarez',...(state.procedureId ? {procedureId:state.procedureId} : {})}}); if (!result.procedureId || !Array.isArray(result.steps)) throw new Error('No completed procedure evidence was returned.'); state.procedureId = result.procedureId; setMode('#procedure-mode',result.mode); replace('#procedure-details',el('p',{},el('strong',{},action === 'capture' ? 'Local procedure captured with Ana.' : 'Local procedure replay returned for Ben.')),el('p',{},'Synthetic workflow. This is not evidence of Memorable learning or external execution.'),el('ol',{},result.steps.map(step=>el('li',{},typeof step === 'string' ? step : `${step.tool || step.title || `Step ${step.index || ''}`}${step.status ? `: ${step.status}` : ''}`))),result.result && el('p',{},textValue(result.result)),evidenceDetails({procedureId:result.procedureId,actorId:result.actorId,mode:result.mode,steps:result.steps,evidence:result.evidence})); }
+  catch(error) { replace('#procedure-details',errorBlock(error)); }
+  finally { busy(button,false); $('#capture-procedure').disabled = false; $('#replay-procedure').disabled = false; }
+}
+async function fetchClinic() {
+  const button = $('#fetch-clinic'); busy(button,true,'Reading the local clinic site...'); replace('#clinic-details',el('p',{},'Fetching the fictional clinic source...'));
+  try {
+    const result = await api('sponsors/clinic/fetch',{method:'POST',body:{}}); if (!result.clinic?.name) throw new Error('No clinic details were returned.'); setMode('#clinic-mode',result.mode);
+    let sourceUrl; try { const parsed = new URL(result.sourceUrl); if (parsed.protocol === 'http:' && parsed.hostname === '127.0.0.1' && parsed.port === '4706') sourceUrl = parsed.href; } catch {}
+    const clinic = result.clinic;
+    replace('#clinic-details',el('p',{},el('strong',{},clinic.name)),el('p',{},`Hours: ${textValue(clinic.hours)}`),el('p',{},`Phone: ${textValue(clinic.phone)}`),clinic.address && el('p',{},textValue(clinic.address)),el('p',{},'Fictional clinic. Local lookup, not an official UFO extension run.'),sourceUrl && el('a',{href:sourceUrl,target:'_blank',rel:'noopener noreferrer'},'Open the synthetic source ↗'),evidenceDetails(result.evidence || {sourceUrl:result.sourceUrl,fetchedAt:result.fetchedAt,mode:result.mode}));
+  } catch(error) { replace('#clinic-details',errorBlock(error)); }
+  finally { busy(button,false); }
+}
+
+$$('[data-graph-view]').forEach(button=>button.addEventListener('click',()=>{state.graphView=button.dataset.graphView;$$('[data-graph-view]').forEach(item=>{const selected=item===button;item.classList.toggle('selected',selected);item.setAttribute('aria-pressed',String(selected));});renderGraph();}));
+$$('[data-close]').forEach(button=>button.addEventListener('click',()=>document.getElementById(button.dataset.close).close()));
+$$('dialog').forEach(dialog=>dialog.addEventListener('click',event=>{if(event.target === dialog){const rect=dialog.getBoundingClientRect();if(event.clientX<rect.left || event.clientX>rect.right || event.clientY<rect.top || event.clientY>rect.bottom) dialog.close();}}));
+$('#note-form').addEventListener('submit',reviewNote);
+$('#note-input').addEventListener('input',invalidateNote);
+$('#note-author').addEventListener('change',invalidateNote);
+$('#sample-note').addEventListener('click',()=>{invalidateNote();$('#note-input').value=demoNote;$('#note-input').focus();});
+$('#ask-medications').addEventListener('click',askMedications);
+$('#generate-brief').addEventListener('click',generateBrief);
+$('#print-brief').addEventListener('click',()=>window.print());
+$('#capture-procedure').addEventListener('click',()=>procedureAction('capture'));
+$('#replay-procedure').addEventListener('click',()=>procedureAction('replay'));
+$('#fetch-clinic').addEventListener('click',fetchClinic);
+await Promise.allSettled([refreshData(),loadSponsorStatus()]);

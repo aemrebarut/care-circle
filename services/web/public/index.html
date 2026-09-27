@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#274f43">
+  <meta name="description" content="A shared, source-connected family care record. Synthetic demonstration only.">
+  <title>Care Circle | Rose's family room</title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to family room</a>
+  <header class="site-header">
+    <a class="brand" href="#main" aria-label="Care Circle home"><span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>care circle<span class="brand-period">.</span></a>
+    <nav aria-label="Main navigation"><a class="active" href="#family-room">Family room</a><a href="#medications">Medications</a><a href="#helpers">Little helpers</a></nav>
+    <span class="demo-badge"><span></span>Synthetic family demo</span>
+  </header>
+  <main id="main">
+    <section class="hero" id="family-room" aria-labelledby="hero-title">
+      <div><p class="eyebrow">A SHARED BRAIN. A CLOSER FAMILY.</p><h1 id="hero-title">A little more clarity.<br><em>A little less to carry.</em></h1><p class="hero-description">Appointments, notes, and the details between them.<br>One place for everyone caring for Rose.</p></div>
+      <div class="family-card"><div class="family-avatars" id="family-avatars" aria-hidden="true"><span class="avatar-placeholder"></span><span class="avatar-placeholder"></span><span class="avatar-placeholder"></span></div><p id="family-summary">Loading the family circle...</p><span class="connection-status" id="connection-status" role="status">Connecting to the family brain</span></div>
+    </section>
+    <div class="dashboard-grid">
+      <section class="panel circle-panel" aria-labelledby="circle-heading">
+        <div class="panel-heading"><div><p class="eyebrow">CONNECTED, NOT SCATTERED</p><h2 id="circle-heading">Rose's circle</h2></div><span class="pill" id="graph-count">Loading records</span></div>
+        <div class="graph-toolbar"><div class="segmented" role="group" aria-label="Graph view"><button type="button" class="selected" data-graph-view="care" aria-pressed="true">Care connections</button><button type="button" data-graph-view="all" aria-pressed="false">All records</button></div><span class="quiet">Select a record to see its source</span></div>
+        <div id="graph" class="graph-stage" aria-live="polite"><div class="loading-state">Gathering the connections...</div></div>
+        <div class="graph-footer"><div class="legend"><span><i class="legend-family"></i>Family</span><span><i class="legend-doctor"></i>Care team</span><span><i class="legend-medication"></i>Medications</span><span><i class="legend-record"></i>Records</span></div><span id="graph-summary" class="quiet"></span></div>
+        <details class="graph-record-list"><summary>Browse records as a list</summary><div id="graph-list"></div></details>
+      </section>
+      <aside class="right-stack">
+        <section class="visit-card" aria-labelledby="visit-heading"><div class="visit-icon" aria-hidden="true">✳</div><p class="eyebrow">BEFORE THE NEXT APPOINTMENT</p><h2 id="visit-heading">Bring the whole<br>picture with you.</h2><p id="next-visit-detail">Loading the next nephrology visit...</p><button class="button button-dark" type="button" id="generate-brief">Prepare a visit brief <span aria-hidden="true">↗</span></button><p class="tiny">Connected notes. Open questions. Sources included.</p><div id="brief-status" class="inline-status" role="status"></div></section>
+        <section class="panel attention-panel" aria-labelledby="attention-heading"><div class="panel-heading compact"><h2 id="attention-heading">Worth a closer look</h2><span class="attention-mark" aria-hidden="true">!</span></div><div id="alerts" aria-live="polite"><p class="quiet">Checking for differing source records...</p></div></section>
+      </aside>
+      <section class="panel medication-panel" id="medications" aria-labelledby="medication-heading"><div class="panel-heading"><div><p class="eyebrow">EVERY LINE HAS A SOURCE</p><h2 id="medication-heading">Recorded medications</h2></div><button class="text-button" type="button" id="ask-medications">What is Mom taking now? <span aria-hidden="true">↗</span></button></div><p class="section-description">What the family record says, with the visit or note behind it.</p><div id="medication-answer" class="answer-box" hidden></div><div id="medication-list" aria-live="polite"><div class="loading-state">Reading medication sources...</div></div><p class="card-footnote">Recorded information only. Different sources may disagree. Confirm any changes with the care team.</p></section>
+      <section class="panel note-panel" aria-labelledby="note-heading"><div class="panel-heading"><div><p class="eyebrow">THE DETAILS ARE WORTH KEEPING</p><h2 id="note-heading">Add a moment of care</h2></div><span class="note-decoration" aria-hidden="true">✎</span></div><p class="section-description">A visit, a quick update, or something to ask next time. Start with the words you have.</p><form id="note-form"><label for="note-author">Shared by</label><select id="note-author" name="authorId" disabled><option>Loading family members...</option></select><div class="label-row"><label for="note-input">After-visit note</label><button class="text-button small" type="button" id="sample-note">Try the sample note</button></div><textarea id="note-input" name="note" rows="6" maxlength="12000" placeholder="What happened at the appointment?" required></textarea><p class="tiny input-hint">Synthetic demo notes only. No real patient information.</p><button class="button button-primary full-width" id="review-note" type="submit">Review note <span aria-hidden="true">→</span></button></form><div id="note-status" class="inline-status" role="status"></div><section id="note-preview" class="note-preview" aria-label="Review extracted note" hidden></section></section>
+    </div>
+    <section class="helpers-section" id="helpers" aria-labelledby="helpers-heading"><div class="section-heading"><div><p class="eyebrow">MORE TIME FOR WHAT MATTERS</p><h2 id="helpers-heading">A few little helpers.</h2></div><p>Local tools, with clear labels<br>about what is really connected.</p></div><div class="helpers-grid">
+      <article class="helper-card"><div class="helper-top"><span class="helper-symbol" aria-hidden="true">Aa</span><span class="pill" id="river-mode">Checking status</span></div><h3>From messy note to memory</h3><p>Structured visit details, medication records, and questions from the words a sibling shares.</p><p class="sponsor-line">River extraction</p><div id="river-details" class="helper-detail" aria-live="polite">Loading measured results and integration status...</div></article>
+      <article class="helper-card"><div class="helper-top"><span class="helper-symbol" aria-hidden="true">↻</span><span class="pill" id="procedure-mode">Checking status</span></div><h3>Less retelling. More helping.</h3><p>Capture a synthetic insurance call checklist, then let another sibling pick up the procedure.</p><p class="sponsor-line">Memorable procedure workflow</p><div class="helper-actions"><button class="button button-outline small" id="capture-procedure" type="button">Capture with Ana</button><button class="button button-outline small" id="replay-procedure" type="button">Replay with Ben</button></div><div id="procedure-details" class="helper-detail" aria-live="polite">Loading integration status...</div></article>
+      <article class="helper-card"><div class="helper-top"><span class="helper-symbol" aria-hidden="true">⌕</span><span class="pill" id="clinic-mode">Checking status</span></div><h3>The practical little details</h3><p>Find clinic hours and contact details on our local fictional clinic website, with the source attached.</p><p class="sponsor-line">UFO clinic lookup workflow</p><button class="button button-outline small" id="fetch-clinic" type="button">Look up the demo clinic <span aria-hidden="true">↗</span></button><div id="clinic-details" class="helper-detail" aria-live="polite">Loading integration status...</div></article>
+    </div></section>
+    <section class="care-note"><span aria-hidden="true">✳</span><p>Care Circle holds the information.<br><strong>Your family holds the care.</strong></p><p class="care-note-explainer">Built around a shared GBrain record.<br>All people, providers, and records here are synthetic.</p></section>
+  </main>
+  <footer><span class="footer-brand">care circle.</span><p>Information organized. Sources preserved.</p><p>Not medical advice</p></footer>
+  <dialog id="source-drawer" class="source-drawer" aria-labelledby="source-title"><div class="drawer-top"><span class="eyebrow">THE SOURCE BEHIND THE RECORD</span><button class="icon-button" data-close="source-drawer" type="button" aria-label="Close source">×</button></div><div id="source-content"></div></dialog>
+  <dialog id="brief-dialog" class="brief-dialog" aria-labelledby="brief-title"><div class="brief-controls"><span class="eyebrow">ONE PAGE. A MORE CONNECTED VISIT.</span><div><button class="button button-outline small" id="print-brief" type="button">Print brief</button><button class="icon-button" data-close="brief-dialog" type="button" aria-label="Close visit brief">×</button></div></div><div id="brief-content"></div></dialog>
+</body>
+</html>
