@@ -64,3 +64,14 @@
 - Public repository setup and Astra xhigh lane launch are in progress.
 - Test now: read docs/CONTRACT.md and docs/PLAN.md. App is not running yet.
 - Next update by 15:13 Pacific; milestones remain 15:15, 15:35, 15:55, 16:15, 16:35.
+
+## Two-minute demo script
+
+Before presenting, after the shared test window is released: run `scripts/smoke`, then `scripts/demo-reset`, and reload http://127.0.0.1:4700. Keep the browser at desktop width. All data is fictional.
+
+1. **0:00-0:15, the family.** Show Rose's circle. "Three siblings, four specialists, and one shared family brain. Every record lives in GBrain and links back to its source. This organizes information; it is not medical advice."
+2. **0:15-0:45, the new note.** Choose **Try the sample note**, **Review note**, then **Save to the family brain**. "Ana brought this cardiology note home. The conservative deterministic extractor shows what it will save, including the potassium question."
+3. **0:45-1:00, the disagreement.** Choose **What is Mom taking now?** and open the lisinopril sources. "The visit records 20 mg daily; the pharmacy still records 10 mg daily. We preserve both claims and who was there. We do not choose a dose."
+4. **1:00-1:25, the hero.** Choose **Prepare a visit brief**. Show changes since September 15, other visits, questions, and both conflict sources. Choose **Print brief**. "The nephrologist gets one cited page with what changed elsewhere." Close the print dialog to continue.
+5. **1:25-1:45, sharing the work.** In **A few little helpers**, choose **Capture with Ana**, **Replay with Ben**, then **Look up the demo clinic**. "This replay is simulated. Separately, the official Memorable CLI selected the captured procedure locally, and our UFO SDK extension fetched this fictional clinic locally. No insurer was contacted."
+6. **1:45-2:00, the measured model.** Show River results. "We trained a real River model: 71 of 72 exact held-out tasks versus zero for the base under this strict prompt. The base hit its token cap on 54 notes. Both demo model attempts failed validation, so the app keeps its deterministic path."
