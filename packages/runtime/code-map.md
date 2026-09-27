@@ -11,7 +11,7 @@ Manage the local demo with exact process ownership, bounded health checks, read-
 
 ## Run
 
-`scripts/setup` checks prerequisites and installs the public secret hook for a fresh clone. Then `scripts/start`, `scripts/smoke`, `scripts/demo-reset`, `scripts/stop`. Select names with `scripts/start brain`. Tests: `npm test --prefix packages/runtime`. Startup allows 180 seconds per service by default for GBrain CLI latency.
+`scripts/setup` checks Node 22+, Bun 1.3.11+, Python and POSIX ps, then installs the public secret hook for a fresh clone. Bun version probing is read-only, bounded to five seconds and 1 KiB output. Setup installs no packages and initializes no storage. Then `scripts/start`, `scripts/smoke`, `scripts/demo-reset`, `scripts/stop`. Select names with `scripts/start brain`. Tests: `npm test --prefix packages/runtime`. Startup allows 180 seconds per service by default for GBrain CLI latency.
 
 ## Files
 

@@ -21,7 +21,7 @@ function fixture(t, { initialize = true } = {}) {
   environment.GIT_CONFIG_GLOBAL = join(temporary, 'empty-git-config');
   writeFileSync(environment.GIT_CONFIG_GLOBAL, '');
   mkdirSync(join(repo, 'scripts', 'hooks'), { recursive: true });
-  for (const name of ['install-hooks', 'hooks/pre-commit']) {
+  for (const name of ['setup', 'install-hooks', 'hooks/pre-commit']) {
     copyFileSync(join(root, 'scripts', name), join(repo, 'scripts', name));
     chmodSync(join(repo, 'scripts', name), 0o755);
   }
@@ -30,6 +30,13 @@ function fixture(t, { initialize = true } = {}) {
   });
   const git = (...args) => run('git', args);
   const install = () => run(join(repo, 'scripts', 'install-hooks'), [], temporary);
+  const setup = (bunScript) => {
+    const binaries = join(temporary, 'fixture-bin');
+    mkdirSync(binaries, { recursive: true });
+    writeFileSync(join(binaries, 'bun'), `#!/bin/sh\n${bunScript}\n`, { mode: 0o755 });
+    environment.PATH = `${binaries}:${environment.PATH}`;
+    return run(join(repo, 'scripts', 'setup'), [], temporary);
+  };
   if (initialize) {
     const template = join(temporary, 'empty-template');
     mkdirSync(template);
@@ -46,7 +53,7 @@ function fixture(t, { initialize = true } = {}) {
     writeFileSync(path, contents);
     assert.equal(git('add', '--', name).status, 0);
   };
-  return { repo, hook, git, install, stage, temporary };
+  return { repo, hook, git, install, setup, stage, temporary };
 }
 
 function rejectedCommit(f, message, forbiddenOutput = []) {
@@ -68,6 +75,34 @@ test('fresh installation works from another directory and is idempotent', (t) =>
   assert.equal(f.install().status, 0);
   f.stage('notes.txt');
   assert.equal(f.git('commit', '--quiet', '-m', 'Synthetic safe commit').status, 0);
+});
+
+test('fresh setup gates hook installation on the Bun prerequisite', async (t) => {
+  for (const [label, script, status] of [
+    ['older Bun', "printf '1.3.10\\n'", 1],
+    ['minimum Bun', "printf '1.3.11\\n'", 0],
+    ['newer Bun', "printf '1.4.2\\n'", 0],
+    ['invalid version', "printf 'unrecognized\\n'", 1],
+    ['failed executable', 'exit 127', 1],
+  ]) {
+    await t.test(label, (t) => {
+      const f = fixture(t);
+      const result = f.setup(script);
+      assert.equal(result.status, status);
+      assert.equal(existsSync(f.hook), status === 0);
+      if (status !== 0) assert.match(result.stderr, /requires Bun 1\.3\.11 or newer/);
+    });
+  }
+});
+
+test('a stuck Bun version probe is bounded and leaves hooks unmodified', (t) => {
+  const f = fixture(t);
+  const began = Date.now();
+  const result = f.setup('exec /bin/sleep 10');
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /within 5 seconds/);
+  assert.equal(existsSync(f.hook), false);
+  assert.ok(Date.now() - began < 8000, 'The prerequisite probe exceeded its bounded timeout');
 });
 
 test('an identical original hook is preserved and made executable', (t) => {

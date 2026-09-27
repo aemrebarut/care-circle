@@ -4,7 +4,7 @@ Purpose: start the local demo, stop only runtime-owned processes, check the live
 
 ## Run
 
-From the repository root, with Node 22 or newer, Python 3 for the hook installer, and the service prerequisites installed. Lifecycle identity checks require POSIX `ps`; hook installation uses POSIX symlinks.
+From the repository root, with Node 22 or newer, Bun 1.3.11 or newer for GBrain, Python 3 for the hook installer, and the service prerequisites installed. Lifecycle identity checks require POSIX `ps`; hook installation uses POSIX symlinks.
 
 ```sh
 scripts/setup
@@ -14,7 +14,7 @@ scripts/demo-reset
 scripts/stop
 ```
 
-`scripts/setup` checks the local Node/Python prerequisites and runs `scripts/install-hooks` for a fresh clone. The installer is safe to run again and refuses to overwrite an unknown hook. The hook blocks credential-like filenames and likely secrets without printing matching content. Setup does not open, initialize, or modify the family GBrain; follow the brain owner's separate prerequisite instructions.
+`scripts/setup` checks Node, Python, POSIX `ps`, and Bun before running `scripts/install-hooks` for a fresh clone. The read-only Bun version probe has a five-second timeout and a 1 KiB output bound. The installer is safe to run again and refuses to overwrite an unknown hook. The hook blocks credential-like filenames and likely secrets without printing matching content. Setup does not install packages or open, initialize, or modify the family GBrain; follow the brain owner's separate prerequisite instructions.
 
 `scripts/start brain` and `scripts/stop brain` select a service. Available names are `brain`, `river`, `ingest`, `brief`, `sponsors`, and `web`. With no names, all services are selected. Start order is brain, River, ingest, brief, sponsors, web. Stop order is reversed. A selected service does not automatically start its dependencies.
 
