@@ -14,6 +14,8 @@ node services/ingest/smoke.mjs
 
 The server binds only `127.0.0.1:4702`. Runtime owns the persistent process. No packages or credentials are required. `npm test` starts short-lived test servers only on reserved port 4713 and mocks upstream responses in memory. The smoke script checks live health and extraction without writing to brain.
 
+For a coordinated live write check, run `npm --prefix services/ingest run verify:commit`. It submits the exact synthetic demo note and an identical retry, then checks the durable source, author, attendance, question, source citation and preserved 10 mg claim over HTTP. It performs no reset. Coordinate the shared mutation window with runtime and QA before running it.
+
 ## API
 
 - `GET /health`: service liveness and whether optional River attempts are enabled.
@@ -47,5 +49,7 @@ Default extraction is deterministic. No River training, remote inference, SDK ex
 - `extract.mjs`: input checks, narrow source parser, stable key derivation.
 - `server.mjs`: HTTP boundary, bounded upstream calls and verified commit receipts.
 - `smoke.mjs`: read-only live check.
+- `verify-commit.mjs`: explicit coordinated demo write and idempotent retry check.
+- `REVIEW.md`: independent review findings and bounded verification evidence.
 - `test/`: source ambiguity, attribution, HTTP and failure-path tests.
 - `CODEMAP.md`: source for the `code/ingest` devbrain page.

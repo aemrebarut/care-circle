@@ -11,11 +11,11 @@ Turn supported synthetic visit notes into exact contract Extraction objects and 
 
 ## Run
 
-`node services/ingest/server.mjs` binds 127.0.0.1:4702. Persistent start is owned by runtime. `npm --prefix services/ingest test` runs unit and HTTP failure tests on reserved 4713. `node services/ingest/smoke.mjs` checks live health/extraction with no writes.
+`node services/ingest/server.mjs` binds 127.0.0.1:4702. Persistent start is owned by runtime. `npm --prefix services/ingest test` runs unit and HTTP failure tests on reserved 4713. `node services/ingest/smoke.mjs` checks live health/extraction with no writes. `npm --prefix services/ingest run verify:commit` explicitly writes the canonical demo and retries it; coordinate the mutation window first.
 
 ## Files
 
-`services/ingest/extract.mjs`, `server.mjs`, `smoke.mjs`, `test/extract.test.mjs`, `test/http.test.mjs`, `package.json`, `README.md`, and `CODEMAP.md`.
+`services/ingest/extract.mjs`, `server.mjs`, `smoke.mjs`, `verify-commit.mjs`, `REVIEW.md`, `test/extract.test.mjs`, `test/http.test.mjs`, `package.json`, `README.md`, and `CODEMAP.md`.
 
 ## API
 
