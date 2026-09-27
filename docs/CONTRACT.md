@@ -59,7 +59,7 @@ Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg da
 
 ## River API, 4704
 
-- `GET /v1/status` -> `{mode:"deterministic"|"river",trainingStatus,externalSubmissionAuthorized:false,metrics,limitations}`. Metrics absent/null unless actually measured; base and trained scores require same held-out split and prompt, no leakage.
+- `GET /v1/status` -> `{mode:"deterministic"|"river",trainingStatus,externalSubmissionAuthorized:true,metrics,limitations}`. Metrics absent/null unless actually measured; base and trained scores require same held-out split and prompt, no leakage. River synthetic training/evaluation upload is authorized as of 14:53 Pacific; see AGENTS.md for the sole key-loading exception.
 - `POST /v1/extract` same schema as ingest extract. If unavailable, explicit 503 so ingest fallback can take over. Training scripts opt-in, never automatically submit data externally.
 - Corpus, split manifest, evaluation harness, honest local baseline, and intended exact external payload must be prepared for review. Report only env variable names, never values. Ask cc-lead for external approval via status, not user messages.
 

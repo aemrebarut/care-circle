@@ -2,11 +2,16 @@
 
 ## Needs Emre
 
-- River: please set `RIVER_API_KEY` for the River lane when available. No agent will read or print its value.
-- External approval pending: uploading the synthetic note/JSON corpus to River for training and evaluation requires Emre's authorization. The lane will prepare the exact corpus and command first. No submission has been made.
-- Memorable/UFO: local simulations and integration adapters can proceed. Any remote trace submission or account action will be listed here before execution.
+None. Any Memorable/UFO account creation or remote submission will be listed here before execution.
 
 ## Log
+
+### 14:53 Pacific authorization update
+
+- Analyst conveyed Emre approval for River synthetic note/JSON corpus uploads, training, and evaluation. Synthetic data only.
+- River lane may load only `RIVER_API_KEY` from `~/Workspace/qm-raid/services/forge/.env` read-only into its process environment without printing it. This is the sole exception to the primary track hands-off rule. Build and test dry runs until the file exists.
+- Memorable and UFO local work is approved. Account creation or remote submission remains pending a concrete request under Needs Emre.
+- Public repo created and pushed: https://github.com/aemrebarut/care-circle. Lane launch in progress.
 
 ### 14:53 Pacific kickoff
 
