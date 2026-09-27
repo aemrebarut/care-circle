@@ -31,3 +31,5 @@ The initial recorded lisinopril and pharmacy claims are both 10 mg daily. Septem
 ## Milestone evidence
 
 Early seed committed and pushed as d3c5a0b: 30 pages, 120 resolving links, 21 exact medication citations; smoke passes. Astra xhigh reviewer cc-world-review confirmed a clean recheck after three initial findings were fixed before that commit. See packages/world/REVIEW.md for scope and receipts. Product import/restart evidence belongs to cc-brain.
+
+M1 live integration at 15:12 Pacific: read-only brain HTTP audit PASS at revision 1. All 30 seed pages resolve by encoded ID; 21 seed quotes and 21 medication API citations match exact served source text; all 120 graph edges resolve. No reset, ingest or direct brain access. Restart and end-to-end mutation evidence remain with cc-brain and QA.

@@ -17,3 +17,9 @@ The reviewer reported a clean recheck with no remaining findings in the static w
 The review verified required entity counts; lisinopril recorded as 10 mg daily in baseline visit and pharmacy claims; the September 27 event absent from the seed; amlodipine 2.5 to 5 mg as historical change with a matching current pharmacy entry; lab values without clinical interpretation; and sequential insurer claims that never imply authorization or guaranteed coverage.
 
 No service was started, product brain opened, credential accessed, external submission made, or sponsor execution claimed by this review. Import, mutation, reset, and restart verification remain the brain and integration lanes' responsibility.
+
+## M1 live import audit by cc-world
+
+At 15:12 Pacific, cc-world independently verified the imported world through `http://127.0.0.1:4701` using only GET requests. Brain revision 1 served all 30 seed page IDs through encoded page lookup. All 21 seed medication quotations appeared verbatim in the served source bodies, and all 21 citations returned by the medication API also resolved to exact source text. All 120 served graph edges had existing source and target pages. Seven recorded medications were returned.
+
+Result: PASS. This check read `/health`, `/v1/state`, `/v1/pages/:encodedId`, `/v1/medications`, and `/v1/graph`. It performed no reset, ingest, database access, process start, or service mutation. It demonstrates live import and citation fidelity; it does not claim restart or end-to-end ingest verification.
