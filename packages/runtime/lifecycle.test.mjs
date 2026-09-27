@@ -96,6 +96,10 @@ describe('runtime lifecycle safety', { concurrency: false }, () => {
     assert.equal(stopped[0].stopped, true);
     assert.equal(await readReceipt(ctx.stateDir), null);
     assert.equal(await portOccupied(4715), false);
+    const archived = JSON.parse(await readFile(join(ctx.stateDir, 'history', `${single.name}-${receipt.pid}-${receipt.nonce}.json`), 'utf8'));
+    assert.equal(archived.identity, receipt.identity);
+    assert.equal(archived.pid, receipt.pid);
+    assert.ok(Date.parse(archived.stoppedAt) >= Date.parse(receipt.startedAt));
   });
 
   test('healthy external listener is reused without ownership and survives stop', async t => {

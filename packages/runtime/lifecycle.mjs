@@ -118,7 +118,7 @@ export async function portOccupied(port) {
 export function validReceipt(receipt, service) {
   return receipt?.version === 1 && receipt.name === service.name && receipt.entry === service.entry &&
     Number.isSafeInteger(receipt.pid) && receipt.pid > 1 && typeof receipt.nonce === 'string' &&
-    receipt.nonce.length >= 30 && typeof receipt.identity === 'string' && receipt.identity.includes(receipt.nonce);
+    /^[a-f0-9]{8}(?:-[a-f0-9]{4}){3}-[a-f0-9]{12}$/.test(receipt.nonce) && typeof receipt.identity === 'string' && receipt.identity.includes(receipt.nonce);
 }
 
 async function isOwned(receipt, service) {
@@ -212,6 +212,9 @@ export async function stopServices(selected, { stateDir = defaultStateDir, timeo
     const deadline = Date.now() + timeoutMs;
     while (Date.now() < deadline && await isOwned(receipt, service)) { signal?.throwIfAborted(); await delay(200); }
     if (await isOwned(receipt, service)) throw new Error(`${service.name}: still shutting down. Receipt retained; no forced kill during possible brain writes.`);
+    const history = join(stateDir, 'history');
+    await mkdir(history, { recursive: true, mode: 0o700 });
+    await atomicJson(join(history, `${service.name}-${receipt.pid}-${receipt.nonce}.json`), { ...receipt, stoppedAt: new Date().toISOString() });
     await rm(receiptFile);
     log(`${service.name}: stopped runtime PID ${receipt.pid}`);
     results.push({ service: service.name, stopped: true });
