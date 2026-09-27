@@ -14,7 +14,7 @@ Capture and replay a synthetic prior-authorization procedure locally with determ
 
 `npm --prefix services/sponsors/procedure run prepare:memorable` downloads the pinned package without install scripts; `npm --prefix services/sponsors/procedure run proof:memorable` proves isolated offline recall. Neither performs remote extraction.
 
-The parent sponsor service owns HTTP health, reset and port 4705. This component opens no sockets.
+The parent sponsor service owns HTTP health, reset and port 4705. The imported procedure API opens no listeners and makes no network requests. The standalone preparation CLI downloads the pinned package; the separate submission CLI requires explicit approval before its one remote request.
 
 ## Files
 
@@ -37,7 +37,7 @@ Exports `capture({actorId?})`, `replay({procedureId?,actorId?})`, `getMemorableP
 
 ## Depends on
 
-Parent integration: [[code/sponsors]], read after initial creation. API and actor IDs: [[code/contract]], not yet present when checked; docs/CONTRACT.md was read fully. No cross-lane source imports or GBrain access. Node builtin APIs only.
+Parent integration: [[code/sponsors]], read after initial creation. API and actor IDs: [[code/contract]], successfully read after its initial absence; docs/CONTRACT.md was read fully. No cross-lane source imports or GBrain access. Node builtin APIs only.
 
 Synthetic narrative from [[code/world]] is aligned to Demo Family Health Plan case DEMO-PA-2026-0918. The Sep27 rehearsal does not import world code or update its historical insurer call pages.
 
