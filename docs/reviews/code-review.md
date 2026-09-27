@@ -15,6 +15,7 @@ Read docs/reviews/architecture-safety.md. Inspect relevant owner code and run on
 ## Files
 
 - docs/reviews/architecture-safety.md: review gates, evidence and verdict.
+- docs/reviews/findings.md: reproducible findings, owner disposition and direct fix verification.
 - docs/reviews/code-review.md: source for this code map page.
 
 ## API
