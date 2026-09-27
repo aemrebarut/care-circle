@@ -79,12 +79,12 @@ function json(text) {
   }
 }
 
-async function committedCommand(args, input = '') {
+async function committedCommand(args, input = '', run = command) {
   for (let attempt = 0; attempt < 4; attempt++) {
     try {
-      const receipt = json(await command(args, input));
+      const receipt = json(await run(args, input));
       if (receipt.state === 'committed') return receipt;
-      if (['failed', 'cancelled'].includes(receipt.state)) {
+      if (['failed', 'conflict', 'cancelled'].includes(receipt.state)) {
         throw new BrainCommandError('gbrain_uncommitted', 'GBrain did not commit the storage operation.');
       }
     } catch (error) {
@@ -97,18 +97,31 @@ async function committedCommand(args, input = '') {
 }
 
 export class GBrain {
+  constructor({ run = command, resolvePath = realpath } = {}) {
+    this.run = run;
+    this.resolvePath = resolvePath;
+  }
+
   async preflight() {
-    const embedding = await command(['config', 'get', 'embedding_disabled']);
+    // Engine status is engine-free and redacts URLs. Refuse remote or misplaced
+    // storage before any command opens a database. Never print the report.
+    const engine = json(await this.run(['engine', 'status', '--json']));
+    const familyRoot = await this.resolvePath(resolve(homedir(), 'Workspace/care-circle-brain'));
+    const databasePath = engine.database_path ? await this.resolvePath(engine.database_path) : null;
+    if (engine.effective_engine !== 'pglite' || engine.thin_client || !databasePath?.startsWith(`${familyRoot}${sep}`)) {
+      throw new BrainCommandError('unsafe_brain_storage', 'The family brain must use local PGLite storage inside its dedicated Care Circle directory.');
+    }
+    const embedding = await this.run(['config', 'get', 'embedding_disabled']);
     if (embedding.trim() !== 'true') {
       throw new BrainCommandError('external_processing_disabled', 'Family GBrain must have embedding_disabled=true before service startup.');
     }
     // Import must never cause subsequent writes to modify the world package.
-    await command(['config', 'set', 'sync.write_through', 'false']);
+    await this.run(['config', 'set', 'sync.write_through', 'false']);
   }
 
   async get(slug) {
     try {
-      return json(await command(['call', 'get_page', JSON.stringify({ slug, include_content: true, source_id: 'default' })]));
+      return json(await this.run(['call', 'get_page', JSON.stringify({ slug, include_content: true, source_id: 'default' })]));
     } catch (error) {
       if (error.code === 'page_not_found') return null;
       throw error;
@@ -120,7 +133,7 @@ export class GBrain {
     if (expectedRevision) args.push('--expected-revision', expectedRevision);
     else if (force) args.push('--force');
     // CLI stdin avoids OS argv size limits and never goes through a shell.
-    return committedCommand(args, content);
+    return committedCommand(args, content, this.run);
   }
 
   async barrier() {
@@ -129,6 +142,24 @@ export class GBrain {
     // writes reached terminal state, even after a crash lost their UUIDs.
     // Always do this BEFORE choosing the canonical snapshot during recovery.
     await this.put('care-circle/storage-barrier', `---\ntype: note\ntitle: Care Circle storage recovery barrier\nembed_skip: true\n---\n# Internal storage recovery barrier\n\n${randomUUID()}\n`, { force: true });
+    await this.requireImportQuiescence();
+  }
+
+  async writerStatus() {
+    return json(await this.run(['sources', 'writer', 'status', 'default', '--json']));
+  }
+
+  async requireImportQuiescence(status = null) {
+    status ??= await this.writerStatus();
+    const binding = status.bindings?.find(item => item.source_id === 'default');
+    const worktree = status.worktrees?.find(item => item.id === binding?.worktree_id);
+    if (!binding || !worktree || ['queued', 'running', 'recovering', 'recovering_effects', 'recovery_bytes']
+      .some(key => !Number.isFinite(Number(worktree[key])) || Number(worktree[key]) !== 0)) {
+      // Managed imports use a worktree queue, distinct from database-only
+      // writes. Never assume our DB barrier fenced an unfinished file import.
+      throw new BrainCommandError('gbrain_import_pending', 'Native source import recovery is still pending.');
+    }
+    return status;
   }
 
   async remove(slug) {
@@ -136,31 +167,32 @@ export class GBrain {
     if (!page) return;
     await committedCommand(['call', 'delete_page', JSON.stringify({
       slug, source_id: 'default', expected_revision: page.revision, request_id: randomUUID(),
-    })]);
+    })], '', this.run);
   }
 
   async importWorld(directory) {
     // Managed GBrain imports require a canonical file owner even when later
     // page writes are database-only. Inspect only safe ownership metadata and
     // permit import write-through solely into this product brain's own root.
-    const status = json(await command(['sources', 'writer', 'status', 'default', '--json']));
+    const status = await this.requireImportQuiescence();
     const binding = status.bindings?.find(item => item.source_id === 'default');
-    const familyRoot = await realpath(resolve(homedir(), 'Workspace/care-circle-brain'));
-    const canonicalRoot = binding?.local_path ? await realpath(binding.local_path) : null;
-    if (!canonicalRoot?.startsWith(`${familyRoot}${sep}`) || binding?.state !== 'active') {
+    const familyRoot = await this.resolvePath(resolve(homedir(), 'Workspace/care-circle-brain'));
+    const canonicalRoot = binding?.local_path ? await this.resolvePath(resolve(binding.local_path, binding.relative_path || '')) : null;
+    if (!canonicalRoot?.startsWith(`${familyRoot}${sep}`) || binding?.state !== 'active' || binding.owner_host_id !== status.host_id) {
       throw new BrainCommandError('unsafe_import_owner', 'Native import requires an active canonical owner inside the dedicated Care Circle family brain.');
     }
-    await command(['config', 'set', 'sync.write_through', 'true']);
     try {
-      const result = json(await command(['import', directory, '--source-id', 'default', '--no-embed', '--allow-noncanonical-root', '--json']));
+      await this.run(['config', 'set', 'sync.write_through', 'true']);
+      const result = json(await this.run(['import', directory, '--source-id', 'default', '--no-embed', '--allow-noncanonical-root', '--json']));
       if (result.errors || result.status !== 'success') throw new BrainCommandError('gbrain_import_failed', 'Native world import did not commit all source pages.');
+      await this.requireImportQuiescence();
       return result;
     } finally {
-      await command(['config', 'set', 'sync.write_through', 'false']);
+      await this.run(['config', 'set', 'sync.write_through', 'false']);
     }
   }
 
   async extractLinks() {
-    await command(['extract', 'links', '--source', 'db', '--source-id', 'default']);
+    await this.run(['extract', 'links', '--source', 'db', '--source-id', 'default']);
   }
 }

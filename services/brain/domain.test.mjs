@@ -344,6 +344,41 @@ test('citations quote literal source text and returned claims cannot mutate stat
   expectBad(() => validateSeed(broken));
 });
 
+test('long source lines retain medication and dose evidence inside a bounded literal citation', () => {
+  const context = 'Fictional family travel and appointment context. '.repeat(32);
+  for (const note of [
+    `${context}Dr. Chen recorded lisinopril 20 mg daily.`,
+    `${context}Dr. Chen recorded lisinopril 20 mg daily. ${context}`,
+    `Lisinopril was on the family discussion list. ${context}Dr. Chen recorded lisinopril 20 mg daily.`,
+    `${context}The source records 20 mg daily for lisinopril.`,
+    `${'\u0130 '.repeat(700)}Dr. Chen recorded LISINOPRIL 20 mg daily.`,
+  ]) {
+    const input = payload();
+    input.note = note;
+    const applied = applyIngest(state(), input);
+    const citation = medications(applied.state).medications[0].citations.at(-1);
+    const source = applied.state.pages.find(item => item.id === citation.pageId);
+    assert.ok(citation.quote.length <= 1200);
+    assert.ok(citation.quote.toLowerCase().includes('lisinopril'));
+    assert.ok(citation.quote.includes('20 mg'));
+    assert.ok(citation.quote.includes('daily'));
+    assert.ok(note.includes(citation.quote));
+    assert.ok(source.body.includes(citation.quote));
+  }
+});
+
+test('a previously clipped literal citation is repaired from its retained source note', () => {
+  const input = payload();
+  input.note = 'Fictional family travel and appointment context. '.repeat(32) + 'Dr. Chen recorded lisinopril 20 mg daily.';
+  const applied = applyIngest(state(), input);
+  const medication = applied.state.pages.find(item => item.id === ids.medication);
+  medication.fields.citations.at(-1).quote = input.note.slice(0, 1200);
+  const citation = medications(applied.state).medications[0].citations.at(-1);
+  assert.ok(citation.quote.toLowerCase().includes('lisinopril'));
+  assert.ok(citation.quote.includes('20 mg'));
+  assert.ok(input.note.includes(citation.quote));
+});
+
 test('graph edges resolve, are deduplicated, and retain their built-in link types', () => {
   const applied = applyIngest(state(), payload());
   const result = graph(applied.state);

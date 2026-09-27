@@ -242,19 +242,42 @@ function latestVisitClaim(claims) {
   return claims.reduce((latest, claim) => claim.kind === 'visit' && (!latest || claim.date >= latest.date) ? claim : latest, null);
 }
 
+function excerptWindow(value, name, dose) {
+  const maximum = 1200;
+  if (value.length <= maximum) return value;
+  const ranges = term => {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return [...value.matchAll(new RegExp(escaped, 'giu'))].map(match => ({ start: match.index, end: match.index + match[0].length }));
+  };
+  const names = ranges(name);
+  const doses = ranges(dose);
+  let closest;
+  for (let i = 0, j = 0; i < names.length && j < doses.length;) {
+    const pair = { start: Math.min(names[i].start, doses[j].start), end: Math.max(names[i].end, doses[j].end) };
+    if (!closest || pair.end - pair.start < closest.end - closest.start) closest = pair;
+    if (names[i].start <= doses[j].start) i += 1;
+    else j += 1;
+  }
+  const support = closest && closest.end - closest.start <= maximum
+    ? closest : doses[0] ?? names[0] ?? { start: 0, end: 0 };
+  const padding = Math.floor((maximum - (support.end - support.start)) / 2);
+  const start = Math.max(0, Math.min(value.length - maximum, support.start - padding));
+  return value.slice(start, start + maximum);
+}
+
 function excerpt(source, medication, claim) {
   const existing = medication.fields.citations?.find(citation => citation.pageId === source.id
     && (!citation.date || citation.date === claim.date) && typeof citation.quote === 'string' && source.body.includes(citation.quote));
-  if (existing) return existing.quote;
-  const candidates = (source.fields.note ?? source.body).split(/\r?\n/).map(line => line.trim()).filter(line => line && source.body.includes(line));
   const name = medication.fields.name.toLowerCase();
   const dose = claim.dose.toLowerCase();
+  if (existing && existing.quote.toLowerCase().includes(name) && existing.quote.toLowerCase().includes(dose)) return excerptWindow(existing.quote, name, dose);
+  const candidates = (source.fields.note ?? source.body).split(/\r?\n/).map(line => line.trim()).filter(line => line && source.body.includes(line));
   const quote = candidates.find(line => line.toLowerCase().includes(name) && line.toLowerCase().includes(dose))
     ?? candidates.find(line => line.toLowerCase().includes(dose))
     ?? candidates.find(line => line.toLowerCase().includes(name))
     ?? candidates.find(line => !line.startsWith('#'));
   if (!quote) throw new HttpError(500, 'invalid_source', `Source ${source.id} has no literal excerpt.`);
-  return quote.slice(0, 1200);
+  return excerptWindow(quote, name, dose);
 }
 
 function citationFor(index, medication, claim) {

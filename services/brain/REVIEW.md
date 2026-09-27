@@ -12,7 +12,9 @@ Implementation commit: `e95452d`, pushed to the public Care Circle repository.
 - `git diff -- packages/world` was empty after import. `scripts/brain config get sync.write_through` confirmed false. No source registration, ownership transfer, or database reinitialization occurred.
 - cc-runtime reported exact full HTTP state equality after restart `80970` to `95456`: revision 1, 30 pages, 120 graph edges. All seven service health endpoints passed.
 - cc-world independently read every source through HTTP: 30 IDs, seven medications, 21 literal seed/API citations, and 120 resolving graph edges passed.
-- cc-ingest reported canonical demo ingest plus identical retry through port 4702 returned the same revision 2 and visit `visits/ingest-70c7a8a9face7c4158c7be49`. Verbatim note, author versus attendance, single added medication claim, retained 10 mg source, citation, and question passed. Runtime post-ingest restart proof is pending at this entry.
+- cc-ingest reported canonical demo ingest plus identical retry through port 4702 returned the same revision 2 and visit `visits/ingest-70c7a8a9face7c4158c7be49`. Verbatim note, author versus attendance, single added medication claim, retained 10 mg source, citation, and question passed.
+- At 15:16, cc-runtime reported exact full post-ingest state equality after graceful restart `95456` to `19257`: revision 2, 32 pages, 132 graph edges. The brain lane's own live read-only `node services/brain/smoke.mjs` passed those counts and all seven medication citation sets. A 503 observed during the coordinated restart was expected; smoke now waits up to 180 seconds for startup or recovery readiness.
+- At 15:17, cc-ingest repeated the identical canonical request after that process restart. It returned the original visit and revision 2, and the full HTTP state remained unchanged. Runtime released the shared-state mutation window to QA afterward.
 
 ## Storage review and fault boundaries
 
@@ -31,3 +33,11 @@ Storage unit tests simulate transport loss after a queued snapshot, restart with
 ## Sponsor reality
 
 GBrain storage, native markdown import, typed metadata persistence, and link extraction are real. No embeddings, LLM calls, uploads, training submissions, telemetry traces, accounts, or sponsor publications were made by this service.
+
+## Follow-up storage and citation review, 15:22 Pacific
+
+- A second storage review identified that native managed imports and database-only writes use separate journal ordering groups. Startup and recovery now also require the selected worktree's queued, running, recovering, recovering-effects, and recovery-bytes counters to be zero before choosing a snapshot. Native import checks the same condition after completion.
+- Canonical import containment now resolves the effective local path plus relative path, and requires the recorded owner to match the local host. Enabling write-through is inside the try/finally block so an uncertain enable still attempts restoration.
+- Engine-free preflight refuses remote engines, thin clients, and database paths outside the dedicated family directory before any database opens. Read-only metadata on the actual setup confirmed PGLite, no thin client, and correct containment without a connectivity probe.
+- A 1,609-character source note reproduced a citation that omitted both medication and dose after clipping. The fix selects a literal window around the relevant evidence and repairs previously clipped citations from the retained source note. Regressions include long prefixes and suffixes, dose-first wording, and Unicode prefixes.
+- `npm test --prefix services/brain`: 36 passing tests. These changes await a runtime-controlled restart after the QA browser mutation window; no shared state was mutated by this follow-up work.
