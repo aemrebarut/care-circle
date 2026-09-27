@@ -63,3 +63,17 @@ All R1 through R16 findings are closed. R14 closed by removal of the unshipped c
 - The reviewer inspected QA's first complete live receipt: 32 passes, no failures or skips, web-proxy transport, 15:17:32 to 15:18:24. It includes sticky historical discrepancies, future-date/no-mutation checks, future follow-up acceptance, source citations, concurrent retries, key conflicts, full brief, local procedure and clinic evidence. This is QA execution evidence, not a second reviewer-operated run.
 - Brain reports the latest guarded adapter reloaded successfully and passed read-only smoke at revision 10, 32 pages, seven medications and 132 edges. Runtime still owns the final maintenance equality receipt.
 - Two consecutive final reset-to-demo cycles and rendered browser/PDF verification remain pending. All shared mutations, restarts and their timing remain with runtime and QA. No review sign-off substitutes for those gates.
+
+### M2 maintenance follow-up, 15:36 Pacific
+
+Runtime's exact-state maintenance check passed at 22:34:38Z. The reviewer inspected .runtime/managed/post-ui-maintenance-check.json: revision 10, 32 pages, 132 edges, state SHA-256 37422fc883d9c46d96f3bba70ee753575e970e7f8df5dd37b788a6e351940633. Runtime reports owned brain, River and ingest restarts, all-service smoke, owner smokes and preserved sponsor counts. This clears the maintenance equality gate as owner execution plus reviewer receipt inspection. QA's corrected read-only reprint and the separate bounded local sponsor proof window precede the final two acceptance cycles.
+
+### M2 sponsor receipt follow-up
+
+Independent artifact audit passed for the authorized local sponsor proof window. The reviewer did not rerun either proof or make service requests.
+
+- UFO receipt in 59898d3 records exactly one connection to 127.0.0.1:4705. Its nested clinic GET is fixed to 127.0.0.1:4706. All 3,135 authored HTML bytes, SHA-256 acd6313c7a88fd9d84d8b710817786a3771b8134a81eac774a1aef969c5ef710, and clinic/pharmacy fields match the receipt. The official SDK ToolDef handler ran directly; full runtime, hosted execution and model calls remain false or zero.
+- Memorable live bridge receipt in 74f8921 matches its original receipt byte-for-byte: 7,568 bytes, SHA-256 f5476befa70d48ffa2638f3a8aacf0f85c6a5091cb2a868cf5a3f5607fb85ef2. Capture response, serialized local store, official recall output, selected ID, Ben replay and captureTraceId all bind. Recall/show/list exit codes are zero. Two loopback requests are recorded. Manual serialization and Care Circle simulated replay remain explicit; official learning and remote submission are false.
+- The production Memorable submission path now refuses unconditionally before credentials or requests, matching Emre's declined authorization.
+- The timed demo's narrow local sponsor wording is supported by these receipts. No full UFO runtime, hosted integration or learned procedure claim is supported.
+- The root README's Bun 1.3.11 minimum and unrelated npm-package warning match the [official GBrain installation instructions](https://github.com/garrytan/gbrain#install). No installer or initialization command was run by the reviewer.
