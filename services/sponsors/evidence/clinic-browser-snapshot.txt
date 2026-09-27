@@ -1,0 +1,44 @@
+Observed native Chrome accessibility page subtree.
+Driver: cua_repl native macOS Chrome accessibility and screenshot
+Source URL: http://127.0.0.1:4706/
+Observed at: 2026-09-27T22:06:04.933Z
+
+189 HTML content Care Circle | Synthetic clinic directory, URL: 127.0.0.1:4706/
+  190 container
+    191 text CARE CIRCLE / DEMO DIRECTORY
+    192 heading A few details, one less phone call., Value: 1
+      193 text A few details, one less phone call.
+    194 text This local directory gives the family a source for clinic hours and pharmacy contact details.
+    195 text Synthetic demo only.
+    196 text All people, providers, addresses and phone numbers are fictional. Do not use them to seek care.
+    197 container Maple Harbor Family Clinic (fictional)
+      198 text FICTIONAL CLINIC
+      199 heading Maple Harbor Family Clinic (fictional), Value: 2
+        200 text Maple Harbor Family Clinic (fictional)
+      201 definition list
+        202 container Hours
+          203 text Hours
+        204 text Monday-Friday 8:00 AM-5:00 PM; Saturday-Sunday closed
+        205 container Phone
+          206 text Phone
+        207 text +1 (415) 555-0142
+        208 container Address
+          209 text Address
+        210 text 100 Example Lane, Demo City, CA 00000
+    211 container Demo Circle Pharmacy (fictional)
+      212 text FICTIONAL PHARMACY
+      213 heading Demo Circle Pharmacy (fictional), Value: 2
+        214 text Demo Circle Pharmacy (fictional)
+      215 definition list
+        216 container Hours
+          217 text Hours
+        218 text Monday-Friday 9:00 AM-6:00 PM; Saturday 10:00 AM-2:00 PM; Sunday closed
+        219 container Phone
+          220 text Phone
+        221 text +1 (415) 555-0189
+        222 container Address
+          223 text Address
+        224 text 102 Example Lane, Demo City, CA 00000
+    225 text Source: Care Circle synthetic fixture v1. These details are read from this page, not a real clinic website. Automation reads the same fields shown above. Local source:
+    226 text http://127.0.0.1:4706/
+    227 text Not medical advice

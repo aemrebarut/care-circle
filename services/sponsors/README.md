@@ -37,6 +37,7 @@ The clinic supports `GET /` and `GET /health`, identifying its service as `spons
 | Memorable adapter | Exact request export follows its public API envelope, with a committed payload and hash | No API request, SDK run, account action, or credential access |
 | Clinic reader | Actual bounded loopback HTTP fetch, fixture hash, observed response and extraction fields | No official UFO execution |
 | UFO assets | Local MCP tool plus browser action recipe and task brief | No official extension packaging or hosted connector run verified |
+| Browser check | Native Chrome accessibility observation and two inspected screenshots by cc-qa-ui | Local browser rendering verified; no official UFO execution |
 
 Procedure execution is a **local simulation**, with synthetic tool inputs and outputs. Memorable payload preparation does not prove Memorable learning or replay. No Memorable extraction request, credential load, account action, or remote trace submission occurs.
 
@@ -44,7 +45,9 @@ Clinic fetching uses an actual HTTP request to the fixed local website. It is la
 
 The service never accepts an arbitrary URL. Remote Memorable or UFO execution requires explicit Emre approval recorded by the lead. A key or installed SDK does not grant permission to submit a trace.
 
-The reviewable Memorable body is `procedure/assets/memorable-request.json`; its manifest records the exact byte count and SHA-256. `extension/browser-actions.json` is our portable browser recipe, not an official UFO manifest. The local MCP endpoint is `http://127.0.0.1:4706/mcp`. Available browser tooling reported no connected browser during initial verification; no successful browser visit is claimed.
+The reviewable Memorable body is `procedure/assets/memorable-request.json`; its manifest records the exact byte count and SHA-256. `extension/browser-actions.json` is our portable browser recipe, not an official UFO manifest. The local MCP endpoint is `http://127.0.0.1:4706/mcp`.
+
+QA verified the clinic in native Chrome at `2026-09-27T22:06:04.933Z`. The committed receipt is `evidence/clinic-browser-observation.json`, with a page-only accessibility snapshot alongside it. Two screenshots were inspected in the QA tool transcript; screenshot files were not saved. This **local-browser-observation** proves visible clinic details and safety framing. `/v1/status` includes the recorded observation separately from the per-request HTTP evidence. Neither claims official UFO execution.
 
 ## Files and dependencies
 

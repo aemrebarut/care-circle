@@ -19,6 +19,7 @@ Capture and replay a synthetic prior-authorization procedure, prepare a local Me
 - services/sponsors/smoke.mjs: Local acceptance and failure-path checks.
 - services/sponsors/procedure/: Captures, replay, fixtures, Memorable payload export.
 - services/sponsors/extension/: Fictional site, HTTP fetch, local UFO adapter assets.
+- services/sponsors/evidence/: QA native Chrome browser receipt and page-only accessibility snapshot, with original receipt and snapshot hashes.
 
 ## API
 
@@ -34,4 +35,4 @@ All procedure execution is local-simulation. Clinic extraction is real local-htt
 
 ## Milestone
 
-Early integration passed: node services/sponsors/smoke.mjs verified health, capture, distinct sibling replay, payload export, repeated local clinic fetch, reset and bounded input/Origin/Host errors. Component suite passed 10 procedure tests plus HTTP/MCP smoke. Persistent lifecycle handed to runtime after exact own dev PID 87423 stopped. Runtime and world dependency pages read; web page not yet present. No remote sponsor execution. Browser tool had no connected browser, so browser execution remains unverified. Independent review fixes cover absolute request deadlines and MCP envelope validation.
+Early integration passed: node services/sponsors/smoke.mjs verified health, capture, distinct sibling replay, payload export, repeated local clinic fetch, reset and bounded input/Origin/Host errors. Component suite passed 10 procedure tests plus HTTP/MCP smoke. Runtime owns persistent lifecycle; all own development processes stopped. Runtime, world, web and extension dependency pages read. Native Chrome QA receipt at 2026-09-27T22:06:04.933Z proves the local clinic rendered with exact fictional details and safety footer; receipt and page-only snapshot committed under evidence/. Screenshots were inspected in tool transcript, not saved. No official UFO execution. Independent review fixes cover absolute request deadlines, header timeouts and MCP envelope validation.

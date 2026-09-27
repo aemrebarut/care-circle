@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { readFileSync } from 'node:fs';
 import { pathToFileURL } from 'node:url';
 import { HOST, PORTS } from '../../contract/index.mjs';
 import * as procedure from './procedure/index.mjs';
@@ -8,6 +9,7 @@ const MAX_BODY_BYTES = 32 * 1024;
 const REQUEST_TIMEOUT_MS = 5000;
 const BROWSER_ORIGIN = `http://${HOST}:${PORTS.web}`;
 const API_HOST = `${HOST}:${PORTS.sponsors}`;
+const browserObservation = JSON.parse(readFileSync(new URL('./evidence/clinic-browser-observation.json', import.meta.url), 'utf8'));
 
 function problem(status, code, message) {
   return Object.assign(new Error(message), { status, code });
@@ -110,7 +112,7 @@ export function createSponsorsServer() {
         return;
       }
       if (request.method === 'GET' && pathname === '/v1/status') {
-        json(response, 200, { memorable: procedure.getStatus(), ufo: getClinicStatus() });
+        json(response, 200, { memorable: procedure.getStatus(), ufo: { ...getClinicStatus(), browserObservation } });
         return;
       }
       if (request.method === 'GET' && pathname === '/v1/procedure/memorable-payload') {

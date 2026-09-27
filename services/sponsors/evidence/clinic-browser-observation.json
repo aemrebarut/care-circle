@@ -1,0 +1,37 @@
+{
+  "mode": "local-browser-observation",
+  "officialUfoExecution": false,
+  "driver": "cua_repl native macOS Chrome accessibility and screenshot",
+  "sourceUrl": "http://127.0.0.1:4706/",
+  "observedAt": "2026-09-27T22:06:04.933Z",
+  "observedFields": {
+    "syntheticNotice": "Synthetic demo only. All people, providers, addresses and phone numbers are fictional. Do not use them to seek care.",
+    "name": "Maple Harbor Family Clinic (fictional)",
+    "hours": "Monday-Friday 8:00 AM-5:00 PM; Saturday-Sunday closed",
+    "phone": "+1 (415) 555-0142",
+    "address": "100 Example Lane, Demo City, CA 00000",
+    "pharmacyName": "Demo Circle Pharmacy (fictional)",
+    "pharmacyHours": "Monday-Friday 9:00 AM-6:00 PM; Saturday 10:00 AM-2:00 PM; Sunday closed",
+    "pharmacyPhone": "+1 (415) 555-0189",
+    "pharmacyAddress": "102 Example Lane, Demo City, CA 00000",
+    "footer": "Not medical advice"
+  },
+  "interactions": [
+    "Navigated the dedicated review window to the exact allowlisted loopback URL.",
+    "Read the native accessibility page subtree and visually inspected the rendered screenshot.",
+    "Scrolled down and visually verified both contact cards and the exact footer."
+  ],
+  "screenshotOrSnapshot": "services/sponsors/evidence/clinic-browser-snapshot.txt",
+  "screenshotEvidence": "Two screenshots were observed in the cua_repl tool transcript; persistent evidence is the page-only accessibility snapshot.",
+  "findings": [],
+  "limitations": [
+    "This proves local browser rendering only. It is not an official UFO run.",
+    "The sponsor service local-http-fetch mode remains separate from this browser observation.",
+    "No forms, external navigation, submissions, or live family mutations were performed."
+  ],
+  "performedBy": "cc-qa-ui",
+  "evidenceKind": "recorded-local-browser-check",
+  "originalReceiptPath": "tests/e2e/results/ui/clinic-browser-observation.json",
+  "originalReceiptSha256": "fd9ee11e8dfab6d9605e470b84f76b7a68e5f2c5ec171065d669647c845da7d7",
+  "snapshotSha256": "e29cc6701fe687c57cac8b1a6664fe8605d0263087e9dbdbfd882080ade499ed"
+}
