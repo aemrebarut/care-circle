@@ -7,14 +7,14 @@ Purpose: start the local demo, stop only runtime-owned processes, check the live
 From the repository root, with Node 22 or newer, Python 3 for the hook installer, and the service prerequisites installed. Lifecycle identity checks require POSIX `ps`; hook installation uses POSIX symlinks.
 
 ```sh
-scripts/install-hooks
+scripts/setup
 scripts/start
 scripts/smoke
 scripts/demo-reset
 scripts/stop
 ```
 
-`scripts/install-hooks` installs the public secret-blocking pre-commit hook for a fresh clone. It is safe to run again and refuses to overwrite an unknown hook. The hook blocks credential-like filenames and likely secrets without printing matching content.
+`scripts/setup` checks the local Node/Python prerequisites and runs `scripts/install-hooks` for a fresh clone. The installer is safe to run again and refuses to overwrite an unknown hook. The hook blocks credential-like filenames and likely secrets without printing matching content. Setup does not open, initialize, or modify the family GBrain; follow the brain owner's separate prerequisite instructions.
 
 `scripts/start brain` and `scripts/stop brain` select a service. Available names are `brain`, `river`, `ingest`, `brief`, `sponsors`, and `web`. With no names, all services are selected. Start order is brain, River, ingest, brief, sponsors, web. Stop order is reversed. A selected service does not automatically start its dependencies.
 
@@ -60,6 +60,6 @@ HTTP calls use fixed 127.0.0.1 addresses, reject redirects, and bound response s
 - `checks.mjs`: read-only smoke and HTTP-only demo reset.
 - `lifecycle.test.mjs`, `fixtures/`, `hooks.test.mjs`: local synthetic tests.
 - `../../scripts/start`, `stop`, `smoke`, `demo-reset`: cwd-independent entrypoints.
-- `../../scripts/install-hooks`, `hooks/pre-commit`: public repository hook setup.
+- `../../scripts/setup`, `install-hooks`, `hooks/pre-commit`: public repository hook setup.
 
 Depends on shared `contract/index.mjs` and each service's documented HTTP API. Runtime does not import service code or read service storage. GBrain, River, Memorable, and UFO integration reality is reported by their service owners; runtime does not claim sponsor execution based on a health response.

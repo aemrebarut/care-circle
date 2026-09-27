@@ -11,7 +11,7 @@ Manage the local demo with exact process ownership, bounded health checks, read-
 
 ## Run
 
-`scripts/install-hooks`, `scripts/start`, `scripts/smoke`, `scripts/demo-reset`, `scripts/stop`. Select names with `scripts/start brain`. Tests: `npm test --prefix packages/runtime`. Startup allows 180 seconds per service by default for GBrain CLI latency.
+`scripts/setup` checks prerequisites and installs the public secret hook for a fresh clone. Then `scripts/start`, `scripts/smoke`, `scripts/demo-reset`, `scripts/stop`. Select names with `scripts/start brain`. Tests: `npm test --prefix packages/runtime`. Startup allows 180 seconds per service by default for GBrain CLI latency.
 
 ## Files
 
