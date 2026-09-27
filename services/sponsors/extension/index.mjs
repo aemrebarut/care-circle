@@ -113,27 +113,31 @@ async function readJson(req) {
 async function mcp(req, res) {
   if (req.method !== 'POST') return send(res, 405, { error: { code: 'METHOD_NOT_ALLOWED', message: 'Use POST for this stateless MCP endpoint.' } }, { Allow: 'POST' });
   const protocol = req.headers['mcp-protocol-version'];
-  if (protocol && !['2025-03-26', '2025-06-18'].includes(protocol)) throw fail('UNSUPPORTED_PROTOCOL', 'Supported MCP versions: 2025-03-26, 2025-06-18.', 400);
+  if (protocol && protocol !== '2025-06-18') throw fail('UNSUPPORTED_PROTOCOL', 'Supported MCP version: 2025-06-18.', 400);
   const accept = req.headers.accept || '';
   if (!accept.includes('application/json') || !accept.includes('text/event-stream')) throw fail('INVALID_ACCEPT', 'Accept both application/json and text/event-stream.', 406);
   const message = await readJson(req);
-  if (!message || Array.isArray(message) || message.jsonrpc !== '2.0' || typeof message.method !== 'string') {
+  const hasId = message && Object.hasOwn(message, 'id');
+  if (!message || Array.isArray(message) || message.jsonrpc !== '2.0' || typeof message.method !== 'string'
+    || (hasId && typeof message.id !== 'string' && !Number.isSafeInteger(message.id))
+    || (message.params !== undefined && (!message.params || typeof message.params !== 'object' || Array.isArray(message.params)))) {
     return send(res, 400, { jsonrpc: '2.0', id: null, error: { code: -32600, message: 'Invalid JSON-RPC request.' } });
   }
-  if (!Object.hasOwn(message, 'id')) return send(res, 202);
+  if (!hasId) return send(res, 202);
   const reply = (result) => send(res, 200, { jsonrpc: '2.0', id: message.id, result });
-  if (message.method === 'initialize') return reply({ protocolVersion: ['2025-03-26', '2025-06-18'].includes(message.params?.protocolVersion) ? message.params.protocolVersion : '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'care-circle-synthetic-clinic', version: '0.1.0' }, instructions: 'Synthetic local source only. This server does not provide medical advice or perform official UFO execution.' });
+  if (message.method === 'initialize') return reply({ protocolVersion: '2025-06-18', capabilities: { tools: {} }, serverInfo: { name: 'care-circle-synthetic-clinic', version: '0.1.0' }, instructions: 'Synthetic local source only. This server does not provide medical advice or perform official UFO execution.' });
   if (message.method === 'ping') return reply({});
   if (message.method === 'tools/list') return reply({ tools: [{ name: 'care_circle_fetch_clinic', description: 'Read fictional clinic details from the fixed local synthetic website, with source hash and provenance.', inputSchema: { type: 'object', properties: {}, additionalProperties: false }, annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false } }] });
-  if (message.method === 'tools/call' && message.params?.name === 'care_circle_fetch_clinic') {
+  if (message.method === 'tools/call') {
+    if (message.params?.name !== 'care_circle_fetch_clinic') return send(res, 200, { jsonrpc: '2.0', id: message.id, error: { code: -32602, message: 'Unknown tool name.' } });
     try { const result = await fetchClinic(message.params.arguments ?? {}); return reply({ content: [{ type: 'text', text: JSON.stringify(result) }], structuredContent: result, isError: false }); }
     catch (error) { return reply({ content: [{ type: 'text', text: error.message }], isError: true }); }
   }
-  return send(res, 200, { jsonrpc: '2.0', id: message.id, error: { code: -32601, message: 'Unknown method or tool.' } });
+  return send(res, 200, { jsonrpc: '2.0', id: message.id, error: { code: -32601, message: 'Unknown method.' } });
 }
 
 export function createClinicServer() {
-  const server = http.createServer({ maxHeaderSize: 8_192, requestTimeout: 5_000, headersTimeout: 5_000 }, (req, res) => {
+  const server = http.createServer({ maxHeaderSize: 8_192, requestTimeout: 5_000, headersTimeout: 5_000, connectionsCheckingInterval: 500 }, (req, res) => {
     const timer = setTimeout(() => {
       if (!res.headersSent) {
         res.once('finish', () => req.destroy());

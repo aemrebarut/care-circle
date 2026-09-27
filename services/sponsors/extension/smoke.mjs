@@ -1,10 +1,12 @@
 import assert from 'node:assert/strict';
 import http from 'node:http';
+import net from 'node:net';
 import { createHash } from 'node:crypto';
 import { createClinicServer, fetchClinic, getStatus } from './index.mjs';
 
 const base = 'http://127.0.0.1:4706';
 const adversarial = process.argv.includes('--adversarial');
+const existingOnly = process.argv.includes('--existing');
 const request = (path, options = {}) => fetch(`${base}${path}`, { ...options, redirect: 'manual', signal: AbortSignal.timeout(7_000) });
 const listen = (server) => new Promise((resolve, reject) => {
   server.once('error', reject);
@@ -25,11 +27,22 @@ const raw = (path, { method = 'GET', headers = {}, chunks = [] } = {}) => new Pr
   for (const chunk of chunks) req.write(chunk);
   req.end();
 });
+const partialHeader = () => new Promise((resolve, reject) => {
+  let response = '';
+  const socket = net.createConnection({ host: '127.0.0.1', port: 4706 }, () => {
+    socket.write('GET / HTTP/1.1\r\nHost: 127.0.0.1:4706\r\n');
+  });
+  socket.setTimeout(7_000, () => socket.destroy(new Error('Partial headers did not time out within 7 seconds')));
+  socket.on('data', (part) => { response += part.toString('utf8'); });
+  socket.on('error', reject);
+  socket.on('close', () => resolve(response));
+});
 
-let ownedServer = createClinicServer();
-let reuse = false;
+assert.ok(!(adversarial && existingOnly), 'Choose --adversarial or --existing, not both.');
+let ownedServer = existingOnly ? null : createClinicServer();
+let reuse = existingOnly;
 try {
-  try { await listen(ownedServer); }
+  try { if (ownedServer) await listen(ownedServer); }
   catch (error) {
     if (error.code !== 'EADDRINUSE') throw error;
     ownedServer = null;
@@ -59,7 +72,13 @@ try {
   }
   const initialized = await (await call('initialize', { protocolVersion: '2025-06-18', capabilities: {}, clientInfo: { name: 'care-circle-smoke', version: '1' } })).json();
   assert.equal(initialized.result.protocolVersion, '2025-06-18');
-  assert.equal((await (await call('initialize', { protocolVersion: '2025-03-26' })).json()).result.protocolVersion, '2025-03-26');
+  assert.equal((await (await call('initialize', { protocolVersion: '2025-03-26' })).json()).result.protocolVersion, '2025-06-18');
+  for (const id of [{}, [], null, 1.5]) {
+    const invalid = await call('ping', {}, id);
+    assert.equal(invalid.status, 400);
+    assert.deepEqual((await invalid.json()).error, { code: -32600, message: 'Invalid JSON-RPC request.' });
+  }
+  assert.equal((await (await call('ping', {}, 'text-id')).json()).id, 'text-id');
   assert.equal((await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' })).status, 202);
   const catalog = await (await call('tools/list')).json();
   assert.equal(catalog.result.tools[0].name, 'care_circle_fetch_clinic');
@@ -68,14 +87,18 @@ try {
   assert.equal(invocation.result.structuredContent.clinic.phone, fetched.clinic.phone);
   const denied = await (await call('tools/call', { name: 'care_circle_fetch_clinic', arguments: { url: 'https://example.test' } })).json();
   assert.equal(denied.result.isError, true);
+  assert.equal((await (await call('tools/call', { name: 'missing' })).json()).error.code, -32602);
+  assert.equal((await (await call('missing')).json()).error.code, -32601);
   assert.equal((await request('/mcp')).status, 405);
   assert.equal((await rpc({ jsonrpc: '2.0', id: 1, method: 'ping' }, { 'MCP-Protocol-Version': 'invalid' })).status, 400);
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 1, method: 'ping' }, { 'MCP-Protocol-Version': '2025-03-26' })).status, 400);
   assert.equal((await rpc({ jsonrpc: '2.0', id: 1, method: 'ping' }, { Accept: 'application/json' })).status, 406);
   assert.equal((await request('/mcp', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }, body: 'x'.repeat(8_193) })).status, 413);
   const chunked = await raw('/mcp', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream', 'Transfer-Encoding': 'chunked' }, chunks: ['x'.repeat(4_096), 'x'.repeat(4_097)] });
   assert.equal(chunked.status, 413);
   assert.equal(JSON.parse(chunked.body).error.code, 'BODY_TOO_LARGE');
   assert.equal((await request('/mcp', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json, text/event-stream' }, body: '{' })).status, 400);
+  assert.match(await partialHeader(), /^HTTP\/1\.1 408 /);
   console.log(`PASS clinic health, visible source, real fixed fetch, source hash, input rejection, MCP catalog/call and HTTP bounds (${reuse ? 'existing service' : 'owned temporary server'}).`);
 } finally {
   if (ownedServer) await close(ownedServer);

@@ -19,7 +19,7 @@ Parent command: `node services/sponsors/server.mjs` starts 4705 and 4706. Standa
 
 ## API
 
-Export `createClinicServer()` as an unbound node:http Server; caller must listen on 127.0.0.1:4706. Export `fetchClinic({})` as Promise of `{clinic,sourceUrl,fetchedAt,mode,evidence}` with mode local-http-fetch. Export `getStatus()` as sponsor mode and limitations. GET /health returns `{ok:true,service:"sponsors-clinic",synthetic:true}`. GET / serves visible fields and the same embedded JSON source. POST /mcp exposes initialize, ping, tools/list and tools/call for the single read-only care_circle_fetch_clinic tool. Protocols 2025-03-26 and 2025-06-18 are supported with negotiation.
+Export `createClinicServer()` as an unbound node:http Server; caller must listen on 127.0.0.1:4706. Export `fetchClinic({})` as Promise of `{clinic,sourceUrl,fetchedAt,mode,evidence}` with mode local-http-fetch. Export `getStatus()` as sponsor mode and limitations. GET /health returns `{ok:true,service:"sponsors-clinic",synthetic:true}`. GET / serves visible fields and the same embedded JSON source. POST /mcp exposes initialize, ping, tools/list and tools/call for the single read-only care_circle_fetch_clinic tool. Only protocol 2025-06-18 is supported; initialization offers June when another version is requested. Batch messages are rejected.
 
 ## Depends on
 
@@ -32,3 +32,5 @@ Fixed URL is http://127.0.0.1:4706/. Nonempty caller input, redirects and any ch
 ## Milestone evidence
 
 2026-09-27 initial smoke passed health, visible source and pharmacy, repeated response hash, real extraction, caller-input rejection, Host/Origin rejection, MCP initialization/catalog/invocation, malformed JSON, fixed and chunked 8193-byte request rejection, redirects, oversized response, replaced fixture and 3 second timeout. All servers created by that adversarial smoke were closed. Public UFO browser, MCP and terminal guides were read, but no official extension packaging schema was located.
+
+Independent review fixes verified against the runtime-owned service with `node services/sponsors/extension/smoke.mjs --existing`: malformed request IDs are rejected, unknown tool and method errors use distinct codes, only June 2025 protocol is accepted after negotiation, and incomplete headers receive HTTP 408 within 7 seconds. This verification performed no bind, process signal, reset or remote submission.
