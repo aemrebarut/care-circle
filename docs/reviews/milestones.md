@@ -77,3 +77,22 @@ Independent artifact audit passed for the authorized local sponsor proof window.
 - The production Memorable submission path now refuses unconditionally before credentials or requests, matching Emre's declined authorization.
 - The timed demo's narrow local sponsor wording is supported by these receipts. No full UFO runtime, hosted integration or learned procedure claim is supported.
 - The root README's Bun 1.3.11 minimum and unrelated npm-package warning match the [official GBrain installation instructions](https://github.com/garrytan/gbrain#install). No installer or initialization command was run by the reviewer.
+
+### Final print review, 15:52 Pacific
+
+The parent reviewer visually inspected the complete corrected page render from ui-nephrology-brief-final.pdf. The 20 mg daily September 27 visit claim and 10 mg daily September 24 pharmacy claim are separately labeled and cited. All eight source references, unresolved/actual-use caveats and the synthetic/Not medical advice footer are visible. No clipping was observed. Read-only pdfinfo confirms one A4 page, 594.96 by 841.92 points, 162,770 bytes.
+
+- PDF SHA-256: 7903b97143af5ad0557eec12761855668d67f3db7203591b62260c22c9e7430a.
+- Render SHA-256: d874afbe8257579ce1d6c7a39dc5955670b81d3d5093d849663b2d3c6bee0577.
+- QA receipt: tests/e2e/results/ui/ui-final-reprint-receipt.json. It records revision 10, zero mutating actions, no page errors and no blocked requests.
+- Focus receipt: tests/e2e/results/ui/ui-final-focus-receipt.json. It records source-heading focus, stable expanded River evidence across successful polls and the medication answer live region. It explicitly does not claim screen-reader audio testing and discloses an earlier response-wait timeout followed by successful verification.
+
+The browser/print gate is clear. The reviewer did not rerun browser or service calls. Two consecutive final HTTP cycles remain pending.
+
+## M3, 15:55 Pacific
+
+All R1 through R16 remain closed. Final README/runbook changes and exact local sponsor receipts have been reviewed. Corrected print is directly verified as one readable A4 page with both dose claims and all eight sources. No new capabilities or implementation edits are proposed by review.
+
+QA now owns the exclusive two-consecutive-cycle window after all browser and sponsor releases. The reviewer sampled only GET /health at 22:55:01Z: web, ingest, brief, River, sponsors and clinic returned 200; brain returned 503 at revision 11 during QA's active mutation window. This concurrent sample does not by itself establish a defect. QA was notified for correlation; final health will be checked after release. No reset, retry, restart or shared write was attempted.
+
+Review-owned paths remain docs/reviews/. All git operations now use the per-invocation CommandLineTools PATH workaround; no license acceptance or global settings change was performed. Stabilization continues through freeze, with final two-cycle receipts still pending.
