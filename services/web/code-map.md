@@ -1,6 +1,9 @@
 ---
-title: Care Circle Web Family Room
 type: note
+title: Care Circle Web Family Room
+ingested_at: '2026-09-27T22:05:40.313Z'
+source_kind: put_page
+ingested_via: put_page
 ---
 
 # Purpose
@@ -22,4 +25,4 @@ GET /health reports the web process only. /api/brain/*, /api/ingest/*, /api/brie
 All product data comes from HTTP. Initial loading and service failures are visible, not replaced by fixtures. A newer visit claim never resolves a different pharmacy source. Note extraction is reviewed before save; unknown commit retries retain the same idempotency key while the note is unchanged. No clinical recommendations. Sponsor status and evidence distinguish deterministic fallback, local simulation, and local HTTP fetch. Browser content uses DOM text, not source HTML. No cross-lane runtime imports except shared contract. No external submissions, credentials, or network targets.
 
 # Milestone
-M1: Proxy smoke 67 checks passed. Native Chrome rendered the family room, unavailable dependency errors, and live deterministic note review with all warnings. Runtime owns persistent 4700. All dependency code pages read. Live read-only revision 2 has 32 pages, 132 edges, recorded 20 mg visit claim and both unresolved discrepancy sources. Two focused UI state regressions pass in an in-memory DOM: failed medication refresh cannot redraw stale doses; pending saves restore before requests settle and reuse their original key after reload. Sponsor status initialization is isolated from action evidence. Shared-state mutation windows belong to ingest, then QA, then web; no web mutations yet.
+M1: Proxy smoke 67 checks passed. Native Chrome rendered the family room, unavailable dependency errors, and live deterministic note review with all warnings. Runtime owns persistent 4700. All dependency code pages read. Live read-only revision 2 has 32 pages, 132 edges, recorded 20 mg visit claim and both unresolved discrepancy sources. Four focused UI state regressions pass in an in-memory DOM: failed medication refresh cannot redraw stale doses; pending saves restore before requests settle and reuse their original key after reload. Sponsor status initialization is isolated from action evidence. Shared-state mutation windows belong to ingest, then QA, then web; no web mutations yet.

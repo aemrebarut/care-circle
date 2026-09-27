@@ -177,7 +177,7 @@ function renderPreview(result) {
   const warnings = Array.isArray(result.warnings) ? result.warnings : [];
   const preview = $('#note-preview'); preview.hidden = false;
   const list = (items) => el('ul',{},items.map(item=>el('li',{},item)));
-  replace(preview,el('h3',{},'A moment to review'),el('span',{class:`pill ${result.method === 'river' ? '' : 'warning'}`},result.method === 'river' ? 'River extraction' : 'Deterministic extraction'),el('p',{},extraction.visit.summary || 'Visit extracted from your note.'),warnings.length && el('div',{class:'warning-box'},el('strong',{},'Please check these limitations.'),list(warnings.map(textValue))),el('h4',{},'Medication source claims'),extraction.medicationChanges?.length ? list(extraction.medicationChanges.map(change=>`${change.name || titleFor(change.medicationId)}: ${change.dose}, ${change.frequency || 'frequency not specified'}`)) : el('p',{},'No medication change extracted.'),extraction.questions?.length && [el('h4',{},'Questions to carry forward'),list(extraction.questions.map(question=>question.text))],extraction.followUps?.length && [el('h4',{},'Follow-ups in the note'),list(extraction.followUps.map(item=>item.text))],el('p',{class:'tiny'},'This adds a source claim. It does not resolve differing pharmacy records or recommend a treatment.'),el('button',{type:'button',class:'button button-primary full-width',id:'save-note',onClick:saveNote},'Save to the family brain'));
+  replace(preview,el('h3',{},'A moment to review'),el('span',{class:`pill ${result.method === 'river' ? '' : 'warning'}`},result.method === 'river' ? (result.provenance?.mode === 'cached-replay' ? 'River cached replay' : 'River extraction') : 'Deterministic extraction'),el('p',{},extraction.visit.summary || 'Visit extracted from your note.'),result.provenance?.mode === 'cached-replay' && el('p',{class:'tiny'},'A saved prediction for this exact synthetic sample. No live inference occurred.'),warnings.length && el('div',{class:'warning-box'},el('strong',{},'Please check these limitations.'),list(warnings.map(textValue))),el('h4',{},'Medication source claims'),extraction.medicationChanges?.length ? list(extraction.medicationChanges.map(change=>`${change.name || titleFor(change.medicationId)}: ${change.dose}, ${change.frequency || 'frequency not specified'}`)) : el('p',{},'No medication change extracted.'),extraction.questions?.length && [el('h4',{},'Questions to carry forward'),list(extraction.questions.map(question=>question.text))],extraction.followUps?.length && [el('h4',{},'Follow-ups in the note'),list(extraction.followUps.map(item=>item.text))],el('p',{class:'tiny'},'This adds a source claim. It does not resolve differing pharmacy records or recommend a treatment.'),el('button',{type:'button',class:'button button-primary full-width',id:'save-note',onClick:saveNote},'Save to the family brain'));
 }
 async function reviewNote(event) {
   event.preventDefault(); const payload = notePayload(); if (!payload.note) return;
@@ -227,16 +227,26 @@ function renderBrief(brief) {
   replace('#brief-content',content);
 }
 
-function modeLabel(mode) { return ({'local-simulation':'Local simulation','local-http-fetch':'Local HTTP lookup','deterministic':'Deterministic fallback','river':'River connected','not-connected':'Not connected','unavailable':'Unavailable'})[mode] || String(mode || 'Not connected').replaceAll('-',' '); }
+function modeLabel(mode) { return ({'local-simulation':'Local simulation','local-http-fetch':'Local HTTP lookup','deterministic':'Deterministic fallback','river':'River output','cached-replay':'River cached replay','not-connected':'Not connected','unavailable':'Unavailable'})[mode] || String(mode || 'Not connected').replaceAll('-',' '); }
 function setMode(selector, mode) { $(selector).textContent = modeLabel(mode); $(selector).className = `pill ${['river','live','connected'].includes(mode) ? '' : 'warning'}`; }
 function limitationsText(value) { return Array.isArray(value) ? value.map(textValue).join(' ') : textValue(value); }
+function renderRiverMetrics(metrics) {
+  if (!metrics) return el('p',{},'No verified base and trained model comparison yet.');
+  const base = metrics.base?.counts, trained = metrics.trained?.counts;
+  const comparable = metrics.paired === true && metrics.audit?.verified === true && Number.isInteger(base?.taskExact) && Number.isInteger(trained?.taskExact) && base.examples > 0 && base.examples === trained.examples;
+  if (!comparable) return evidenceDetails(metrics,'View reported evaluation results');
+  const budget = metrics.protocol?.generation?.max_tokens;
+  const baseCapped = metrics.generationOutcomes?.base?.length;
+  return el('div',{class:'evaluation-summary'},el('p',{class:'sponsor-line'},'Strict JSON task match'),el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},`${base.taskExact}/${base.examples}`),el('span',{},'base model')),el('div',{class:'metric'},el('strong',{},`${trained.taskExact}/${trained.examples}`),el('span',{},'River trained'))),el('p',{},`Identical prompt${budget ? ` and ${Number(budget).toLocaleString()}-token completion limit` : ''}. ${Number.isInteger(baseCapped) ? `${baseCapped} base responses reached the token cap. ` : ''}Synthetic test only, not clinical accuracy.`),evidenceDetails({measurement:metrics.measurement,interpretation:metrics.interpretation,base:metrics.base?.counts,trained:metrics.trained?.counts,evaluatedAt:metrics.evaluatedAt},'Evaluation method and limitations'));
+}
 function renderRiverStatus(result) {
-  setMode('#river-mode',result.mode);
+  const cached = result.extractionMode === 'cached-replay' || result.replay?.mode === 'cached-replay';
+  setMode('#river-mode',cached ? 'cached-replay' : result.mode);
   const experiment = result.experiment || {};
   const trainingLabels = {training:'Training in progress',creating_model:'Creating the training model',evaluating:'Evaluating the trained model',completed:'Training run completed',failed:'Training run needs attention',not_started:'Training has not started'};
   const training = trainingLabels[result.trainingStatus] || textValue(result.trainingStatus).replaceAll('_',' ') || 'Training status not reported';
   const counts = result.corpus?.splits;
-  replace('#river-details',el('p',{},el('strong',{},training)),Number.isFinite(experiment.completedSteps) && Number.isFinite(experiment.plannedSteps) && el('p',{},`${experiment.completedSteps} of ${experiment.plannedSteps} training steps reported.`),result.corpus?.total && el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},result.corpus.total),el('span',{},'synthetic notes')),counts?.test?.count && el('div',{class:'metric'},el('strong',{},counts.test.count),el('span',{},'held-out examples'))),el('p',{},result.extractionAvailable === true ? 'The service reports live model extraction available.' : 'Live model extraction is not available. Notes use the deterministic demo parser.'),result.metrics ? evidenceDetails(result.metrics,'View measured evaluation results') : el('p',{},'No verified base and trained model comparison yet.'),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.limitations)),experiment.model && el('p',{},`Model: ${experiment.model}`)));
+  replace('#river-details',el('p',{},el('strong',{},training)),Number.isFinite(experiment.completedSteps) && Number.isFinite(experiment.plannedSteps) && el('p',{},`${experiment.completedSteps} of ${experiment.plannedSteps} training steps reported.`),result.corpus?.total && el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},result.corpus.total),el('span',{},'synthetic notes')),counts?.test?.count && el('div',{class:'metric'},el('strong',{},counts.test.count),el('span',{},'held-out examples'))),el('p',{},cached ? 'The exact sample note can replay a saved River prediction. No live inference occurs; other notes use the demo parser.' : result.extractionAvailable === true ? 'Model output is available. See the reported execution mode and limitations.' : 'Live model extraction is not available. Notes use the deterministic demo parser.'),renderRiverMetrics(result.metrics),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.limitations)),experiment.model && el('p',{},`Model: ${experiment.model}`)));
 }
 async function loadRiverStatus() {
   try { renderRiverStatus(await api('river/status',{timeout:20000})); }
@@ -248,11 +258,11 @@ async function loadHelpersStatus() {
     const result = await api('sponsors/status',{timeout:20000});
     if ((state.procedureVersion || 0) === procedureVersion) {
     setMode('#procedure-mode',result.memorable?.mode);
-    replace('#procedure-details',el('p',{},result.memorable?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.memorable?.limitations)));
+    replace('#procedure-details',el('p',{},result.memorable?.mode === 'local-simulation' ? 'A local synthetic checklist. No insurer is contacted, and no coverage decision is made.' : result.memorable?.status || 'Integration status not reported.'),result.memorable?.offlineRecallProof?.status === 'recorded-test' && el('p',{},'Official Memorable local recall was verified with a manually seeded procedure. Trace extraction and official replay did not run.'),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.memorable?.limitations))));
     }
     if ((state.clinicVersion || 0) === clinicVersion) {
     setMode('#clinic-mode',result.ufo?.mode);
-    replace('#clinic-details',el('p',{},result.ufo?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.ufo?.limitations)));
+    replace('#clinic-details',el('p',{},result.ufo?.mode === 'local-http-fetch' ? 'Reads the fictional clinic on this computer. Official UFO execution has not run.' : result.ufo?.status || 'Integration status not reported.'),result.ufo?.browserObservation?.officialUfoExecution === false && el('p',{},`A local browser check was recorded ${dateLabel(result.ufo.browserObservation.observedAt)}.`),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.ufo?.limitations)),result.ufo?.browserObservation && el('p',{},`Browser evidence: ${result.ufo.browserObservation.driver || 'local observation'}.`)));
     }
   } catch(error) {
     if ((state.procedureVersion || 0) === procedureVersion) { setMode('#procedure-mode','unavailable'); replace('#procedure-details',errorBlock(error,loadHelpersStatus)); }

@@ -183,3 +183,35 @@ for (const sponsorFailure of [false, true]) {
     assert.equal(harness.document.querySelector('#clinic-details').textContent, clinic);
   });
 }
+
+test('cached River output is identified as replay in both status and reviewed extraction', async () => {
+  const harness = createHarness();
+  harness.reply('brain/state', family);
+  harness.reply('brain/medications', medications);
+  harness.reply('brief/contradictions', { contradictions: [] });
+  harness.reply('sponsors/status', { memorable: { mode: 'local-simulation' }, ufo: { mode: 'local-http-fetch' } });
+  harness.reply('river/status', {
+    mode: 'river', trainingStatus: 'completed', extractionAvailable: true, extractionMode: 'cached-replay',
+    replay: { mode: 'cached-replay', liveInference: false }, limitations: [],
+    metrics: { paired: true, audit: { verified: true }, base: { counts: { examples: 72, taskExact: 0 } }, trained: { counts: { examples: 72, taskExact: 71 } }, generationOutcomes: { base: { length: 54 } }, protocol: { generation: { max_tokens: 1024 } } },
+  });
+  await harness.boot;
+  assert.equal(harness.document.querySelector('#river-mode').textContent, 'River cached replay');
+  const status = harness.document.querySelector('#river-details').textContent;
+  assert.match(status, /No live inference occurs/);
+  assert.match(status, /0\/72/);
+  assert.match(status, /71\/72/);
+  assert.match(status, /54 base responses reached the token cap/);
+  assert.match(status, /not clinical accuracy/);
+
+  harness.document.querySelector('#note-input').value = 'Synthetic cached note.';
+  const review = harness.document.querySelector('#note-form').dispatch('submit');
+  harness.reply('ingest/extract', {
+    extraction: { visit: { summary: 'Synthetic cached note.' }, medicationChanges: [], questions: [], followUps: [] },
+    method: 'river', warnings: [], provenance: { mode: 'cached-replay', liveInference: false },
+  });
+  await review;
+  const preview = harness.document.querySelector('#note-preview').textContent;
+  assert.match(preview, /River cached replay/);
+  assert.match(preview, /No live inference occurred/);
+});
