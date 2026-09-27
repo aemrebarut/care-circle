@@ -62,11 +62,13 @@ Evidence: independent pure-function regression after the 31-test owner suite pas
 
 ## R8: Interrupted runtime operation can strand its lock
 
-Priority P2. Owner cc-runtime. Fix passes independent static review; 55 owner-reported synthetic lifecycle/hook tests pass, including lock recovery and cancellation.
+Priority P2. Owner cc-runtime. Reopened at 15:13 Pacific for live unknown owner handling. The first fix resolved interruption cleanup but the initial static closure was too broad.
 
 Initial packages/runtime/lifecycle.mjs retried an existing operation.lock without verifying the owner. Cleanup lived only in async finally, with no CLI signal handling. Process interruption could leave start, stop and reset permanently timing out. Recovery must verify that the recorded owner is dead and must never delete a lock held by a live unknown process.
 
 Evidence: independent static control-flow review. No lifecycle interruption test was run against shared services.
+
+Follow-up evidence: recoverDeadLock accepted any nonempty identity and treated any inequality with current process identity as death. A live PID with saved identity unknown was therefore reclaimed. The existing fixture explicitly expected recovery with process.pid and an arbitrary previous identity string. The owner was asked to recover only when the PID is absent, or when validated immutable birth identity proves a different incarnation. Malformed identity and same-birth command changes must fail closed.
 
 ## R9: Missing River output counted as valid JSON
 
@@ -86,7 +88,7 @@ At 15:04, the independent extractor recheck passed 40 pure unit tests and 24 add
 
 ## R10: Paired evaluation verifier accepts incompatible run metadata
 
-Priority P2. Owner cc-river. Open, reported 15:04 Pacific.
+Priority P2. Owner cc-river. Fixed and independently reverified at 15:12 Pacific.
 
 The initial compare() verifier accepted paired true with base temperature 0, seed 1 and trained temperature 1, seed 99, plus a trained checkpoint different from the protocol. Prompt/input hashes alone did not validate generation settings and checkpoint provenance. The training runner itself uses matching settings; this finding concerns the verifier and is not evidence that an actual model run was mismatched.
 
@@ -94,7 +96,7 @@ Evidence: independent pure comparison with fabricated review-only rows and match
 
 ## R11: Training protocol handoff and evaluation CLI disagree
 
-Priority P2. Owner cc-river. Open, reported 15:04 Pacific.
+Priority P2. Owner cc-river. Fixed by producer/consumer inspection at 15:12 Pacific. The emitted protocol now has required split, prompt and generation hashes and is updated with the saved checkpoint.
 
 The initial training runner wrote a payload-manifest-shaped protocol.json, while eval.mjs expected top-level testSha256, promptSha256 and trainedCheckpoint fields. No emitted conversion was present at that snapshot. The advertised CLI path needs a compatible protocol artifact and an offline handoff test.
 
@@ -102,7 +104,7 @@ Evidence: independent static producer/consumer inspection. Training was not invo
 
 ## R12: Future visit changes current dose and source chronology diverges
 
-Priority P1 for future-date inconsistency, P2 for stale doctor prose. Owner cc-brain, with extraction guard owned by cc-ingest. Open implementation; contract resolved in f2c881a.
+Priority P1 for future-date inconsistency, P2 for stale doctor prose. Owner cc-brain, with extraction guard owned by cc-ingest. Fixed and directly reverified at 15:09 Pacific; contract resolved in f2c881a.
 
 A direct in-memory brain ingestion dated October 1 produced lisinopril dose 20 mg in medications(), although the demo as-of date is September 27 and brief excludes future claims. It also updated doctor.fields.lastVisitDate to October 1 while the doctor body still said September 23.
 
@@ -110,13 +112,17 @@ Lead decision: reject future visits with 422 before mutation at extraction and b
 
 Evidence: applyIngest() with a cloned synthetic seed, followed by medications() and doctor page inspection. No shared GBrain or HTTP mutation.
 
+Fix evidence: explicit and requested future dates reject with 422 in extraction; direct brain applyIngest rejects with byte-identical input state. A September 27 visit with October 1 follow-up succeeds. Doctor displayed date equals the field and cites the causing visit. Brain domain tests passed 18 of 18.
+
 ## R13: Printable warnings and past discrepancy labels
 
-Priority P2. Owner cc-web. Open, reported 15:06 Pacific.
+Priority P2. Owner cc-web. Fixed by direct code inspection at 15:08 Pacific.
 
 Initial renderBrief omitted brief.warnings, losing record-gap caveats in the printable view. Medication rows always used Sources disagree even when temporalStatus was past-discrepancy-unreconciled and the latest records agreed. Preserve warnings in the print artifact and distinguish an earlier unresolved discrepancy.
 
 Static UI review otherwise found stable same-page retry keys, disabled editing while saving, success receipt checks, text-node source rendering and truthful local sponsor labels. Pending-key persistence across browser reload was suggested as resilience improvement, not a release blocker.
+
+The fix adds a print-visible Record limitations section and the Earlier discrepancy unresolved label. Pending-save payload and key now survive browser-session reload, clear after confirmed save or explicit edit, and restore for review before retry. Proxy validation preserves safe idempotency, outcome and retryability metadata.
 
 ## Positive observations
 
