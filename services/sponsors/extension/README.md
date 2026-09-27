@@ -25,7 +25,9 @@ Official public docs were read on 2026-09-27 using HTTPS GET requests:
 - [UFO terminal guide](https://ufo.ai/docs/work/terminal/) describes installation and sign-in. Neither installation nor sign-in was performed.
 - [MCP transport specification](https://modelcontextprotocol.io/specification/2025-06-18/basic/transports) describes JSON responses, origin checks and optional GET/SSE behavior used by the local adapter.
 
-No official UFO extension packaging schema was found in the public guides inspected. `ufo-task.md` is a ready task brief for an authorized, locally reachable browser session; the MCP endpoint is a tested adapter asset. Neither proves UFO execution. No account, remote connection, tunnel, publication or telemetry submission has occurred. Enabling hosted UFO access would require a separately authorized networking and data-submission plan from cc-lead; this package never enables one.
+The official documentation sitemap's 55 guides did not describe extension packaging, but its GitHub link led to the official [ufo-ai/ufo-core Python extension format](https://github.com/ufo-ai/ufo-core#extend-it). The authored package in `ufo-package/` now implements that format against a pinned SDK commit. Its offline receipt proves installed entry-point discovery, real SDK manifest/schema construction and direct SDK handler testing with a fake transport. It does not prove a full UFO runtime session. See `ufo-package/README.md` for the precise boundary and any later local invocation receipt.
+
+`ufo-task.md` is a ready task brief for an authorized, locally reachable browser session; the MCP endpoint is a tested adapter asset. No account, remote connection, tunnel, publication or telemetry submission has occurred. Enabling hosted UFO access would require a separately authorized networking and data-submission plan from cc-lead; this package never enables one.
 
 ## Files and constraints
 

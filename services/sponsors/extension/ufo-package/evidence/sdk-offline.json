@@ -1,0 +1,44 @@
+{
+  "mode": "official-sdk-local-tool-proof",
+  "observedAt": "2026-09-27T22:31:14.621098+00:00",
+  "sdk": {
+    "distribution": "ufo",
+    "version": "0.1.0",
+    "commit": "63ba388ed449ff46c9d70744119dffc85df0fbf8",
+    "sourceUrl": "https://github.com/ufo-ai/ufo-core/archive/63ba388ed449ff46c9d70744119dffc85df0fbf8.tar.gz"
+  },
+  "officialSdkRegistration": true,
+  "registrationMethod": "Installed Python entry-point discovery, official Manifest/ToolDef construction and official tool schema generation",
+  "officialSdkToolInvocation": true,
+  "invocationMethod": "Direct SDK ToolDef handler call; no runtime dispatcher or model",
+  "transportMode": "offline-fake-transport",
+  "context": "None; handler does not inspect runtime context or credentials",
+  "officialUfoExecution": false,
+  "hostedExecution": false,
+  "fullRuntimeExecution": false,
+  "modelCalls": 0,
+  "accountsCreated": 0,
+  "telemetrySubmitted": false,
+  "networkPolicy": "All socket connections and DNS resolution denied",
+  "inheritedEnvironment": false,
+  "deniedOperationAttempts": 1,
+  "blockedCapabilityProbes": [
+    {
+      "library": "urllib3",
+      "probe": "IPv6 availability",
+      "target": "[::1]:0",
+      "bindPrevented": true
+    }
+  ],
+  "allowedNetworkOperations": [],
+  "unexpectedProhibitedOperations": 0,
+  "checks": [
+    "entry-point",
+    "pinned-sdk",
+    "manifest",
+    "tool-schema",
+    "empty-input",
+    "typed-result",
+    "typed-failure"
+  ]
+}

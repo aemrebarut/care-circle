@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "care-circle-ufo-clinic"
+version = "0.1.0"
+description = "Local synthetic clinic tool for the public UFO Python extension SDK"
+requires-python = ">=3.12"
+dependencies = [
+  "ufo @ https://github.com/ufo-ai/ufo-core/archive/63ba388ed449ff46c9d70744119dffc85df0fbf8.tar.gz",
+]
+
+[project.entry-points."ufo.extension"]
+care_circle_clinic = "ufo_ext_care_circle.manifest:manifest"
+
+[tool.setuptools.packages.find]
+where = ["src"]
