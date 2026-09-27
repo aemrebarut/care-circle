@@ -1,0 +1,13 @@
+{
+  "name": "@care-circle/sponsors",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic procedure replay and loopback clinic evidence for Care Circle",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node smoke.mjs",
+    "test:components": "npm test --prefix procedure && npm test --prefix extension"
+  },
+  "engines": { "node": ">=22" }
+}
