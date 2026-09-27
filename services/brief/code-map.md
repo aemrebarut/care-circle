@@ -13,7 +13,7 @@ Graph-grounded pre-visit brief, recorded medication answer and unresolved source
 
 # Files
 
-`services/brief/server.mjs`, `domain.mjs`, `README.md`, `package.json`, `smoke.mjs`, `test/fixture.mjs`, `test/domain.test.mjs`, `test/http.test.mjs`, `code-map.md`.
+`services/brief/server.mjs`, `domain.mjs`, `README.md`, `REVIEW.md`, `package.json`, `smoke.mjs`, `test/fixture.mjs`, `test/domain.test.mjs`, `test/http.test.mjs`, `code-map.md`.
 
 # API
 
@@ -32,3 +32,5 @@ No cross-lane imports except shared contract; no family database reads. Traversa
 M1 service d9204b3 and reviewed fixes bb3cda8 committed and pushed. All 21 focused tests pass; Astra xhigh reviewer cleared targeted semantics and citations. Real-brain read-only smoke passed at revision 1 after runtime restart: seven recorded meds, one actual amlodipine change, two other visits, two open nephrology questions, zero discrepancies or warnings; all quotes resolve and match. Seed Markdown is 256 words with six source citations. Runtime owns live 4703. First smoke attempt overlapped restart and failed honestly with 502; repeat after healthy state passed. No external sponsor activity.
 
 Post-ingest read-only smoke and targeted assertions passed at revision 2 after the persistence restart: seven meds, exactly two changes, three other visits, three questions including potassium, one unresolved 20 mg visit versus 10 mg pharmacy discrepancy, no warnings, all quotes exact. Demo Markdown is 347 words and nine sources. Independent QA reports first full HTTP cycle 32/32 including sticky historical discrepancy and exact change-set checks. Browser print pagination and final consecutive cycles are still separate gates.
+
+M2: QA reports real Chromium print output is one A4 page with no visual overflow. Its initial renderer omitted explicit conflict dose values, although backend JSON and Markdown both retained them. Web fixed rendering in 45a2295; reprint is pending runtime maintenance release. No brief code change was required. Independent oversized chunked-request probe returned the expected 413 JSON error, and its owned fixture listener closed. Final two-cycle acceptance is still pending.

@@ -27,3 +27,7 @@ No sponsor SDK is used in the brief service. No external submissions, credential
 The same read-only smoke passed at revision 2 after runtime's post-ingest persistence restart. Targeted assertions verified seven recorded medications; exactly two actual changes, amlodipine on September 23 and lisinopril on September 27; three other visits; three open questions including potassium; one unresolved discrepancy; and zero record-gap warnings. The discrepancy retains the original 10 mg pharmacy source and the new 20 mg visit source with exact medication-specific quotes. The recorded answer labels the visit's 20 mg dose as a source claim. Demo Markdown is 347 words with nine numbered source citations.
 
 The independent QA lane reports its first full HTTP acceptance cycle passed 32/32, including persistent discrepancy history, exact medication change sets and source quotes. This is a reported independent receipt. Actual browser print pagination and two final consecutive full cycles remain separate acceptance gates.
+
+## M2 print review
+
+QA reports actual Chromium print output of one A4 page, visually inspected with no overflow. The first UI renderer omitted the conflicting dose values despite their presence in backend JSON and Markdown. Web owns and fixed that issue in 45a2295, including dose, frequency, source, date and past-discrepancy wording. A read-only reprint after runtime maintenance remains pending. No backend compaction or service change was needed.
