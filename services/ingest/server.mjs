@@ -104,7 +104,7 @@ function validatedProvenance(value, input) {
   const textKeys = ['model', 'checkpoint', 'requestId', 'sampledAt'];
   const hashKeys = ['inputSha256', 'promptSha256', 'outputSha256'];
   if (textKeys.some(key => typeof value[key] !== 'string' || !value[key].trim() || value[key].length > 256 || /[\u0000-\u001f]/.test(value[key]))) throw new Error('Invalid River provenance field');
-  if (hashKeys.some(key => !/^[a-f0-9]{64}$/.test(value[key] ?? ''))) throw new Error('Invalid River provenance digest');
+  if (hashKeys.some(key => typeof value[key] !== 'string' || !/^[a-f0-9]{64}$/.test(value[key]))) throw new Error('Invalid River provenance digest');
   if (!Number.isFinite(Date.parse(value.sampledAt)) || !value.checkpoint.startsWith('river://')) throw new Error('Invalid River model provenance');
   // River's provenance uses sorted keys for this flat canonical input object.
   const expectedInput = createHash('sha256').update(JSON.stringify({ authorId: input.authorId, date: input.date, note: input.note })).digest('hex');

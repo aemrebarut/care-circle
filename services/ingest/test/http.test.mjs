@@ -165,7 +165,7 @@ test('validated cached provenance survives preview and save without a live-infer
       assert.ok(result.data.warnings.some(value => value.includes('No live inference occurred')));
     }
   });
-  for (const invalid of [{ ...provenance, liveInference: true }, { ...provenance, inputSha256: '0'.repeat(64) }, { ...provenance, requestId: '' }]) {
+  for (const invalid of [{ ...provenance, liveInference: true }, { ...provenance, inputSha256: '0'.repeat(64) }, { ...provenance, requestId: '' }, { ...provenance, promptSha256: ['a'.repeat(64)] }, { ...provenance, outputSha256: ['b'.repeat(64)] }]) {
     await withServer({ useRiver: true, fetchImpl: async () => reply({ ...good, provenance: invalid }) }, async () => {
       const result = await post('/v1/extract', input);
       assert.equal(result.data.method, 'deterministic');
