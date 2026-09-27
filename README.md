@@ -12,7 +12,7 @@ Built from scratch during the Own Your Intelligence Hackathon on September 27, 2
 
 ## Run the local demo
 
-Requirements: Node 22 or newer, Python 3, and GBrain 0.59 installed as `gbrain`. The hackathon machine uses Node 26. The core app has no dependency install or build step.
+Requirements: Node 22 or newer, Python 3, Bun 1.3.11 or newer on PATH, a POSIX shell with `ps`, and GBrain 0.59 installed as `gbrain`. Install GBrain from its [official GitHub instructions](https://github.com/garrytan/gbrain#install); the npm package named `gbrain` is unrelated. The hackathon machine uses Node 26. The core app has no dependency install or build step.
 
 ```sh
 git clone https://github.com/aemrebarut/care-circle.git
