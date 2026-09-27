@@ -1,10 +1,25 @@
 import assert from 'node:assert/strict';
+import { setTimeout as delay } from 'node:timers/promises';
 
 const base = 'http://127.0.0.1:4701';
 async function get(path) {
-  const response = await fetch(`${base}${path}`, { signal: AbortSignal.timeout(180_000) });
-  assert.equal(response.status, 200, `GET ${path} returned ${response.status}`);
-  return response.json();
+  const deadline = Date.now() + 180_000;
+  while (Date.now() < deadline) {
+    let response;
+    try { response = await fetch(`${base}${path}`, { signal: AbortSignal.timeout(5000) }); } catch (error) {
+      if (Date.now() >= deadline) throw error;
+      await delay(500);
+      continue;
+    }
+    if (response.status === 503) {
+      await response.arrayBuffer();
+      await delay(500);
+      continue;
+    }
+    assert.equal(response.status, 200, `GET ${path} returned ${response.status}`);
+    return response.json();
+  }
+  assert.fail(`GET ${path} did not become ready within 180 seconds`);
 }
 const health = await get('/health');
 assert.equal(health.service, 'brain');
