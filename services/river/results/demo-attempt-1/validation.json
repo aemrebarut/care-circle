@@ -1,0 +1,9 @@
+{
+  "accepted": false,
+  "reason": "unsupported_inferred_due_date",
+  "rejectedValue": "2026-09-30",
+  "sourceText": "Wants potassium rechecked before nephrology Tuesday.",
+  "rawOutputModified": false,
+  "requestId": "f96c18f2-99a5-4905-9047-db8e9cdb5b6c",
+  "benchmarkAffected": false
+}

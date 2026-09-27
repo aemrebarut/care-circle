@@ -1,0 +1,29 @@
+{
+  "artifactUse": "Unvalidated raw prediction. Parent validates before publishing an exact-input cached replay. No arbitrary-input endpoint.",
+  "checkpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+  "createdAt": "2026-09-27T22:15:21.174342+00:00",
+  "expectedApiCalls": {
+    "checkpoint_sample_submissions": 1,
+    "create_session": 1
+  },
+  "generationSha256": "5d9ca31e88e074b0ba3b26de41023dea591d76ed68dd7e8665910255d23d631e",
+  "goldSubmitted": false,
+  "heldOutEvaluationCalls": 0,
+  "inputSha256": "53353c5fa30e8f7ee20526c8edcdac38822f38bc32bfdba59ebd8c0e164e52c4",
+  "limits": {
+    "maxPolls": 900,
+    "maxRunSeconds": 660,
+    "operationTimeoutSeconds": 300,
+    "submissionRetries": 0
+  },
+  "model": "Qwen/Qwen3.5-9B",
+  "originalManifestSha256": "039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b",
+  "pairedProofSha256": "ea160c86753c845878910597d47be16d2cbb1747c80464dbf5a42e5112549025",
+  "payloadSha256": "b346d681e9d5b08850a053eb48fa31e120926273bf24eb7aa39795f446a50659",
+  "promptSha256": "a2a57ddd2c649fa1bac98b06ad32da41944b3ac997be929b2670b02e93e5a422",
+  "schema": "care-circle-fixed-demo-v1",
+  "scope": "fixed-contract-demo-note-only",
+  "syntheticOnly": true,
+  "trainingCalls": 0,
+  "transportNotes": "SDK polling and heartbeats are additional bounded transport calls. No model creation or deployment."
+}

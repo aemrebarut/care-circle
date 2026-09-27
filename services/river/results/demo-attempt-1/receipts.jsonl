@@ -1,0 +1,5 @@
+{"at":"2026-09-27T22:17:02.063668+00:00","operation":"create_session_attempt"}
+{"at":"2026-09-27T22:17:04.450877+00:00","operation":"session_created","sessionId":"df83ab73-a696-46f4-8028-9c85260ac2d3"}
+{"at":"2026-09-27T22:17:04.451292+00:00","checkpoint":"river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final","inputSha256":"53353c5fa30e8f7ee20526c8edcdac38822f38bc32bfdba59ebd8c0e164e52c4","model":"Qwen/Qwen3.5-9B","operation":"checkpoint_sample_attempt","promptSha256":"a2a57ddd2c649fa1bac98b06ad32da41944b3ac997be929b2670b02e93e5a422"}
+{"at":"2026-09-27T22:17:26.725189+00:00","operation":"checkpoint_sample_completed","predictionSha256":"c0d638cb6790cd94afde8e28c6e042fb97d6be38c7e262c41295e6115f686ac3","requestId":"f96c18f2-99a5-4905-9047-db8e9cdb5b6c"}
+{"at":"2026-09-27T22:17:26.810571+00:00","operation":"session_cleanup_completed"}

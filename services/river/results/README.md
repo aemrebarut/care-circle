@@ -14,4 +14,10 @@ services/river/.venv/bin/python services/river/training/run.py run \
   --submit --load-authorized-key
 ```
 
-This file records the plan, not proof that training completed. Safe actual receipts and scores are added only after execution. Unit-test fixture metrics are never published here.
+The run completed on 2026-09-27 at 15:12:32 Pacific: 21 training steps, a saved checkpoint, and 72 predictions per evaluation arm. `comparison.json` contains independently verified scores and required interpretation caveats. `experiment-1/` contains the unmodified raw predictions, actual request receipts, paired proof, and protocol. `review/result-audit.md` records the independent arithmetic and provenance review. Unit-test fixture metrics are never published here.
+
+Full-task exact success was 71/72 for the trained checkpoint versus 0/72 strict JSON success for the base under the identical 1024-token raw completion budget. The base returned extra text and 54 responses hit the token limit. This is a narrow formatting and extraction benchmark, not clinical validation or a general capability comparison.
+
+## Separate demo sampling
+
+`demo-attempt-1/` preserves one actual post-benchmark checkpoint sample. It inferred `2026-09-30` from relative follow-up wording and was rejected by the source guard. The raw output is unchanged, no cached success was published, and the benchmark is unaffected. An additional product-only prompt attempt is authorized, with its own prompt hash and receipts; it must pass the same source guard before replay can be enabled.

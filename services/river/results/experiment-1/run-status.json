@@ -1,0 +1,19 @@
+{
+  "basePredictions": 72,
+  "checkpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+  "completedAt": "2026-09-27T22:12:32.114302+00:00",
+  "completedSteps": 21,
+  "errors": [],
+  "manifestSha256": "039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b",
+  "model": "Qwen/Qwen3.5-9B",
+  "modelId": "6f387123-0ec0-40e5-8e4e-0181dbd06580:model:1",
+  "plannedSteps": 21,
+  "pollCount": 463,
+  "receiptCount": 126,
+  "runDir": "/Users/emre/Workspace/care-circle/services/river/training/runs/experiment-1",
+  "sessionId": "6f387123-0ec0-40e5-8e4e-0181dbd06580",
+  "startedAt": "2026-09-27T22:07:02.058430+00:00",
+  "status": "completed",
+  "trainedPredictions": 72,
+  "updatedAt": "2026-09-27T22:12:32.114311+00:00"
+}

@@ -1,0 +1,17 @@
+{
+  "basePredictionsSha256": "8672f2032ec872bdb2a6868892d21a42ecd4d485852ed23aa974359853e0c40a",
+  "checkpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+  "count": 72,
+  "fieldsCompared": [
+    "id",
+    "inputSha256",
+    "promptSha256",
+    "promptTokenIdsSha256",
+    "seed",
+    "generationSha256"
+  ],
+  "manifestSha256": "039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b",
+  "testGoldSubmitted": false,
+  "trainedPredictionsSha256": "0bc2a7d0c1d761483fc75ce1c978e08890863c69e6be2b5f33c971c4fbacd7b9",
+  "verified": true
+}

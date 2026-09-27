@@ -1,0 +1,581 @@
+{
+  "paired": true,
+  "evaluatedAt": "2026-09-27T22:12:55.352Z",
+  "protocol": {
+    "baseModel": "Qwen/Qwen3.5-9B",
+    "canonicalJson": "UTF-8; recursively sorted keys; compact comma/colon; Unicode preserved; no trailing newline",
+    "createdAt": "2026-09-27T22:03:58.447114+00:00",
+    "dataset": {
+      "dev": {
+        "count": 72,
+        "sha256": "3d84ba93956e09e3d0b87a25a7a3e8725290ae17925f16cc3a4e61e8d202ac15"
+      },
+      "test": {
+        "count": 72,
+        "sha256": "040953c027b4a79ebb23f531345a5e0f05962002749545808a3e822de70de100"
+      },
+      "train": {
+        "count": 336,
+        "sha256": "4f7f75f653b70bf87c8023d4b3b954b02a99c32391a431ab26b3df617d3a956c"
+      }
+    },
+    "evaluation": {
+      "batchSize": 8,
+      "count": 72,
+      "goldSubmitted": false,
+      "order": "Train fixed schedule, save final checkpoint, then base and trained test evaluation.",
+      "promptSetSha256": "0ec8fd4ae4ed1175b02fa9ad0e19322ea3fdc77944cc2018bc731566d7434492",
+      "sameGenerationSettingsBothArms": true,
+      "samePromptTokenIdsBothArms": true,
+      "seeds": [
+        20260927,
+        20260928,
+        20260929,
+        20260930,
+        20260931,
+        20260932,
+        20260933,
+        20260934,
+        20260935,
+        20260936,
+        20260937,
+        20260938,
+        20260939,
+        20260940,
+        20260941,
+        20260942,
+        20260943,
+        20260944,
+        20260945,
+        20260946,
+        20260947,
+        20260948,
+        20260949,
+        20260950,
+        20260951,
+        20260952,
+        20260953,
+        20260954,
+        20260955,
+        20260956,
+        20260957,
+        20260958,
+        20260959,
+        20260960,
+        20260961,
+        20260962,
+        20260963,
+        20260964,
+        20260965,
+        20260966,
+        20260967,
+        20260968,
+        20260969,
+        20260970,
+        20260971,
+        20260972,
+        20260973,
+        20260974,
+        20260975,
+        20260976,
+        20260977,
+        20260978,
+        20260979,
+        20260980,
+        20260981,
+        20260982,
+        20260983,
+        20260984,
+        20260985,
+        20260986,
+        20260987,
+        20260988,
+        20260989,
+        20260990,
+        20260991,
+        20260992,
+        20260993,
+        20260994,
+        20260995,
+        20260996,
+        20260997,
+        20260998
+      ],
+      "split": "test"
+    },
+    "expectedApiCalls": {
+      "base_sample_submissions": 9,
+      "create_model": 1,
+      "create_session": 1,
+      "forward_backward_submissions": 21,
+      "get_capabilities": 1,
+      "optim_step_submissions": 21,
+      "save_weights": 1,
+      "trained_sample_submissions": 9,
+      "unload_model_on_exit": 1
+    },
+    "files": {
+      "schedule.json": {
+        "bytes": 24616,
+        "sha256": "eb7227087472d4f0516403e1adebc5a871a14de0ebeeacd3b3eff5c337377f61"
+      },
+      "test-prompts.jsonl": {
+        "bytes": 686348,
+        "sha256": "e419580f25c8d43201dc8f00cd197889023d9b0af0b7fc50a330761d009960e4"
+      },
+      "tokenizer/chat_template.jinja": {
+        "bytes": 7756,
+        "sha256": "a4aee8afcf2e0711942cf848899be66016f8d14a889ff9ede07bca099c28f715"
+      },
+      "tokenizer/tokenizer.json": {
+        "bytes": 19989325,
+        "sha256": "06b9509352d2af50381ab2247e083b80d32d5c0aba91c272ca9ff729b6a0e523"
+      },
+      "tokenizer/tokenizer_config.json": {
+        "bytes": 1125,
+        "sha256": "9cf04fffe3d8c3b85e439fb35c7acad0761ab51c422a8c4256d9f887c3a0be7d"
+      },
+      "train-text.jsonl": {
+        "bytes": 1809471,
+        "sha256": "d3b5189a03f4b2e634a1f663f28929482f34227465eb9fcffd82a415540d9423"
+      },
+      "train-tokens.jsonl": {
+        "bytes": 5379768,
+        "sha256": "384f5c8e0eeaaddc635e31b3fbabef762a8bdf36832281176d47b1664158f5c4"
+      }
+    },
+    "generation": {
+      "max_tokens": 1024,
+      "num_samples": 1,
+      "stop": null,
+      "temperature": 0,
+      "top_k": -1,
+      "top_p": 1
+    },
+    "generationSha256": "5d9ca31e88e074b0ba3b26de41023dea591d76ed68dd7e8665910255d23d631e",
+    "limits": {
+      "maxPolls": 6000,
+      "maxRunSeconds": 2700,
+      "operationTimeoutSeconds": 300,
+      "submissionRetries": 0
+    },
+    "manifestSha256": "039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b",
+    "noModelSubstitution": true,
+    "privacy": {
+      "dev": "Local only; not submitted or used for checkpoint selection.",
+      "evaluation": "Only held-out prompt token IDs and generation settings. Test gold stays local.",
+      "training": "Only train prompt token IDs, completion target token IDs, and loss masks."
+    },
+    "promptRendering": "template.rstrip() + LF LF INPUT_JSON: LF + canonical(input) + LF LF OUTPUT_JSON: LF",
+    "promptSha256": "010e5b6032951e699de04e8ca5d7e3ece7f35c7b5d78f83d4d33b4bd29602fd2",
+    "promptTemplateSha256": "010e5b6032951e699de04e8ca5d7e3ece7f35c7b5d78f83d4d33b4bd29602fd2",
+    "schema": "care-circle-river-protocol-v1",
+    "syntheticOnly": true,
+    "testSha256": "040953c027b4a79ebb23f531345a5e0f05962002749545808a3e822de70de100",
+    "tokenization": {
+      "addSpecialTokens": false,
+      "chatTemplateApplied": false,
+      "eosTokenId": 248046,
+      "trainingLoss": "completion and one EOS only"
+    },
+    "trainedCheckpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+    "training": {
+      "batchSize": 16,
+      "epochs": 1,
+      "gradClipNorm": 1,
+      "learningRate": 0.0002,
+      "lossFunction": "cross_entropy",
+      "maxSequenceTokens": 8192,
+      "rank": 8,
+      "seed": 20260927,
+      "steps": 21,
+      "tokensPerEpoch": 402698,
+      "uniqueRecords": 336
+    },
+    "transportNotes": "Counts describe semantic submissions. SDK polling and heartbeats are additional RPCs, bounded by operation timeouts, poll count, and run deadline. No submission retries.",
+    "versions": {
+      "river-client": "0.11.0",
+      "transformers": "5.17.0"
+    }
+  },
+  "base": {
+    "counts": {
+      "examples": 72,
+      "predictions": 72,
+      "jsonValid": 0,
+      "schemaValid": 0,
+      "extractionExact": 0,
+      "structuredExact": 0,
+      "warningsExact": 0,
+      "taskExact": 0,
+      "medicationExact": 0,
+      "unsupportedMedicationClaims": 0,
+      "predictedMedicationClaims": 0
+    },
+    "rates": {
+      "jsonValid": 0,
+      "schemaValid": 0,
+      "extractionExact": 0,
+      "structuredExact": 0,
+      "warningsExact": 0,
+      "taskExact": 0,
+      "medicationExact": 0
+    },
+    "failures": [
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-11",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-11",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-11",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-05",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-12",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-06",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unchanged-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-07",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-01",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-11",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-unsupported-test-01-02",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-04",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-10",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-multiple-test-01-03",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-single-test-01-09",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-11",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-08",
+        "reason": "invalid_json"
+      },
+      {
+        "id": "care-circle-corpus-v2-uncertain-test-01-11",
+        "reason": "invalid_json"
+      }
+    ],
+    "limitations": [
+      "Synthetic template-family holdout only; not clinical validation.",
+      "Exact comparison includes array order and literal source text.",
+      "Unsupported medication claims are measured against gold only among schema-valid predictions.",
+      "Missing and invalid predictions count as failures in all exactness denominators."
+    ]
+  },
+  "trained": {
+    "counts": {
+      "examples": 72,
+      "predictions": 72,
+      "jsonValid": 72,
+      "schemaValid": 72,
+      "extractionExact": 72,
+      "structuredExact": 72,
+      "warningsExact": 71,
+      "taskExact": 71,
+      "medicationExact": 72,
+      "unsupportedMedicationClaims": 0,
+      "predictedMedicationClaims": 48
+    },
+    "rates": {
+      "jsonValid": 1,
+      "schemaValid": 1,
+      "extractionExact": 1,
+      "structuredExact": 1,
+      "warningsExact": 0.9861111111111112,
+      "taskExact": 0.9861111111111112,
+      "medicationExact": 1
+    },
+    "failures": [
+      {
+        "id": "care-circle-corpus-v2-negation-test-01-11",
+        "reason": "warnings_mismatch"
+      }
+    ],
+    "limitations": [
+      "Synthetic template-family holdout only; not clinical validation.",
+      "Exact comparison includes array order and literal source text.",
+      "Unsupported medication claims are measured against gold only among schema-valid predictions.",
+      "Missing and invalid predictions count as failures in all exactness denominators."
+    ]
+  },
+  "measurement": "Strict single-JSON and exact-task success under identical 1024-token raw completion budget.",
+  "interpretation": [
+    "No chat template was applied to either arm. The base produced extra text and 54 of 72 responses reached the 1024-token cap. Its 0/72 strict JSON result is not a general extraction or clinical capability score.",
+    "The test contains 72 synthetic notes across six held-out wording families. Shared atomic vocabulary and short task phrases recur. No clinical generalization is claimed.",
+    "One fixed 21-step checkpoint was evaluated. No test-guided checkpoint or prompt selection occurred.",
+    "The trained model matched all 72 extractions; one response added an unsupported warning, yielding 71/72 full-task matches."
+  ],
+  "generationOutcomes": {
+    "base": {
+      "length": 54,
+      "stop": 18
+    },
+    "trained": {
+      "length": 0,
+      "stop": 72
+    }
+  },
+  "audit": {
+    "verified": true,
+    "report": "review/result-audit.md",
+    "candidateSha256": "a8ee5a83ee1d77b7d31a4ac007f593ae080b0e9d15a36a964c31ecde255ccf9a",
+    "independentArithmetic": true,
+    "recordedFailures": 0
+  }
+}

@@ -4,7 +4,7 @@ Reviewer: cc-river-review. Date: 2026-09-27. Scope: synthetic corpus, leakage, e
 
 ## Review status
 
-The active v2 synthetic corpus and exact prepared external payload passed independent review before submission. The evaluation regressions below pass after owner fixes. The parent reports that a real River run has started; completed training, paired model results, and live serving are not established by this review.
+The active v2 synthetic corpus and exact prepared external payload passed independent review before submission. The evaluation regressions below pass after owner fixes. The completed experiment subsequently passed the independent provenance, receipt, and arithmetic audit recorded in [result-audit.md](result-audit.md). Trained complete-task exactness is 71/72 under the frozen protocol; the report explains the base output-format failure and interpretation limits. Live serving is not established by either audit.
 
 Reviewed payload SHA-256: `039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b`.
 
@@ -99,7 +99,7 @@ The reviewer made no River API calls or data submissions, accessed no credential
 - Test notes come from only six generated wording families. Shared atomic entity vocabulary and short question/follow-up phrases intentionally recur. Results measure synthetic-template extraction, not clinical accuracy or broad real-note generalization.
 - Exact-match metrics include literal copied source text and array ordering. Structured exactness is reported separately from summary copying.
 - Unsupported medication claims are scored against gold only among schema-valid predictions; a low count alone does not establish safe output behavior.
-- A submitted run is not completed training, a completed checkpoint is not a measured improvement, and evaluation is not evidence of live serving. Real comparison review remains pending.
+- A submitted run is not completed training, a completed checkpoint is not a measured improvement, and evaluation is not evidence of live serving. The completed comparison is separately verified in [result-audit.md](result-audit.md).
 
 ## Checks performed
 

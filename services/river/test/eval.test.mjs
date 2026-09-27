@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canonical, sha256, score, compare, renderPrompt} from '../eval.mjs';
+import {canonical, sha256, score, compare, renderPrompt, validExtraction} from '../eval.mjs';
 
 const input = {note: 'Cardiology with Ana. No medication change.', authorId: 'people/ana-alvarez', date: '2026-09-27'};
 const extraction = {visit: {date: input.date, doctorId: 'doctors/cardiologist', attendeeIds: [input.authorId], summary: input.note}, medicationChanges: [], questions: [], followUps: []};
@@ -37,4 +37,13 @@ test('paired scoring rejects changed inputs, changed prompts and partial runs', 
 
 test('duplicate prediction IDs cannot inflate the measured denominator', () => {
   assert.throws(() => score([record], [prediction, prediction]), /unique/);
+});
+
+test('future visits fail schema while explicit future follow-up dates remain valid', () => {
+  const futureVisit = structuredClone(extraction);
+  futureVisit.visit.date = '2026-10-01';
+  assert.equal(validExtraction(futureVisit), false);
+  const futureFollowUp = structuredClone(extraction);
+  futureFollowUp.followUps = [{text: 'Call the clinic on 2026-10-01.', dueDate: '2026-10-01'}];
+  assert.equal(validExtraction(futureFollowUp), true);
 });
