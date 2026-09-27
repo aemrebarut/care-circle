@@ -1,0 +1,12 @@
+node_modules/
+.venv/
+.env*
+*.pglite
+*.log
+logs/
+.runtime/
+.dagr/
+__pycache__/
+.DS_Store
+coverage/
+dist/

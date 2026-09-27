@@ -1,0 +1,12 @@
+#!/bin/sh
+# GBrain wrapper for the family (product) brain. Never run plain `gbrain` in this project:
+# ~/.gbrain belongs to another project. PGLite is single-writer, so every call takes a short mkdir lock.
+export GBRAIN_HOME="$HOME/Workspace/care-circle-brain/home"
+LOCK="$HOME/Workspace/care-circle-brain/.cli.lock"
+i=0
+until mkdir "$LOCK" 2>/dev/null; do
+  i=$((i+1)); [ "$i" -gt 120 ] && { echo "brain: lock busy for 60s; remove $LOCK if stale" >&2; exit 1; }
+  sleep 0.5
+done
+trap 'rmdir "$LOCK"' EXIT INT TERM
+cd "$HOME/Workspace/care-circle-brain" && gbrain "$@"
