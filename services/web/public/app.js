@@ -86,8 +86,9 @@ async function loadMedications() {
   catch (error) { replace('#medication-list', errorBlock(error, loadMedications)); return false; }
 }
 async function loadAlerts() {
-  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; renderAlerts(); if (state.medicationsFresh) renderMedications(); return true; }
-  catch (error) { replace('#alerts', errorBlock(error, loadAlerts)); return false; }
+  state.contradictionsFresh = false;
+  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; state.contradictionsFresh = true; renderAlerts(); if (state.medicationsFresh) renderMedications(); return true; }
+  catch (error) { replace('#alerts', errorBlock(error, loadAlerts)); if (state.medicationsFresh) renderMedications(); return false; }
 }
 async function refreshData() { if (state.refreshing) return false; state.refreshing = true; const results = await Promise.allSettled([loadFamily(), loadMedications(), loadAlerts()]); state.refreshing = false; return results.every(result => result.status === 'fulfilled' && result.value); }
 
@@ -139,7 +140,7 @@ function renderMedications() {
   if (!state.medications.length) { replace('#medication-list', empty('No medication records have been returned by the family brain.')); return; }
   const table = el('table',{class:'medication-table'},el('caption',{class:'skip-link'},'Recorded medication doses and their sources'),el('thead',{},el('tr',{},['Medication','Recorded dose','Source'].map(label=>el('th',{scope:'col'},label)))));
   table.append(el('tbody',{},state.medications.map(medication=>{
-    const conflict = state.contradictions.find(item=>item.medicationId === medication.id);
+    const conflict = state.contradictionsFresh ? state.contradictions.find(item=>item.medicationId === medication.id) : null;
     const citations = medication.citations || [];
     const matchingClaims = (medication.claims || []).filter(claim=>claim.dose === medication.dose && claim.frequency === medication.frequency && claim.kind === 'visit').sort((a,b)=>String(b.date).localeCompare(String(a.date)));
     const primary = citations.find(citation=>citation.pageId === matchingClaims[0]?.sourceId);

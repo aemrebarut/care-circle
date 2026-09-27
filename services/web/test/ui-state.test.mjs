@@ -215,3 +215,24 @@ test('cached River output is identified as replay in both status and reviewed ex
   assert.match(preview, /River cached replay/);
   assert.match(preview, /No live inference occurred/);
 });
+
+test('a failed source comparison does not label fresh medication rows from an old discrepancy', async () => {
+  const harness = createHarness();
+  harness.reply('brain/state', failure('Synthetic family unavailable.'), 503);
+  harness.reply('brain/medications', medications);
+  harness.reply('brief/contradictions', { contradictions: [{ medicationId: 'medications/lisinopril', title: 'Sources disagree', claims: [] }] });
+  harness.reply('river/status', { mode: 'deterministic', limitations: [] });
+  harness.reply('sponsors/status', { memorable: { mode: 'local-simulation' }, ufo: { mode: 'local-http-fetch' } });
+  await harness.boot;
+  const list = harness.document.querySelector('#medication-list');
+  assert.match(list.textContent, /Sources disagree/);
+
+  const refresh = harness.document.querySelector('#graph').querySelector('button').dispatch('click');
+  harness.reply('brain/state', family);
+  harness.reply('brain/medications', medications);
+  harness.reply('brief/contradictions', failure('Synthetic comparison unavailable.'), 503);
+  await refresh;
+  assert.match(list.textContent, /10 mg/);
+  assert.doesNotMatch(list.textContent, /Sources disagree/);
+  assert.match(harness.document.querySelector('#alerts').textContent, /Synthetic comparison unavailable/);
+});
