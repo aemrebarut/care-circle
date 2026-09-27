@@ -42,7 +42,9 @@ async function recoverDeadLock(directory) {
   const ownerFile = join(directory, 'owner.json');
   const previous = await readJson(ownerFile);
   if (!previous || !Number.isSafeInteger(previous.pid) || previous.pid < 2 || typeof previous.identity !== 'string' || !previous.identity || !previous.token) return false;
-  if (await processIdentity(previous.pid) === previous.identity) return false;
+  // A live PID with an unknown or changed identity is not proof of death.
+  // Reused live PIDs also fail closed, even if the saved birth time differs.
+  if (await processIdentity(previous.pid) !== null) return false;
   // Only one recovery claimant may rename this directory. Re-read after claiming
   // because another command may already have recovered and acquired a new lock.
   const claim = join(directory, 'recovery');
@@ -51,7 +53,7 @@ async function recoverDeadLock(directory) {
   try {
     const owner = await readJson(ownerFile);
     if (owner?.token !== previous.token || owner?.identity !== previous.identity) return false;
-    if (await processIdentity(owner.pid) === owner.identity) return false;
+    if (await processIdentity(owner.pid) !== null) return false;
     const quarantine = `${directory}.stale-${randomUUID()}`;
     await rename(directory, quarantine);
     moved = true;

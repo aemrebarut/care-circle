@@ -226,13 +226,16 @@ describe('runtime lifecycle safety', { concurrency: false }, () => {
     assert.equal(await portOccupied(4715), false);
   });
 
-  test('recovery contenders recheck ownership and serialize after a stale PID identity', async t => {
+  test('recovery contenders recheck ownership and serialize after a dead owner', async t => {
     const ctx = await context(t);
+    const external = await ctx.external();
+    process.kill(external.child.pid, 'SIGTERM');
+    await until(async () => await processIdentity(external.child.pid) === null, 'Fixture lock owner did not exit');
     const directory = join(ctx.stateDir, 'operation.lock');
     const ownerFile = join(directory, 'owner.json');
     await mkdir(directory);
     await writeFile(ownerFile, JSON.stringify({
-      pid: process.pid, identity: 'a previous process identity for this reused PID', token: randomUUID(),
+      pid: external.child.pid, identity: external.identity, token: randomUUID(),
     }));
     let active = 0;
     let maximum = 0;
@@ -274,6 +277,22 @@ describe('runtime lifecycle safety', { concurrency: false }, () => {
       if (value !== undefined) await writeFile(join(directory, 'owner.json'), value);
       await assert.rejects(() => withLock(() => assert.fail('Unverifiable lock was acquired'), { ...ctx.options, waitMs: 0 }), /lock busy|Cannot read runtime receipt/);
       assert.ok((await readdir(ctx.stateDir)).includes('operation.lock'), 'Unverifiable lock was removed');
+    }
+  });
+
+  test('a live PID with malformed or changed-command identity keeps its lock', async t => {
+    const actual = await processIdentity(process.pid);
+    const birth = actual.match(/^\S+\s+\S+\s+\d+\s+\d{2}:\d{2}:\d{2}\s+\d{4}/)[0];
+    for (const identity of ['unknown nonempty identity', `${birth} a previously recorded command`]) {
+      const ctx = await context(t);
+      const directory = join(ctx.stateDir, 'operation.lock');
+      const ownerFile = join(directory, 'owner.json');
+      const owner = { pid: process.pid, identity, token: randomUUID() };
+      await mkdir(directory);
+      await writeFile(ownerFile, JSON.stringify(owner));
+      await assert.rejects(() => withLock(() => assert.fail('Live unknown owner was replaced'), { ...ctx.options, waitMs: 0 }), /lock busy/);
+      assert.deepEqual(JSON.parse(await readFile(ownerFile, 'utf8')), owner);
+      assert.equal(await processIdentity(process.pid), actual);
     }
   });
 });
