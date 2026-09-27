@@ -135,7 +135,7 @@ function renderMedications() {
   table.append(el('tbody',{},state.medications.map(medication=>{
     const conflict = state.contradictions.find(item=>item.medicationId === medication.id);
     const citations = medication.citations || [];
-    return el('tr',{},el('td',{},el('span',{class:'medication-name'},medication.name),el('span',{class:'medication-meta'},medication.status === 'active' ? 'Recorded as active' : medication.status || 'Recorded medication'),conflict && el('span',{class:'conflict-tag'},'Sources disagree')),el('td',{},el('span',{class:'dose'},medication.dose || 'Not recorded'),el('span',{class:'medication-meta'},medication.frequency || 'Frequency not recorded')),el('td',{},citations.length ? citationChips(citations) : el('span',{class:'quiet'},'Citation not returned')));
+    return el('tr',{},el('td',{},el('span',{class:'medication-name'},medication.name),el('span',{class:'medication-meta'},medication.status === 'active' ? 'Recorded as active' : medication.status || 'Recorded medication'),conflict && el('span',{class:'conflict-tag'},conflict.temporalStatus === 'past-discrepancy-unreconciled' ? 'Earlier discrepancy unresolved' : 'Sources disagree')),el('td',{},el('span',{class:'dose'},medication.dose || 'Not recorded'),el('span',{class:'medication-meta'},medication.frequency || 'Frequency not recorded')),el('td',{},citations.length ? citationChips(citations) : el('span',{class:'quiet'},'Citation not returned')));
   })));
   replace('#medication-list', table);
 }
@@ -160,7 +160,7 @@ async function openSource(id, citation) {
     replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},String(value))])),el('h3',{},'Original source'),el('div',{class:'source-body'},page.body || 'This source has no narrative text.'),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
   } catch(error) { if (request === sourceRequest) replace('#source-content',el('h2',{id:'source-title'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
 }
-function invalidateNote() { state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
+function invalidateNote() { try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
 function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').value || undefined,date:'2026-09-27'}; }
 function renderPreview(result) {
   const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. Nothing has been saved.');
@@ -180,8 +180,10 @@ async function saveNote() {
   if (!state.preview || !state.noteSnapshot || JSON.stringify(state.noteSnapshot) !== JSON.stringify(notePayload())) { invalidateNote(); setStatus('#note-status','The note changed. Review it again before saving.','error'); return; }
   const button = $('#save-note'); busy(button,true,'Saving the source and its links...'); $('#review-note').disabled = true; $('#note-input').disabled = true; $('#note-author').disabled = true; $('#sample-note').disabled = true; setStatus('#note-status','Saving to the family brain. This may take a moment.');
   try {
+    try { sessionStorage.setItem('care-circle-pending-note',JSON.stringify({payload:state.noteSnapshot,key:state.noteKey})); } catch {}
     const result = await api('ingest/ingest',{method:'POST',body:{...state.noteSnapshot,idempotencyKey:state.noteKey}});
     if (!result.applied?.ok || !result.applied?.visitId) throw new Error('The service has not confirmed this note was saved. Check the record before retrying.');
+    try { sessionStorage.removeItem('care-circle-pending-note'); } catch {}
     state.preview = null; $('#note-preview').hidden = true;
     setStatus('#note-status','Note saved. Refreshing the connected family record...','success');
     const refreshed = await refreshData();
@@ -209,6 +211,7 @@ function renderBrief(brief) {
   const remember = items => { for (const citation of items || []) if (citation?.pageId) citations.set(citation.pageId,citation); return citationChips(items); };
   function section(title, items, emptyText) { return el('section',{class:'brief-section'},el('h3',{},title),items?.length ? items.map(item=>el('div',{class:'brief-item'},el('p',{},item.text),remember(item.citations || []))) : empty(emptyText)); }
   const content = [el('div',{class:'brief-heading'},el('div',{},el('p',{class:'eyebrow'},'CARE CIRCLE · SYNTHETIC FAMILY RECORD'),el('h2',{id:'brief-title'},brief.title),el('p',{class:'brief-subtitle'},`For ${titleFor(brief.doctorId)} · Changes since ${dateLabel(brief.since) || 'the last recorded visit'}`),el('p',{class:'brief-subtitle'},`Generated ${dateLabel(brief.generatedAt, true)} from the family source graph.`)),el('span',{class:'brand-mark','aria-hidden':'true'},el('i'),el('i'),el('i'))),section('Medication changes in the record',brief.medicationChanges,'No medication changes were returned for this period.'),section('Other visits since the last appointment',brief.otherVisits,'No other visits were returned for this period.'),section('Questions to bring',brief.openQuestions,'No open questions were returned.'),el('section',{class:'brief-section'},el('h3',{},'Unresolved differences between sources'),brief.contradictions?.length ? brief.contradictions.map(item=>el('div',{class:'brief-item brief-conflict'},el('p',{},el('strong',{},item.title),'. ',item.description || 'Different source claims remain unresolved.'),remember((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))) : empty('No unresolved source differences were returned.'))];
+  if (brief.warnings?.length) content.push(el('section',{class:'brief-section'},el('h3',{},'Record limitations'),el('div',{class:'warning-box'},brief.warnings.map(warning=>el('p',{},textValue(warning))))));
   content.push(el('div',{class:'print-sources'},el('strong',{},'Source references'),[...citations.values()].map(citation=>el('p',{},`${citation.title || titleFor(citation.pageId)}${citation.date ? ` (${dateLabel(citation.date)})` : ''} [${citation.pageId}]`))),el('p',{class:'brief-footer'},'All data is synthetic. This brief organizes recorded information and questions. A newer visit does not reconcile a different pharmacy claim. Confirm the record with the care team. Not medical advice.'));
   if (brief.traversal) content.push(el('details',{class:'brief-traversal'},el('summary',{},'How the source graph was followed'),el('pre',{},JSON.stringify(brief.traversal,null,2))));
   replace('#brief-content',content);
@@ -264,3 +267,13 @@ $('#capture-procedure').addEventListener('click',()=>procedureAction('capture'))
 $('#replay-procedure').addEventListener('click',()=>procedureAction('replay'));
 $('#fetch-clinic').addEventListener('click',fetchClinic);
 await Promise.allSettled([refreshData(),loadSponsorStatus()]);
+
+try {
+  const pending = JSON.parse(sessionStorage.getItem('care-circle-pending-note') || 'null');
+  if (pending?.payload?.note && typeof pending.payload.note === 'string' && pending.payload.note.length <= 12000 && typeof pending.key === 'string' && pending.key.length <= 160) {
+    $('#note-input').value = pending.payload.note;
+    if ($$('#note-author option').some(option=>option.value === pending.payload.authorId)) $('#note-author').value = pending.payload.authorId;
+    state.noteKey = pending.key; state.noteSnapshot = pending.payload;
+    setStatus('#note-status','A previous save was not confirmed in this browser. Check the family record, or review this same note to retry with its original save key.');
+  }
+} catch {}

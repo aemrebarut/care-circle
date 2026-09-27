@@ -1,0 +1,12 @@
+{
+  "name": "@care-circle/web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic family care room and bounded loopback API proxy",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node smoke.mjs"
+  }
+}
