@@ -236,3 +236,30 @@ test('a failed source comparison does not label fresh medication rows from an ol
   assert.doesNotMatch(list.textContent, /Sources disagree/);
   assert.match(harness.document.querySelector('#alerts').textContent, /Synthetic comparison unavailable/);
 });
+
+test('late startup replies cannot overwrite records refreshed after a confirmed save', async () => {
+  const harness = createHarness();
+  harness.document.querySelector('#note-input').value = 'Synthetic note saved before initial reads finish.';
+  const review = harness.document.querySelector('#note-form').dispatch('submit');
+  harness.reply('ingest/extract', { extraction: { visit: { summary: 'Synthetic visit.' }, medicationChanges: [], questions: [], followUps: [] }, method: 'deterministic', warnings: [] });
+  await review;
+  const save = harness.document.querySelector('#save-note').dispatch('click');
+  harness.reply('ingest/ingest', { applied: { ok: true, visitId: 'visits/synthetic-new', revision: 2, changedPageIds: ['visits/synthetic-new'] } });
+  await nextTurn();
+  function latest(path, value) {
+    const index = harness.requests.findLastIndex(request => request.path === `/api/${path}`);
+    assert.notEqual(index, -1);
+    const [request] = harness.requests.splice(index, 1);
+    request.resolve({ ok: true, status: 200, json: async () => value });
+  }
+  latest('brain/state', { ...family, revision: 2 });
+  latest('brain/medications', { medications: [{ ...medications.medications[0], dose: '20 mg' }] });
+  latest('brief/contradictions', { contradictions: [] });
+  await save;
+  assert.match(harness.document.querySelector('#medication-list').textContent, /20 mg/);
+  finishInitial(harness);
+  await harness.boot;
+  assert.match(harness.document.querySelector('#medication-list').textContent, /20 mg/);
+  assert.doesNotMatch(harness.document.querySelector('#medication-list').textContent, /10 mg/);
+  assert.match(harness.document.querySelector('#note-status').textContent, /Saved to the family brain/);
+});

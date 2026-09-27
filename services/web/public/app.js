@@ -1,6 +1,6 @@
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) => [...root.querySelectorAll(selector)];
-const state = { pages: [], graph: null, medications: [], contradictions: [], graphView: 'care', revision: null, preview: null, noteKey: null, noteSnapshot: null, procedureId: null, refreshing: false };
+const state = { pages: [], graph: null, medications: [], contradictions: [], graphView: 'care', revision: null, preview: null, noteKey: null, noteSnapshot: null, procedureId: null };
 const demoNote = 'Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.';
 const dateFormat = new Intl.DateTimeFormat('en-US', { month: 'short', day: 'numeric', timeZone: 'UTC' });
 const longDateFormat = new Intl.DateTimeFormat('en-US', { weekday: 'long', month: 'long', day: 'numeric', timeZone: 'UTC' });
@@ -51,8 +51,10 @@ function citationChips(citations = []) { return el('div', { class: 'source-chips
 function evidenceDetails(evidence, title = 'View local evidence') { return el('details', {}, el('summary', {}, title), el('pre', {}, JSON.stringify(evidence, null, 2))); }
 
 async function loadFamily() {
+  const request = state.familyRequest = (state.familyRequest || 0) + 1;
   try {
     const data = await api('brain/state');
+    if (request !== state.familyRequest) return false;
     if (!Array.isArray(data.pages) || !Array.isArray(data.graph?.nodes) || !Array.isArray(data.graph?.edges)) throw new Error('The family record has not returned its pages and graph yet.');
     state.pages = data.pages; state.graph = data.graph; state.revision = data.revision;
     const patient = pageById(data.patientId) || data.pages.find(page => page.type === 'patient');
@@ -73,6 +75,7 @@ async function loadFamily() {
     renderGraph();
     return true;
   } catch (error) {
+    if (request !== state.familyRequest) return false;
     replace('#graph', errorBlock(error, refreshData));
     $('#graph-count').textContent = 'Record unavailable'; $('#graph-summary').textContent = '';
     $('#connection-status').textContent = 'Family brain unavailable'; $('#connection-status').className = 'connection-status offline';
@@ -81,16 +84,18 @@ async function loadFamily() {
   }
 }
 async function loadMedications() {
+  const request = state.medicationRequest = (state.medicationRequest || 0) + 1;
   state.medicationsFresh = false;
-  try { const data = await api('brain/medications'); if (!Array.isArray(data.medications)) throw new Error('Medication records are not available yet.'); state.medications = data.medications; state.medicationsFresh = true; renderMedications(); return true; }
-  catch (error) { replace('#medication-list', errorBlock(error, loadMedications)); return false; }
+  try { const data = await api('brain/medications'); if (request !== state.medicationRequest) return false; if (!Array.isArray(data.medications)) throw new Error('Medication records are not available yet.'); state.medications = data.medications; state.medicationsFresh = true; renderMedications(); return true; }
+  catch (error) { if (request !== state.medicationRequest) return false; replace('#medication-list', errorBlock(error, loadMedications)); return false; }
 }
 async function loadAlerts() {
+  const request = state.alertRequest = (state.alertRequest || 0) + 1;
   state.contradictionsFresh = false;
-  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; state.contradictionsFresh = true; renderAlerts(); if (state.medicationsFresh) renderMedications(); return true; }
-  catch (error) { replace('#alerts', errorBlock(error, loadAlerts)); if (state.medicationsFresh) renderMedications(); return false; }
+  try { const data = await api('brief/contradictions'); if (request !== state.alertRequest) return false; if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; state.contradictionsFresh = true; renderAlerts(); if (state.medicationsFresh) renderMedications(); return true; }
+  catch (error) { if (request !== state.alertRequest) return false; replace('#alerts', errorBlock(error, loadAlerts)); if (state.medicationsFresh) renderMedications(); return false; }
 }
-async function refreshData() { if (state.refreshing) return false; state.refreshing = true; const results = await Promise.allSettled([loadFamily(), loadMedications(), loadAlerts()]); state.refreshing = false; return results.every(result => result.status === 'fulfilled' && result.value); }
+async function refreshData() { const results = await Promise.allSettled([loadFamily(), loadMedications(), loadAlerts()]); return results.every(result => result.status === 'fulfilled' && result.value); }
 
 function graphLabel(node) {
   if (node.type === 'person' || node.type === 'patient') return node.title?.split(' ')[0] || node.title;
@@ -178,7 +183,7 @@ function renderPreview(result) {
   const warnings = Array.isArray(result.warnings) ? result.warnings : [];
   const preview = $('#note-preview'); preview.hidden = false;
   const list = (items) => el('ul',{},items.map(item=>el('li',{},item)));
-  replace(preview,el('h3',{},'A moment to review'),el('span',{class:`pill ${result.method === 'river' ? '' : 'warning'}`},result.method === 'river' ? (result.provenance?.mode === 'cached-replay' ? 'River cached replay' : 'River extraction') : 'Deterministic extraction'),el('p',{},extraction.visit.summary || 'Visit extracted from your note.'),result.provenance?.mode === 'cached-replay' && el('p',{class:'tiny'},'A saved prediction for this exact synthetic sample. No live inference occurred.'),warnings.length && el('div',{class:'warning-box'},el('strong',{},'Please check these limitations.'),list(warnings.map(textValue))),el('h4',{},'Medication source claims'),extraction.medicationChanges?.length ? list(extraction.medicationChanges.map(change=>`${change.name || titleFor(change.medicationId)}: ${change.dose}, ${change.frequency || 'frequency not specified'}`)) : el('p',{},'No medication change extracted.'),extraction.questions?.length && [el('h4',{},'Questions to carry forward'),list(extraction.questions.map(question=>question.text))],extraction.followUps?.length && [el('h4',{},'Follow-ups in the note'),list(extraction.followUps.map(item=>item.text))],el('p',{class:'tiny'},'This adds a source claim. It does not resolve differing pharmacy records or recommend a treatment.'),el('button',{type:'button',class:'button button-primary full-width',id:'save-note',onClick:saveNote},'Save to the family brain'));
+  replace(preview,el('h3',{},'A moment to review'),el('span',{class:`pill ${result.method === 'river' ? '' : 'warning'}`},result.method === 'river' ? (result.provenance?.mode === 'cached-replay' && result.provenance?.liveInference === false ? 'River cached replay' : 'River output: mode not reported') : 'Deterministic extraction'),el('p',{},extraction.visit.summary || 'Visit extracted from your note.'),result.provenance?.mode === 'cached-replay' && el('p',{class:'tiny'},'A saved prediction for this exact synthetic sample. No live inference occurred.'),result.provenance && evidenceDetails(result.provenance,'View prediction provenance'),warnings.length && el('div',{class:'warning-box'},el('strong',{},'Please check these limitations.'),list(warnings.map(textValue))),el('h4',{},'Medication source claims'),extraction.medicationChanges?.length ? list(extraction.medicationChanges.map(change=>`${change.name || titleFor(change.medicationId)}: ${change.dose}, ${change.frequency || 'frequency not specified'}`)) : el('p',{},'No medication change extracted.'),extraction.questions?.length && [el('h4',{},'Questions to carry forward'),list(extraction.questions.map(question=>question.text))],extraction.followUps?.length && [el('h4',{},'Follow-ups in the note'),list(extraction.followUps.map(item=>item.text))],el('p',{class:'tiny'},'This adds a source claim. It does not resolve differing pharmacy records or recommend a treatment.'),el('button',{type:'button',class:'button button-primary full-width',id:'save-note',onClick:saveNote},'Save to the family brain'));
 }
 async function reviewNote(event) {
   event.preventDefault(); const payload = notePayload(); if (!payload.note) return;
@@ -198,7 +203,7 @@ async function saveNote() {
     state.preview = null; $('#note-preview').hidden = true;
     setStatus('#note-status','Note saved. Refreshing the connected family record...','success');
     const refreshed = await refreshData();
-    replace('#note-status', el('span',{},refreshed ? `Saved to the family brain. ${result.applied.changedPageIds?.length || 'Connected'} records updated. ` : 'The note was saved, but some views could not refresh. '),sourceButton(result.applied.visitId,'Open saved visit'));
+    replace('#note-status', el('span',{},refreshed ? `Saved to the family brain. ${result.applied.changedPageIds?.length || 'Connected'} records updated. ` : 'The note was saved, but some views could not refresh. '),result.provenance?.mode === 'cached-replay' && el('span',{},'River cached replay, no live inference. '),sourceButton(result.applied.visitId,'Open saved visit'));
     $('#note-status').className = `inline-status ${refreshed ? 'success' : 'error'}`;
     $('#medication-answer').hidden = true;
   } catch(error) { setStatus('#note-status',`${errorMessage(error)} Your note is still here. You can safely retry the same reviewed note.`,'error'); busy(button,false); }
