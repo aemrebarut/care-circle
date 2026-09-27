@@ -52,4 +52,4 @@ The circle and medication table read live HTTP data. A medication row highlights
 
 Use Try the sample note, then Review note. Inspect the extracted claims and warnings before Save to the family brain. A pending save retains its payload and idempotency key in browser session storage across a reload. Confirmed saves clear that pending entry; editing the note starts a new review.
 
-Prepare a visit brief opens the cited structured result. Print brief includes record limitations and source references. Graph traversal JSON is available on screen and excluded from print. River status polls every 20 seconds while the page is visible; corpus counts and training progress are reported separately from verified model evaluation.
+Prepare a visit brief opens the cited structured result. Each unresolved discrepancy includes every claim's dose, frequency, date, and source. Print brief includes those claims, record limitations, and full source references. Graph traversal JSON is available on screen and excluded from print. River status polls every 20 seconds while the page is visible; corpus counts and training progress are reported separately from verified model evaluation.

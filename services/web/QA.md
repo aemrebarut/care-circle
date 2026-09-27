@@ -10,10 +10,17 @@ All checks use synthetic data and loopback services. Persistent service processe
 - River status renders reported training progress and corpus counts, while clearly saying live model extraction is unavailable. No model comparison is invented when metrics is null.
 - Independent review confirmed safe text-only source rendering, source-discrepancy descriptions, note edit invalidation, unknown-outcome key reuse, and safe proxy retry metadata.
 
-## Pending live integration
+## 15:35 milestone
 
-- Source graph and drawer with real GBrain records.
-- Save confirmation, changed medication view, unresolved source discrepancy, and cited answer.
-- Native print preview with full brief citations and warnings.
-- Pending-save browser reload behavior and narrow layout.
-- Two reset-to-demo runs, coordinated with runtime and QA.
+- Isolated `npm test --prefix services/web`: 67 proxy checks and 10 UI state regressions pass. Includes request ordering, pending save restoration, repeated review, malformed extraction during an unknown save, same-key retry, safe source text, honest River modes, and printed discrepancy claim details.
+- Independent QA reports the live desktop flow passed: graph, reviewed exact demo note, verified save, cited recorded dose, both conflict sources, medication answer, previsit, procedure capture/replay, and clinic fetch. QA owns the shared-state writer window; web performed no mutations.
+- QA reports 390 by 844 mobile care graph and all 32 records fit without outer label clipping or document overflow. Human-readable source rendering passed on desktop and mobile. Artifacts are under `tests/e2e/results/ui/`, including `ui-mobile-care-graph.png`, `ui-mobile-all-records.png`, `ui-mobile-full.png`, `ui-source-final-desktop.png`, and `ui-source-final-mobile.png`.
+- Initial live post-save PDF fit one A4 page without clipping. QA found that the discrepancy section omitted the claim doses. Commit `45a2295` adds each dose, frequency, source type, date, and citation to both the alert and brief while preserving the full print source index and historical unresolved description. The corrected PDF is awaiting QA reprint.
+- Pending-save identity and uncertainty have independent in-memory verification. Actual browser reload evidence remains pending.
+- River extraction stays deterministic. The displayed measured comparison is 0/72 base versus 71/72 trained strict task match under the same prompt and token limit, with synthetic-only and truncation caveats. Neither rejected demo model prediction is shown as cached or live success.
+
+## Remaining verification
+
+- Corrected live PDF with explicit 20 mg daily visit claim and 10 mg daily pharmacy claim, both dates and citations, on one A4 page.
+- Two final reset-to-demo runs, coordinated with runtime and QA.
+- Browser reload while a save outcome is uncertain, if QA can isolate the transport failure without interfering with shared state.
