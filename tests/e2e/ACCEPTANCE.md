@@ -36,3 +36,15 @@ Runtime reports the real GBrain baseline survived an exact-PID restart with iden
 The isolated headless Chrome reviewer also verified the real family UI unavailable state at 1440 by 1000: graph and medications show errors, sponsor modes are explicit, synthetic and non-advice notices are visible, navigation and GET-only retry work, and there were no page errors or external requests. Receipt: `tests/e2e/results/ui/web-initial-observation.json`. Screenshots are under the same ignored directory. Successful graph, save, citation and print flows still await the stable mutation handoff.
 
 The runner now blocks further writes after any uncertain reset/write result. Graph endpoint comparison accepts ordering differences and additive envelope fields while comparing the actual nodes and edges. No QA family mutation has occurred at this milestone.
+
+## First full acceptance, 15:18 Pacific
+
+`node tests/e2e/acceptance.mjs --full --cycles 1` passed **32 checks, zero failures, zero skips** through the actual web proxy, from 15:17:32.510 to 15:18:24.206. Receipt: `tests/e2e/results/2026-09-27T22-17-32.510Z.json`, observed repository commit `1c64515915304c1074315de946df00ddc2d58d66`. QA implementation at this run was committed in `09f1a81`.
+
+The run independently verifies H1 and H2 fixes; both resets; future visit rejection without mutation; valid future follow-up persistence; literal source citations; exact uploader/attendee separation; qualified, uncertain and historical note handling; concurrent first writes and retries; unchanged state on key conflict; the 10 versus 20 mg discrepancy; the complete nephrology brief; local procedure capture/replay linkage; local clinic bytes/hash/field agreement; and current River metric arithmetic/provenance.
+
+Before the full run, an independent stable-revision audit checked 44 claim/citation pairs, 14 displayed regimens and all four doctor date/body/source records at revision 2. It found no issues. Runtime and ingest separately proved the committed state and idempotency ledger survived a real GBrain process restart.
+
+Measured River status at the full run reported a completed paired experiment with strict JSON task matches of base 0/72 and trained 71/72. This is a synthetic extraction task under the same prompt and 1024-token completion cap, not clinical accuracy. Live serving was unavailable and the actual extractor mode was deterministic. Artifact-level paired prediction review and explicit cached-replay provenance checks are subsequent work, not implied by the numeric status check.
+
+QA then performed the separately authorized clean reset and independently checked revision 9, 30 pages, 120 edges, lisinopril 10 mg and zero captured procedures. Runtime received an explicit RELEASE, restarted sponsor metadata, and granted the browser reviewer the sole UI mutation window. Successful family UI and real one-page PDF verification are now underway. Final definition of done still requires two consecutive full cycles after the remaining changes settle.

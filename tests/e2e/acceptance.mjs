@@ -32,11 +32,12 @@ const runId = startedAt.replaceAll(':', '-');
 const checks = [];
 let stage = 'readiness';
 let mutationOutcomeUncertain = false;
+let fullCycleFailed = false;
 const sourceCache = new Map();
 
 async function check(name, fn, prerequisite = true) {
-  if (!prerequisite) {
-    checks.push({ stage, name, status: 'skipped', reason: 'Prerequisite failed' });
+  if (!prerequisite || (full && fullCycleFailed)) {
+    checks.push({ stage, name, status: 'skipped', reason: fullCycleFailed ? 'Prior failure preserved for owner diagnosis' : 'Prerequisite failed' });
     console.log(`SKIP ${stage}: ${name}`);
     return false;
   }
@@ -47,6 +48,7 @@ async function check(name, fn, prerequisite = true) {
     console.log(`PASS ${stage}: ${name}`);
     return true;
   } catch (error) {
+    if (full) fullCycleFailed = true;
     checks.push({ stage, name, status: 'failed', durationMs: Date.now() - start, error: error.message });
     console.error(`FAIL ${stage}: ${name}: ${error.message}`);
     return false;
@@ -104,6 +106,15 @@ const fingerprint = (s) => JSON.stringify(stable({
   }
 }));
 const unchanged = (before, after, label) => assert.deepEqual(stable(after), stable(before), `${label}: state, revision and timestamps must remain unchanged`);
+function validateCachedProvenance(result, input = { note: DEMO_NOTE, authorId: IDS.ana, date: '2026-09-27' }) {
+  assert.equal(result.method, 'river');
+  assert.equal(result.provenance?.mode, 'cached-replay', 'Saved River output must retain its cached-replay label');
+  assert.equal(result.provenance.liveInference, false, 'Saved River output must not claim live inference');
+  for (const key of ['model', 'checkpoint', 'requestId', 'sampledAt']) nonempty(result.provenance[key], `Replay ${key}`);
+  for (const key of ['inputSha256', 'promptSha256', 'outputSha256']) assert.match(result.provenance[key], /^[a-f0-9]{64}$/);
+  assert.equal(result.provenance.inputSha256, createHash('sha256').update(JSON.stringify(stable(input))).digest('hex'), 'Replay must identify the exact synthetic input');
+  assert(result.warnings.some((warning) => /cached replay/i.test(warning) && /no live inference/i.test(warning)), 'Replay warning must disclose no live inference');
+}
 
 async function page(id) {
   if (!sourceCache.has(id)) {
@@ -282,6 +293,16 @@ async function statusChecks() {
       assert.equal(extraction.status, 503, 'Unavailable River extractor must report failure honestly');
       nonempty(extraction.data.error?.code, 'River unavailable error code');
     }
+    if (data.extractionMode === 'cached-replay') {
+      assert.equal(data.mode, 'river'); assert.equal(data.extractionAvailable, true);
+      assert.equal(data.replay?.mode, 'cached-replay'); assert.equal(data.replay.liveInference, false);
+      const replay = await post('river', '/v1/extract', { note: DEMO_NOTE, authorId: IDS.ana, date: '2026-09-27' });
+      validateCachedProvenance(replay);
+      for (const input of [{ note: DEMO_NOTE, authorId: IDS.ben }, { note: DEMO_NOTE.replace('20 mg', '30 mg'), authorId: IDS.ana }]) {
+        const uncached = await post('river', '/v1/extract', input, { raw: true });
+        assert.equal(uncached.status, 503, 'Different input must not reuse a cached River prediction');
+      }
+    }
     const validateScore = (score, label) => {
       const counts = score?.counts;
       assert.equal(counts?.examples, data.corpus.splits.test.count, `${label} must cover held-out count`);
@@ -407,6 +428,7 @@ async function fullCycle(cycle) {
     const result = await post('ingest', '/v1/extract', { note: DEMO_NOTE, authorId: IDS.ana });
     assert(['river', 'deterministic'].includes(result.method));
     array(result.warnings, 'extraction warnings');
+    if (result.method === 'river') validateCachedProvenance(result);
     assert.equal(result.extraction?.visit?.doctorId, IDS.cardiologist);
     assert.equal(result.extraction.visit.date, '2026-09-27');
     assert.deepEqual(result.extraction.visit.attendeeIds, [IDS.ana]);
@@ -490,6 +512,7 @@ async function fullCycle(cycle) {
   const ingested = await check('Ingest demo records 20 mg and retains 10 mg pharmacy source', async () => {
     const [result, concurrent] = await Promise.all([post('ingest', '/v1/ingest', payload), post('ingest', '/v1/ingest', payload)]);
     assert.equal(result.applied?.ok, true); applied = result.applied;
+    if (result.method === 'river') validateCachedProvenance(result);
     assert.equal(concurrent.applied?.ok, true);
     assert.equal(concurrent.applied?.visitId, applied.visitId, 'Concurrent first writes must share one visit');
     nonempty(applied.visitId, 'applied visitId'); array(applied.changedPageIds, 'changedPageIds');
@@ -601,7 +624,7 @@ async function health() {
 try {
   if (full) for (let cycle = 1; cycle <= cycles; cycle++) {
     await fullCycle(cycle);
-    if (mutationOutcomeUncertain) break;
+    if (mutationOutcomeUncertain || fullCycleFailed) break;
   }
   else {
     await health();
@@ -615,7 +638,7 @@ try {
   try { commit = (await exec('git', ['rev-parse', 'HEAD'], { cwd: root })).stdout.trim(); } catch {}
   const totals = { passed: 0, failed: 0, skipped: 0 };
   for (const item of checks) totals[item.status]++;
-  const report = { runId, startedAt, finishedAt: new Date().toISOString(), commit, mode: full ? 'full' : healthOnly ? 'health-only' : 'read-only', transport: direct ? 'direct' : 'web-proxy', cyclesRequested: full ? cycles : 0, mutationOutcomeUncertain, totals, checks };
+  const report = { runId, startedAt, finishedAt: new Date().toISOString(), commit, mode: full ? 'full' : healthOnly ? 'health-only' : 'read-only', transport: direct ? 'direct' : 'web-proxy', cyclesRequested: full ? cycles : 0, mutationOutcomeUncertain, failureStatePreserved: fullCycleFailed, totals, checks };
   const directory = resolve(root, 'tests/e2e/results');
   await mkdir(directory, { recursive: true });
   const reportPath = resolve(directory, `${runId}.json`);

@@ -18,7 +18,7 @@ Health calls use each service directly. Product APIs use the web proxy by defaul
 
 Each run prints named checks and writes a concise JSON receipt under ignored `tests/e2e/results/`. A failed check makes the process exit nonzero. A skipped dependent check is explicit, never counted as a pass. The receipt records git commit, time, mode, transport, and check results. It contains no environment values or credentials.
 
-If a reset or write has an uncertain outcome, the runner blocks subsequent writes and stops further cycles. Inspect the receipt and coordinate recovery with cc-runtime before starting another run. It does not blindly retry an ambiguous reset.
+If a full-cycle check fails, the runner skips later checks and stops further cycles, preserving the failure state for owner diagnosis. An uncertain reset or write also blocks subsequent writes. Inspect the receipt and coordinate recovery with cc-runtime before starting another run. It does not blindly retry an ambiguous reset.
 
 ## Coverage
 
@@ -35,6 +35,7 @@ If a reset or write has an uncertain outcome, the runner blocks subsequent write
 - Nephrology brief starts at the September 15 visit, includes every subsequent visit to other doctors, the demo medication change and potassium question, and source citations.
 - Procedure replay uses a different sibling, and clinic fetch identifies the local synthetic source.
 - River and sponsor status expose actual modes and limitations; measured score provenance is also independently reviewed.
+- If River exposes cached replay, exact-input hashes, recorded request/checkpoint provenance and no-live-inference warnings must survive extraction and ingest. Different inputs cannot silently reuse the cached prediction.
 
 The temporal regression visits run before the second clean reset in each cycle. The canonical demo follows that reset, so regression fixtures do not contaminate the final demo state. Doctor last-visit fields and displayed source text must agree after the temporal checks.
 
