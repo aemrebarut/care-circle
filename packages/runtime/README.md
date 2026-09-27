@@ -33,6 +33,18 @@ Package tests use synthetic fixture processes on 4715 and 4716, with isolated ru
 
 The static world has no listener. Validate its source package separately with `npm test --prefix packages/world`; runtime observes that data only through brain HTTP.
 
+Fixture port reservations for concurrent lane work:
+
+| Lane | Temporary ports |
+| --- | --- |
+| Web | 4712 upstream stub, 4719 isolated web |
+| Ingest | 4713 |
+| River | 4714 |
+| Runtime | 4715, 4716 |
+| Brief | 4717, 4718 |
+
+Do not start a fixture on an occupied port or stop its existing listener. Ports 4700 through 4706 belong to the persistent demo after handover; sponsor checks against that stack must use their existing-service mode and coordinate any ephemeral reset.
+
 ## Process ownership
 
 Only processes spawned by this runtime receive receipts, under `.runtime/managed/`. Each receipt records service, PID, a unique process-title marker, OS process identity, entry path, and timestamp. Successful stops archive the receipt with a stop timestamp under `history/` before removing it from active ownership. Service stdout and stderr append to local `.log` files in that directory. Runtime never reads credentials or loads environment files, and starting River does not trigger its opt-in training scripts.
