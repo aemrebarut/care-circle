@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {canonical, sha256, score, compare} from '../eval.mjs';
+import {canonical, sha256, score, compare, renderPrompt} from '../eval.mjs';
 
 const input = {note: 'Cardiology with Ana. No medication change.', authorId: 'people/ana-alvarez', date: '2026-09-27'};
 const extraction = {visit: {date: input.date, doctorId: 'doctors/cardiologist', attendeeIds: [input.authorId], summary: input.note}, medicationChanges: [], questions: [], followUps: []};
 const record = {id: 'unit-fixture', input, gold: {extraction, warnings: []}};
-const prediction = {id: record.id, inputSha256: sha256(canonical(input)), promptSha256: 'fixture', output: JSON.stringify(record.gold)};
-const protocol = {baseModel: 'unit-fixture', generation: {temperature: 0}, testSha256: 'fixture', promptSha256: 'fixture', trainedCheckpoint: 'unit-fixture'};
+const template = 'Synthetic unit fixture';
+const generation = {temperature: 0};
+const prediction = {id: record.id, inputSha256: sha256(canonical(input)), promptSha256: sha256(renderPrompt(template, input)), output: JSON.stringify(record.gold), arm: 'base', model: 'unit-fixture', checkpoint: null, generation, generationSha256: sha256(canonical(generation)), seed: 1, promptTokenIdsSha256: 'fixture'};
+const trained = {...prediction, arm: 'trained', checkpoint: 'unit-fixture'};
+const protocol = {baseModel: 'unit-fixture', generation, testSha256: 'fixture', promptSha256: sha256(template), trainedCheckpoint: 'unit-fixture'};
 
 test('scoring counts missing and invalid predictions in the denominator', () => {
   const report = score([record, {...record, id: 'missing'}], [{...prediction, output: '{invalid'}]);
@@ -26,10 +29,10 @@ test('unsupported medication claims fail the exactness metric', () => {
 });
 
 test('paired scoring rejects changed inputs, changed prompts and partial runs', () => {
-  assert.equal(compare([record], [prediction], [prediction], protocol).paired, true);
-  assert.throws(() => compare([record], [prediction], [], protocol), /complete/);
-  assert.throws(() => compare([record], [prediction], [{...prediction, promptSha256: 'changed'}], protocol), /provenance/);
-  assert.throws(() => compare([record], [prediction], [{...prediction, inputSha256: 'changed'}], protocol), /provenance/);
+  assert.equal(compare([record], [prediction], [trained], protocol, template).paired, true);
+  assert.throws(() => compare([record], [prediction], [], protocol, template), /complete/);
+  assert.throws(() => compare([record], [prediction], [{...trained, promptSha256: 'changed'}], protocol, template), /provenance/);
+  assert.throws(() => compare([record], [prediction], [{...trained, inputSha256: 'changed'}], protocol, template), /provenance/);
 });
 
 test('duplicate prediction IDs cannot inflate the measured denominator', () => {

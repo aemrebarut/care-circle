@@ -23,6 +23,36 @@ const row = {
   gold,
 };
 
+function pairedFixture() {
+  const template = 'Review-only fixed instructions.\n';
+  const generation = {temperature: 0, max_tokens: 1000, num_samples: 1};
+  const protocol = {
+    baseModel: 'review-only-base',
+    trainedCheckpoint: 'review-only-checkpoint',
+    generation,
+    testSha256: sha256('review-only-file'),
+    promptSha256: sha256(template),
+    evaluation: {seeds: [20260927]},
+  };
+  const prediction = {
+    id: row.id,
+    output: JSON.stringify(gold),
+    inputSha256: sha256(canonical(row.input)),
+    promptSha256: sha256(renderPrompt(template, row.input)),
+    promptTokenIdsSha256: sha256(canonical([11, 22, 33])),
+    generation: structuredClone(generation),
+    generationSha256: sha256(canonical(generation)),
+    seed: 20260927,
+    model: protocol.baseModel,
+  };
+  return {
+    template,
+    protocol,
+    base: {...structuredClone(prediction), arm: 'base', checkpoint: null},
+    trained: {...structuredClone(prediction), arm: 'trained', checkpoint: protocol.trainedCheckpoint},
+  };
+}
+
 test('absent predictions receive no validity or exactness credit', () => {
   const result = score([row], []);
   assert.equal(result.counts.predictions, 0);
@@ -97,41 +127,50 @@ test('impossible calendar dates fail visit and follow-up validation', () => {
 });
 
 test('paired comparison rejects different input or prompt provenance', () => {
-  const protocol = {
-    baseModel: 'review-only-base',
-    trainedCheckpoint: 'review-only-checkpoint',
-    generation: {temperature: 0, maxTokens: 1000},
-    testSha256: sha256('review-only-file'),
-    promptSha256: sha256('review-only-system-prompt'),
-  };
-  const prediction = {
-    id: row.id,
-    output: JSON.stringify(gold),
-    inputSha256: sha256(canonical(row.input)),
-    promptSha256: sha256('review-only-rendered-prompt'),
-  };
-  assert.throws(() => compare([row], [prediction], [{...prediction, inputSha256: sha256('tampered-input')}], protocol));
-  assert.throws(() => compare([row], [prediction], [{...prediction, promptSha256: sha256('tampered-prompt')}], protocol));
-  assert.throws(() => compare([row], [prediction], [], protocol));
+  const {template, protocol, base, trained} = pairedFixture();
+  assert.equal(compare([row], [base], [trained], protocol, template).paired, true);
+  assert.throws(() => compare([row], [base], [{...trained, inputSha256: sha256('tampered-input')}], protocol, template));
+  assert.throws(() => compare([row], [base], [{...trained, promptSha256: sha256('tampered-prompt')}], protocol, template));
+  assert.throws(() => compare([row], [base], [], protocol, template));
 });
 
 test('paired comparison independently recomputes prompt hashes', () => {
-  const template = 'Review-only fixed instructions.\n';
-  const protocol = {
-    baseModel: 'review-only-base',
-    trainedCheckpoint: 'review-only-checkpoint',
-    generation: {temperature: 0, maxTokens: 1000},
-    testSha256: sha256('review-only-file'),
-    promptSha256: sha256(template),
-  };
-  const prediction = {
-    id: row.id,
-    output: JSON.stringify(gold),
-    inputSha256: sha256(canonical(row.input)),
-    promptSha256: sha256(renderPrompt(template, row.input)),
-  };
-  assert.equal(compare([row], [prediction], [prediction], protocol, template).paired, true);
-  const forged = {...prediction, promptSha256: sha256('the same forged prompt in both arms')};
-  assert.throws(() => compare([row], [forged], [forged], protocol, template));
-  assert.throws(() => compare([row], [prediction], [prediction], protocol, `${template}Changed instructions.`));
+  const {template, protocol, base, trained} = pairedFixture();
+  const forgedHash = sha256('the same forged prompt in both arms');
+  assert.throws(() => compare([row], [{...base, promptSha256: forgedHash}], [{...trained, promptSha256: forgedHash}], protocol, template));
+  assert.throws(() => compare([row], [base], [trained], protocol, `${template}Changed instructions.`));
+  assert.throws(() => compare([row], [base], [trained], protocol));
+});
+
+test('paired comparison rejects altered generation settings and hashes', () => {
+  const {template, protocol, base, trained} = pairedFixture();
+  const differentGeneration = {...trained.generation, temperature: 0.7};
+  const changed = {...trained, generation: differentGeneration, generationSha256: sha256(canonical(differentGeneration))};
+  assert.throws(() => compare([row], [base], [changed], protocol, template));
+  assert.throws(() => compare([row], [{...base, generation: differentGeneration, generationSha256: changed.generationSha256}], [changed], protocol, template));
+  assert.throws(() => compare([row], [base], [{...trained, generationSha256: sha256('forged-settings')}], protocol, template));
+});
+
+test('paired comparison preserves authoritative Python float-formatted digest', () => {
+  const {template, protocol, base, trained} = pairedFixture();
+  const authoritative = sha256('{"max_tokens":1000,"num_samples":1,"temperature":0.0}');
+  assert.notEqual(authoritative, sha256(canonical(protocol.generation)));
+  protocol.generationSha256 = authoritative;
+  base.generationSha256 = authoritative;
+  trained.generationSha256 = authoritative;
+  assert.equal(compare([row], [base], [trained], protocol, template).paired, true);
+  assert.throws(() => compare([row], [base], [{...trained, generationSha256: sha256(canonical(protocol.generation))}], protocol, template));
+});
+
+test('paired comparison rejects seed, token, model, arm, and checkpoint mismatches', () => {
+  const {template, protocol, base, trained} = pairedFixture();
+  for (const change of [
+    {seed: trained.seed + 1},
+    {seed: null},
+    {promptTokenIdsSha256: sha256('different-tokens')},
+    {model: 'review-only-other-base'},
+    {arm: 'base'},
+    {checkpoint: 'review-only-other-checkpoint'},
+  ]) assert.throws(() => compare([row], [base], [{...trained, ...change}], protocol, template));
+  assert.throws(() => compare([row], [{...base, checkpoint: protocol.trainedCheckpoint}], [trained], protocol, template));
 });

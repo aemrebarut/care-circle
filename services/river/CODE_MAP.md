@@ -25,3 +25,7 @@ GET /health returns ok and service river. GET /v1/status reports mode determinis
 ## Gotchas
 
 Training startup is never coupled to service startup. Only the named authorized River key may be loaded by the explicit runner. Dataset train/dev/test groups must remain disjoint, and test gold must never become model input. Missing predictions and failed transport count as failures. Base and trained comparisons require the same frozen prompt and held-out IDs. Synthetic template scores are not clinical validation. No live extractor is claimed until independently verified.
+
+## Milestone evidence
+
+Initial local scaffold commit 85caf87; corpus commit 74da84e; runner commit 723df96 with digest handoff fix 516648f. Active v2 has 480 unique notes split 336/72/72, with zero template family, case or observable entity-group overlap. Independent corpus and exact token-payload audit passed. Frozen payload SHA256 is 039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b. Actual River session began at 15:07 Pacific, with 21 planned SFT steps then fixed same-prompt evaluation; completion and model metrics remain unclaimed until receipts verify them. Local deterministic benchmark rejected all 72 broader held-out notes with HTTP 422; those are explicit conservative refusals. Runtime smoke passed. Fixed demo date rejects future visits, while future follow-ups are allowed.

@@ -24,7 +24,7 @@ const date = value => string(value) && /^\d{4}-\d{2}-\d{2}$/.test(value) && Numb
 export function validExtraction(e) {
   if (!keysAre(e, ['visit', 'medicationChanges', 'questions', 'followUps'])) return false;
   const v = e.visit;
-  if (!keysAre(v, ['date', 'doctorId', 'attendeeIds', 'summary']) || !date(v.date) || !doctors.has(v.doctorId) || !strings(v.attendeeIds) || !v.attendeeIds.every(id => people.has(id)) || !string(v.summary)) return false;
+  if (!keysAre(v, ['date', 'doctorId', 'attendeeIds', 'summary']) || !date(v.date) || v.date > '2026-09-27' || !doctors.has(v.doctorId) || !strings(v.attendeeIds) || !v.attendeeIds.every(id => people.has(id)) || !string(v.summary)) return false;
   if (!Array.isArray(e.medicationChanges) || !e.medicationChanges.every(m => keysAre(m, ['medicationId', 'name', 'dose', 'frequency']) && medications.has(m.medicationId) && ['medicationId', 'name', 'dose', 'frequency'].every(k => string(m[k]) && m[k].length > 0))) return false;
   if (!Array.isArray(e.questions) || !e.questions.every(q => keysAre(q, ['doctorId', 'text']) && doctors.has(q.doctorId) && string(q.text))) return false;
   return Array.isArray(e.followUps) && e.followUps.every(f => keysAre(f, ['text'], ['dueDate']) && string(f.text) && (f.dueDate === undefined || date(f.dueDate)));
@@ -80,14 +80,22 @@ export function score(records, predictions) {
 export function compare(records, base, trained, protocol, promptTemplate) {
   if (!protocol || !protocol.baseModel || !protocol.generation || !protocol.testSha256 || !protocol.promptSha256 || !protocol.trainedCheckpoint) throw new Error('Comparison requires model, decoding, split, prompt, and trained-checkpoint provenance.');
   if (base.length !== records.length || trained.length !== records.length) throw new Error('Both model runs must cover the complete fixed evaluation split.');
-  if (promptTemplate !== undefined && sha256(promptTemplate) !== protocol.promptSha256) throw new Error('Prompt template hash differs from the run protocol.');
+  if (typeof promptTemplate !== 'string' || sha256(promptTemplate) !== protocol.promptSha256) throw new Error('Prompt template hash differs from the run protocol.');
   const baseMap = new Map(base.map(row => [row.id, row]));
   const trainedMap = new Map(trained.map(row => [row.id, row]));
   for (const row of records) {
     const a = baseMap.get(row.id), b = trainedMap.get(row.id);
     const inputHash = sha256(canonical(row.input));
-    const expectedPromptHash = promptTemplate === undefined ? a?.promptSha256 : sha256(renderPrompt(promptTemplate, row.input));
+    const expectedPromptHash = sha256(renderPrompt(promptTemplate, row.input));
     if (!a || !b || a.inputSha256 !== inputHash || b.inputSha256 !== inputHash || !a.promptSha256 || a.promptSha256 !== b.promptSha256 || a.promptSha256 !== expectedPromptHash) throw new Error(`Prompt or input provenance mismatch for ${row.id}.`);
+    if (a.arm !== 'base' || b.arm !== 'trained' || a.model !== protocol.baseModel || b.model !== protocol.baseModel || a.checkpoint !== null || b.checkpoint !== protocol.trainedCheckpoint) throw new Error(`Model or checkpoint provenance mismatch for ${row.id}.`);
+    // The Python runner preserves integral floats in its canonical JSON.
+    // Verify settings structurally and retain its authoritative byte digest.
+    const generationHash = protocol.generationSha256 || sha256(canonical(protocol.generation));
+    if (!equal(a.generation, protocol.generation) || !equal(b.generation, protocol.generation) || a.generationSha256 !== generationHash || b.generationSha256 !== generationHash || !Number.isInteger(a.seed) || a.seed !== b.seed) throw new Error(`Decoding provenance mismatch for ${row.id}.`);
+    if (!a.promptTokenIdsSha256 || a.promptTokenIdsSha256 !== b.promptTokenIdsSha256) throw new Error(`Tokenized prompt provenance mismatch for ${row.id}.`);
+    const expectedSeed = protocol.evaluation?.seeds?.[records.indexOf(row)];
+    if (expectedSeed !== undefined && a.seed !== expectedSeed) throw new Error(`Seed provenance mismatch for ${row.id}.`);
   }
   return {paired: true, evaluatedAt: new Date().toISOString(), protocol, base: score(records, base), trained: score(records, trained)};
 }

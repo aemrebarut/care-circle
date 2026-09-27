@@ -1,0 +1,328 @@
+{
+  "kind": "local-deterministic",
+  "evaluatedAt": "2026-09-27T22:08:07.026Z",
+  "endpoint": "http://127.0.0.1:4702/v1/extract",
+  "testSha256": "040953c027b4a79ebb23f531345a5e0f05962002749545808a3e822de70de100",
+  "counts": {
+    "examples": 72,
+    "predictions": 72,
+    "jsonValid": 0,
+    "schemaValid": 0,
+    "extractionExact": 0,
+    "structuredExact": 0,
+    "warningsExact": 0,
+    "taskExact": 0,
+    "medicationExact": 0,
+    "unsupportedMedicationClaims": 0,
+    "predictedMedicationClaims": 0
+  },
+  "rates": {
+    "jsonValid": 0,
+    "schemaValid": 0,
+    "extractionExact": 0,
+    "structuredExact": 0,
+    "warningsExact": 0,
+    "taskExact": 0,
+    "medicationExact": 0
+  },
+  "failures": [
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-11",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-11",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-11",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-05",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-12",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-06",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unchanged-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-07",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-01",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-11",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-unsupported-test-01-02",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-04",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-10",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-multiple-test-01-03",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-single-test-01-09",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-negation-test-01-11",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-08",
+      "reason": "unavailable_output"
+    },
+    {
+      "id": "care-circle-corpus-v2-uncertain-test-01-11",
+      "reason": "unavailable_output"
+    }
+  ],
+  "limitations": [
+    "Synthetic template-family holdout only; not clinical validation.",
+    "Exact comparison includes array order and literal source text.",
+    "Unsupported medication claims are measured against gold only among schema-valid predictions.",
+    "Missing and invalid predictions count as failures in all exactness denominators."
+  ],
+  "httpStatuses": {
+    "422": 72
+  },
+  "scope": "The conservative ingest baseline supports a narrower demo grammar than the River corpus. HTTP 422 means it rejected a note rather than fabricated an extraction."
+}

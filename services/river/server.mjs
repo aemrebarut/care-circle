@@ -66,6 +66,8 @@ export function createServer() {
         const input = await body(req);
         if (!input || typeof input.note !== 'string' || !input.note.trim() || input.note.length > 16000) return fail(res, 400, 'INVALID_NOTE', 'Provide a nonempty note of at most 16000 characters.');
         if (input.date !== undefined && (typeof input.date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(input.date))) return fail(res, 400, 'INVALID_DATE', 'date must use YYYY-MM-DD.');
+        if (input.date !== undefined && (!Number.isFinite(Date.parse(`${input.date}T00:00:00Z`)) || new Date(`${input.date}T00:00:00Z`).toISOString().slice(0, 10) !== input.date)) return fail(res, 422, 'INVALID_DATE', 'date must identify a real calendar date.');
+        if (input.date > '2026-09-27') return fail(res, 422, 'FUTURE_VISIT_DATE', 'Visit dates cannot be later than the demo date 2026-09-27.');
         if (input.authorId !== undefined && !['people/ana-alvarez', 'people/ben-alvarez', 'people/celia-alvarez'].includes(input.authorId)) return fail(res, 400, 'INVALID_AUTHOR', 'authorId must identify a supported synthetic sibling.');
         return fail(res, 503, 'RIVER_UNAVAILABLE', 'Live River extraction is unavailable. Use the deterministic ingest fallback.');
       }

@@ -26,6 +26,8 @@ const result = {
   kind: 'local-deterministic', evaluatedAt: new Date().toISOString(),
   endpoint: 'http://127.0.0.1:4702/v1/extract',
   testSha256: sha256(await readFile(file)), ...score(rows, predictions),
+  httpStatuses: predictions.reduce((counts, row) => { const key = row.status === null ? 'transport_unavailable' : String(row.status); counts[key] = (counts[key] || 0) + 1; return counts; }, {}),
+  scope: 'The conservative ingest baseline supports a narrower demo grammar than the River corpus. HTTP 422 means it rejected a note rather than fabricated an extraction.',
 };
 await writeFile(new URL('results/local-predictions.jsonl', root), predictions.map(p => JSON.stringify(p)).join('\n') + '\n');
 await writeFile(new URL('results/local-baseline.json', root), JSON.stringify(result, null, 2) + '\n');
