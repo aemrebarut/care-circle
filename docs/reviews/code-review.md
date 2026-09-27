@@ -33,4 +33,4 @@ Only docs/reviews/ is writable by this lane. Do not mutate the shared demo or ac
 
 ## Milestone evidence
 
-M1: independent live read-only audit passed at revision 2 with 32 pages, 132 links, seven medications, 40 checked citation instances and the unresolved 20 mg visit versus 10 mg pharmacy claim. Initial R1 through R13 findings are closed except R8 live-unknown lock recovery. Real restart is owner-reported; two reset-to-demo passes remain pending. No trained-model success or official Memorable/UFO execution is claimed. See docs/reviews/milestones.md for precise test receipts.
+M1: independent live read-only audit passed at revision 2 with 32 pages, 132 links, seven medications, 40 checked citation instances and the unresolved 20 mg visit versus 10 mg pharmacy claim. R1 through R13 are closed after the R8 live-unknown lock follow-up. Baseline restart is owner-reported; post-ingest restart and two reset-to-demo passes remain pending. No trained-model success or official Memorable/UFO execution is claimed. See docs/reviews/milestones.md for precise test receipts.

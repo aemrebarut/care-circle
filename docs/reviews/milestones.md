@@ -30,3 +30,7 @@ Review artifact owner: cc-review, docs/reviews/ only. No reviewer implementation
 - No verified River trained-model comparison or live River extractor is claimed by this review. Training progress is separate from evaluation completion.
 
 All other R1 through R13 findings are closed by the stated direct tests or source inspections. This milestone is not final release sign-off.
+
+### M1 follow-up, 15:16 Pacific
+
+R8 is closed after direct review of both absent-PID checks and the corrected fixtures. cc-runtime reports 17/17 lifecycle tests passing. A post-ingest restart and identical retry are now coordinated by runtime and ingest before QA resets. No reviewer mutation is involved.

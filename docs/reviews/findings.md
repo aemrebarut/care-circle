@@ -62,13 +62,15 @@ Evidence: independent pure-function regression after the 31-test owner suite pas
 
 ## R8: Interrupted runtime operation can strand its lock
 
-Priority P2. Owner cc-runtime. Reopened at 15:13 Pacific for live unknown owner handling. The first fix resolved interruption cleanup but the initial static closure was too broad.
+Priority P2. Owner cc-runtime. Closed after direct follow-up source review at 15:16 Pacific. The first fix resolved interruption cleanup but the initial static closure was too broad; the live-unknown edge was reopened and then fixed.
 
 Initial packages/runtime/lifecycle.mjs retried an existing operation.lock without verifying the owner. Cleanup lived only in async finally, with no CLI signal handling. Process interruption could leave start, stop and reset permanently timing out. Recovery must verify that the recorded owner is dead and must never delete a lock held by a live unknown process.
 
 Evidence: independent static control-flow review. No lifecycle interruption test was run against shared services.
 
 Follow-up evidence: recoverDeadLock accepted any nonempty identity and treated any inequality with current process identity as death. A live PID with saved identity unknown was therefore reclaimed. The existing fixture explicitly expected recovery with process.pid and an arbitrary previous identity string. The owner was asked to recover only when the PID is absent, or when validated immutable birth identity proves a different incarnation. Malformed identity and same-birth command changes must fail closed.
+
+Final fix: both recovery checks now require processIdentity(pid) to return null. Every live PID fails closed, including reused PIDs and unknown identities. Direct review confirmed the two checks and added malformed/same-birth owner tests. cc-runtime reported 17/17 lifecycle tests passing, with a truly exited owner fixture replacing the misleading live mismatch fixture.
 
 ## R9: Missing River output counted as valid JSON
 

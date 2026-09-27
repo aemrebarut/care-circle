@@ -4,7 +4,7 @@ Owner: cc-review. Scope: docs/reviews/ only. Date: 2026-09-27.
 
 ## Current verdict
 
-15:15 Pacific: the first live canonical-note read-only audit passes at revision 2. No P0 or open P1 defect is established. R8 P2 is reopened because runtime lock recovery must not reclaim a live unknown owner based only on an identity mismatch. Initial extraction, citation, persistent-discrepancy, future-date, UI and evaluation-verifier findings are fixed and verified. See findings.md and milestones.md for evidence tiers. Repeated reset-to-demo and browser/print evidence remain pending, so this is not final release sign-off.
+15:16 Pacific: the first live canonical-note read-only audit passes at revision 2. No open P0, P1 or P2 finding remains. R8's live-unknown lock edge is fixed with two absent-PID checks; independent source review and owner-reported 17/17 lifecycle tests support closure. Extraction, citation, persistent-discrepancy, future-date, UI and evaluation-verifier findings are fixed and verified. See findings.md and milestones.md for evidence tiers. Post-ingest restart, repeated reset-to-demo and browser/print evidence remain release gates, so this is not final release sign-off.
 
 Recorded dose is a source claim, never conflict resolution or a treatment instruction. Each pharmacy claim is compared with the latest visit at or before its date and all subsequent visits. Unequal evidence persists even after a later matching visit. V1 has no reconciliation action. Future visits after the fixed September 27 reference date must reject before mutation; future follow-up dates remain allowed.
 
