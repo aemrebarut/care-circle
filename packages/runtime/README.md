@@ -47,7 +47,7 @@ Do not start a fixture on an occupied port or stop its existing listener. Ports 
 
 ## Process ownership
 
-Only processes spawned by this runtime receive receipts, under `.runtime/managed/`. Each receipt records service, PID, a unique process-title marker, OS process identity, entry path, and timestamp. Successful stops archive the receipt with a stop timestamp under `history/` before removing it from active ownership. Service stdout and stderr append to local `.log` files in that directory. Runtime never reads credentials or loads environment files, and starting River does not trigger its opt-in training scripts.
+Only processes spawned by this runtime receive receipts, under `.runtime/managed/`. Each receipt records service, PID, a unique process-title marker, OS process identity, entry path, and timestamp. Successful stops archive the receipt with a stop timestamp under `history/` before removing it from active ownership. Service stdout and stderr append to local `.log` files in that directory, with a timestamped marker separating each start from old diagnostics. Runtime never reads credentials or loads environment files, and starting River does not trigger its opt-in training scripts.
 
 Repeated start reuses healthy processes. A healthy listener without a matching receipt remains external and is never adopted. A port that is occupied without the expected health response blocks startup; coordinate with its owner. A partial sponsor group also blocks duplicate startup.
 

@@ -175,6 +175,7 @@ export async function startServices(selected, { stateDir = defaultStateDir, time
     const logfile = await open(join(stateDir, `${service.name}.log`), 'a', 0o600);
     let child;
     try {
+      await logfile.write(`\n[runtime] ${new Date().toISOString()} starting ${service.name} from ${service.entry}\n`);
       child = spawn(process.execPath, [`--title=carecircle-${service.name}-${nonce}`, entry], {
         cwd: root, detached: true, stdio: ['ignore', logfile.fd, logfile.fd],
       });
