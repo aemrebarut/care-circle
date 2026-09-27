@@ -108,7 +108,7 @@ export function createSponsorsServer() {
         throw problem(400, 'UNEXPECTED_BODY', 'GET requests must not include a body.');
       }
       if (request.method === 'GET' && pathname === '/health') {
-        json(response, 200, { ok: true, service: 'sponsors', synthetic: true, externalSubmissionAuthorized: false });
+        json(response, 200, { ok: true, service: 'sponsors', synthetic: true });
         return;
       }
       if (request.method === 'GET' && pathname === '/v1/status') {

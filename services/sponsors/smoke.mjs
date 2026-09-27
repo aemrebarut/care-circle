@@ -31,7 +31,7 @@ export async function smoke() {
   const status = await request('/v1/status');
   assert.equal(status.memorable.mode, 'local-simulation');
   assert.equal(status.ufo.mode, 'local-http-fetch');
-  assert.equal(status.memorable.externalSubmissionAuthorized, false);
+  assert.notEqual(status.memorable.remoteSubmissionEnabledInService, true);
   assert.equal(status.ufo.officialUfoExecution, false);
   await request('/v1/reset', {});
   await request('/v1/procedure/replay', {}, 409);

@@ -34,16 +34,21 @@ The clinic supports `GET /` and `GET /health`, identifying its service as `spons
 | Component | Verified locally | Official sponsor runtime |
 | --- | --- | --- |
 | Procedure | Six synthetic tool steps, repeatable capture and distinct sibling replay, grounded trace hashes | Memorable has not learned or replayed this trace |
-| Memorable adapter | Exact request export follows its public API envelope, with a committed payload and hash | No API request, SDK run, account action, or credential access |
+| Memorable adapter | Exact request export follows its public API envelope, with a committed payload and hash | No hosted extraction, account action, or credential access |
+| Memorable local recall | Unmodified CLI 0.5.30 recalled, displayed and listed a manually seeded synthetic procedure with network and writes denied | Official local CLI executed; trace learning and hosted extraction did not run |
 | Clinic reader | Actual bounded loopback HTTP fetch, fixture hash, observed response and extraction fields | No official UFO execution |
 | UFO assets | Local MCP tool plus browser action recipe and task brief | No official extension packaging or hosted connector run verified |
 | Browser check | Native Chrome accessibility observation and two inspected screenshots by cc-qa-ui | Local browser rendering verified; no official UFO execution |
 
 Procedure execution is a **local simulation**, with synthetic tool inputs and outputs. Memorable payload preparation does not prove Memorable learning or replay. No Memorable extraction request, credential load, account action, or remote trace submission occurs.
 
+The official Memorable local recall proof is recorded in `procedure/assets/memorable-local-proof.json`. Its runner verifies the inspected package hash, probes Node permission enforcement, and starts the CLI with access only to its package and a synthetic local store. It supplies no credentials or inherited environment and allows no network, writes, or child processes. The store is manually populated from our capture; Memorable did not learn that procedure. HTTP capture and replay still use Care Circle's simulation engine.
+
 Clinic fetching uses an actual HTTP request to the fixed local website. It is labeled **local-http-fetch**. HTTP extraction alone is not a browser run or official UFO extension execution. Extension assets and their validation status are documented in `extension/README.md`.
 
 The service never accepts an arbitrary URL. Remote Memorable or UFO execution requires explicit Emre approval recorded by the lead. A key or installed SDK does not grant permission to submit a trace.
+
+The separate `procedure/memorable-submit.mjs` runner refuses by default. A future authorized invocation requires a matching lead-owned `contract/memorable-approval.json`, `--send`, the exact approved SHA-256 and the recorded approval reference. It makes at most one fixed-destination request, rejects redirects, bounds time and response size, and validates returned data without executing it. It reads `MEMORABLE_API_KEY` only from the authorized process environment after the approval checks. It never runs during service startup. Demo reset does not clear its one-attempt receipt or grant another request.
 
 The reviewable Memorable body is `procedure/assets/memorable-request.json`; its manifest records the exact byte count and SHA-256. `extension/browser-actions.json` is our portable browser recipe, not an official UFO manifest. The local MCP endpoint is `http://127.0.0.1:4706/mcp`.
 
