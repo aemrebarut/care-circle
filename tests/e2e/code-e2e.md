@@ -29,3 +29,5 @@ All lanes share main and live state. Only one lane may reset or ingest at a time
 ## Milestone evidence
 
 Initial runner commit 778b1a0, syntax passes. Temporal controls and stricter evidence checks added after independent Astra xhigh review. Every service dependency code page has now been read. Independent GET/extract probes and real clinic browser rendering pass. Full reset-to-demo and family UI remain pending brain initialization plus runtime-granted mutation access.
+
+M1 at 15:15: independent health 7/7 passes. Runtime baseline persistence and ingest first-write/retry are owner-reported passes; post-ingest restart/ledger proof precedes QA mutation handoff. Actual isolated Chromium unavailable-state screenshots and local clinic browser evidence are recorded under ignored results/ui. Ambiguous writes halt further mutation. Full HTTP and successful family UI flows are not yet claimed.

@@ -31,6 +31,7 @@ const startedAt = new Date().toISOString();
 const runId = startedAt.replaceAll(':', '-');
 const checks = [];
 let stage = 'readiness';
+let mutationOutcomeUncertain = false;
 const sourceCache = new Map();
 
 async function check(name, fn, prerequisite = true) {
@@ -53,17 +54,27 @@ async function check(name, fn, prerequisite = true) {
 }
 
 async function request(service, path, { method = 'GET', body, raw = false, timeoutMs = 120000, transport = direct ? 'direct' : 'proxy' } = {}) {
+  const mutating = method === 'POST' && ['/v1/ingest', '/v1/reset', '/v1/procedure/capture', '/v1/procedure/replay'].includes(path);
+  if (mutating) assert(!mutationOutcomeUncertain, 'A prior write outcome is uncertain; stop and coordinate recovery with cc-runtime');
   const url = transport === 'direct' || path === '/health' || service === 'clinic'
     ? `http://127.0.0.1:${PORTS[service]}${path}`
     : `http://127.0.0.1:${PORTS.web}/api/${service}${path.replace(/^\/v1/, '')}`;
-  const response = await fetch(url, {
-    method, redirect: 'error', signal: AbortSignal.timeout(timeoutMs),
-    ...(body !== undefined ? { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {})
-  });
-  const text = await response.text();
+  let response;
+  let text;
+  try {
+    response = await fetch(url, {
+      method, redirect: 'error', signal: AbortSignal.timeout(timeoutMs),
+      ...(body !== undefined ? { headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) } : {})
+    });
+    text = await response.text();
+  } catch (error) {
+    if (mutating) mutationOutcomeUncertain = true;
+    throw error;
+  }
+  if (mutating && response.status >= 500) mutationOutcomeUncertain = true;
   let data;
   try { data = JSON.parse(text); }
-  catch { throw new Error(`${method} ${url} returned non-JSON (${response.status}): ${text.slice(0, 180)}`); }
+  catch { if (mutating) mutationOutcomeUncertain = true; throw new Error(`${method} ${url} returned non-JSON (${response.status}): ${text.slice(0, 180)}`); }
   if (raw) return { status: response.status, data };
   assert(response.ok, `${method} ${url} returned ${response.status}: ${JSON.stringify(data).slice(0, 600)}`);
   return data;
@@ -147,7 +158,11 @@ async function validateState(s) {
     nonempty(edge.type, 'graph edge type');
   }
   const graph = await request('brain', '/v1/graph');
-  assert.deepEqual(stable(graph), stable(s.graph), 'Graph endpoint must agree with current state');
+  const graphRecords = (g) => ({
+    nodes: [...g.nodes].map(stable).sort((a, b) => a.id.localeCompare(b.id)),
+    edges: [...g.edges].map(stable).sort((a, b) => JSON.stringify(a).localeCompare(JSON.stringify(b)))
+  });
+  assert.deepEqual(graphRecords(graph), graphRecords(s.graph), 'Graph endpoint must agree with current state');
   return { pages: s.pages.length, nodes: nodes.size, edges: s.graph.edges.length, revision: s.revision };
 }
 
@@ -312,7 +327,10 @@ async function statusChecks() {
 }
 
 async function reset() {
-  const { stdout } = await exec(resolve(root, 'scripts/demo-reset'), [], { cwd: root, timeout: 300000, maxBuffer: 1024 * 1024 });
+  assert(!mutationOutcomeUncertain, 'A prior write outcome is uncertain; do not retry reset without runtime recovery');
+  let stdout;
+  try { ({ stdout } = await exec(resolve(root, 'scripts/demo-reset'), [], { cwd: root, timeout: 300000, maxBuffer: 1024 * 1024 })); }
+  catch (error) { mutationOutcomeUncertain = true; throw error; }
   sourceCache.clear();
   assert(stdout.length < 1024 * 1024, 'Reset output unexpectedly large');
 }
@@ -581,7 +599,10 @@ async function health() {
 }
 
 try {
-  if (full) for (let cycle = 1; cycle <= cycles; cycle++) await fullCycle(cycle);
+  if (full) for (let cycle = 1; cycle <= cycles; cycle++) {
+    await fullCycle(cycle);
+    if (mutationOutcomeUncertain) break;
+  }
   else {
     await health();
     if (!healthOnly) { stage = 'current state'; await readOnly(); }
@@ -594,7 +615,7 @@ try {
   try { commit = (await exec('git', ['rev-parse', 'HEAD'], { cwd: root })).stdout.trim(); } catch {}
   const totals = { passed: 0, failed: 0, skipped: 0 };
   for (const item of checks) totals[item.status]++;
-  const report = { runId, startedAt, finishedAt: new Date().toISOString(), commit, mode: full ? 'full' : healthOnly ? 'health-only' : 'read-only', transport: direct ? 'direct' : 'web-proxy', cycles: full ? cycles : 0, totals, checks };
+  const report = { runId, startedAt, finishedAt: new Date().toISOString(), commit, mode: full ? 'full' : healthOnly ? 'health-only' : 'read-only', transport: direct ? 'direct' : 'web-proxy', cyclesRequested: full ? cycles : 0, mutationOutcomeUncertain, totals, checks };
   const directory = resolve(root, 'tests/e2e/results');
   await mkdir(directory, { recursive: true });
   const reportPath = resolve(directory, `${runId}.json`);

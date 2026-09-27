@@ -26,3 +26,13 @@ Native Chrome rendered the local clinic at `http://127.0.0.1:4706/` at 2026-09-2
 ## Limits and next gate
 
 Full live reset/ingest acceptance requires an exclusive mutation window from cc-runtime after brain startup and restart. Family UI interactions will follow HTTP acceptance in a separate window. Score arithmetic and status provenance do not themselves prove a remote training or serving run; the River lane supplies artifact-level evidence. Source review is not a substitute for these live checks.
+
+## M1, 15:15 Pacific
+
+Independent `node tests/e2e/acceptance.mjs --health-only` passed all seven endpoints at 15:13:44.884. Receipt: `tests/e2e/results/2026-09-27T22-13-44.884Z.json`. A preceding read-only run independently passed River metric provenance and sponsor status checks; brain-dependent checks correctly failed or skipped during the repaired startup.
+
+Runtime reports the real GBrain baseline survived an exact-PID restart with identical revision 1, 30 pages and 120 edges. Ingest reports the first canonical note and same-key retry passed at revision 2, source `visits/ingest-70c7a8a9face7c4158c7be49`, with one 20 mg claim and preserved pharmacy 10 mg. These are owner-reported integration receipts; independent full acceptance has not run yet. Runtime is now proving post-ingest persistence and the ingest idempotency ledger before releasing state to QA.
+
+The isolated headless Chrome reviewer also verified the real family UI unavailable state at 1440 by 1000: graph and medications show errors, sponsor modes are explicit, synthetic and non-advice notices are visible, navigation and GET-only retry work, and there were no page errors or external requests. Receipt: `tests/e2e/results/ui/web-initial-observation.json`. Screenshots are under the same ignored directory. Successful graph, save, citation and print flows still await the stable mutation handoff.
+
+The runner now blocks further writes after any uncertain reset/write result. Graph endpoint comparison accepts ordering differences and additive envelope fields while comparing the actual nodes and edges. No QA family mutation has occurred at this milestone.

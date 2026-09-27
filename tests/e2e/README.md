@@ -18,6 +18,8 @@ Health calls use each service directly. Product APIs use the web proxy by defaul
 
 Each run prints named checks and writes a concise JSON receipt under ignored `tests/e2e/results/`. A failed check makes the process exit nonzero. A skipped dependent check is explicit, never counted as a pass. The receipt records git commit, time, mode, transport, and check results. It contains no environment values or credentials.
 
+If a reset or write has an uncertain outcome, the runner blocks subsequent writes and stops further cycles. Inspect the receipt and coordinate recovery with cc-runtime before starting another run. It does not blindly retry an ambiguous reset.
+
 ## Coverage
 
 - All seven health endpoints and same-origin proxy compatibility.
