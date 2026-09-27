@@ -6,6 +6,17 @@
 
 ## Log
 
+### 15:55 Pacific M3 print and sponsor gates passed
+
+- Corrected Chromium print is one readable A4 page with both lisinopril claims: visit 20 mg daily on September 27 and pharmacy 10 mg daily on September 24. Both citations, eight source references, and the synthetic/non-advice footer are visible without clipping. Lead, QA, web owner and independent review inspected the render.
+- Desktop/mobile flows and bounded accessibility checks pass. The medication answer has a live region, source navigation retains focus, and automatic River polls preserve expanded evidence and focus. DOM behavior was tested; screen-reader audio was not.
+- Both local sponsor proofs are committed and independently checked: official Memorable CLI recall selects the captured procedure for Ben's simulated replay; the official UFO SDK direct handler fetches the fixed fictional clinic through loopback HTTP. Neither proves automatic learning, hosted execution, or a full UFO runtime.
+- The remote Memorable command now refuses before credential access. Runtime refreshed sponsors and verified all denial fields while preserving the family state. The two consecutive full HTTP acceptance cycles are now running under QA's exclusive window; no pass is claimed until their receipt lands.
+- All 17 development GBrain map/decision pages resolve, including every checked code-page link. README links, public repo visibility, and tracked-file dash checks pass. The README now states Bun and POSIX prerequisites and links the official GBrain installation source.
+- A macOS Git shim began requesting an Xcode license. No license or global setting was changed. Repository commands work with per-invocation `PATH=/Library/Developer/CommandLineTools/usr/bin:$PATH`. A state-preserving brain restart with that process PATH is queued only after QA release.
+- Test now: read-only `scripts/smoke` or http://127.0.0.1:4700. Avoid save/reset until QA releases its window. Selected browser/PDF evidence is being published under tests/e2e/evidence/.
+- Implementation is in stabilization: fixes only for reproduced release defects, no new capabilities or external calls. Next STATUS update by 16:15 Pacific; freeze remains 16:40.
+
 ### 15:35 Pacific M2 integration and browser evidence
 
 - Emre declined remote Memorable submission. The request is closed; no request ran, and no credential or account is needed. Local CLI recall and Care Circle simulation remain the supported path.
