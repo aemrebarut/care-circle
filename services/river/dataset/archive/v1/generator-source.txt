@@ -1,0 +1,345 @@
+import { createHash } from 'node:crypto';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
+import assert from 'node:assert/strict';
+
+const ROOT = dirname(fileURLToPath(import.meta.url));
+const DATA = join(ROOT, 'dataset');
+const SEED = 'care-circle-synthetic-v1-2026-09-27';
+const VERSION = 'care-circle-corpus-v1';
+const COUNT_PER_FAMILY = 12;
+const SPLITS = ['train', 'dev', 'test'];
+const sha256 = (value) => createHash('sha256').update(value).digest('hex');
+const json = (value) => `${JSON.stringify(value, null, 2)}\n`;
+
+function random(seed) {
+  let state = Number.parseInt(sha256(seed).slice(0, 8), 16) >>> 0;
+  return () => {
+    state ^= state << 13;
+    state ^= state >>> 17;
+    state ^= state << 5;
+    return (state >>> 0) / 4294967296;
+  };
+}
+
+function choose(values, rng) { return values[Math.floor(rng() * values.length)]; }
+function shuffled(values, rng) {
+  const result = [...values];
+  for (let index = result.length - 1; index > 0; index--) {
+    const next = Math.floor(rng() * (index + 1));
+    [result[index], result[next]] = [result[next], result[index]];
+  }
+  return result;
+}
+
+const templates = {
+  single: {
+    train: [
+      (c) => `Paper says ${c.a.name} increased to ${c.a.dose} ${c.a.frequency}.`,
+      (c) => `new written dose for ${c.a.name}: ${c.a.dose}, ${c.a.frequency}.`,
+      (c) => `Changed ${c.a.name} to ${c.a.dose} ${c.a.shortFrequency}; copied from today's plan.`,
+      (c) => `The visit sheet now records ${c.a.name} = ${c.a.dose} ${c.a.frequency}. This is a dose change.`,
+      (c) => `dose update\n${c.a.name}: ${c.a.dose} ${c.a.shortFrequency}\nconfirmed in the visit note.`,
+      (c) => `Sibling read-back: change ${c.a.name} to ${c.a.dose} ${c.a.frequency}.`,
+      (c) => `Plan had a correction: ${c.a.name} should be recorded as ${c.a.dose} ${c.a.frequency}, replacing the old dose.`,
+      (c) => `Updated prescription in the visit record: ${c.a.name} ${c.a.dose} ${c.a.shortFrequency}.`,
+    ],
+    dev: [(c) => `At checkout I read the new dose aloud: ${c.a.dose} ${c.a.frequency} of ${c.a.name}. The doctor confirmed that change.`],
+    test: [(c) => `After-visit correction logged -> ${c.a.name} now ${c.a.dose} (${c.a.shortFrequency}); this replaces the previous dose.`],
+  },
+  multiple: {
+    train: [
+      (c) => `Two changes: ${c.a.name} to ${c.a.dose} ${c.a.frequency}; ${c.b.name} to ${c.b.dose} ${c.b.frequency}.`,
+      (c) => `Updated both meds. ${c.a.name}: ${c.a.dose} ${c.a.shortFrequency}. ${c.b.name}: ${c.b.dose} ${c.b.shortFrequency}.`,
+      (c) => `Copied new doses from the visit: ${c.a.dose} ${c.a.frequency} for ${c.a.name}, and ${c.b.dose} ${c.b.frequency} for ${c.b.name}.`,
+      (c) => `written changes\n1) ${c.a.name} = ${c.a.dose} ${c.a.frequency}\n2) ${c.b.name} = ${c.b.dose} ${c.b.frequency}.`,
+      (c) => `The plan changes ${c.a.name} to ${c.a.dose} ${c.a.shortFrequency}. Also changes ${c.b.name} to ${c.b.dose} ${c.b.shortFrequency}.`,
+    ],
+    dev: [(c) => `There were exactly two prescription edits at this visit: set ${c.a.name} at ${c.a.dose} ${c.a.frequency}, then set ${c.b.name} at ${c.b.dose} ${c.b.frequency}.`],
+    test: [(c) => `Read these back separately: revised ${c.a.name}, ${c.a.dose} ${c.a.shortFrequency}; revised ${c.b.name}, ${c.b.dose} ${c.b.shortFrequency}. Both revisions were confirmed.`],
+  },
+  negation: {
+    train: [
+      (c) => `Did NOT increase ${c.a.name} to ${c.a.dose}. That idea was rejected. Did change ${c.b.name} to ${c.b.dose} ${c.b.frequency}.`,
+      (c) => `No change to ${c.a.name}; the ${c.a.dose} scribble is crossed out. The actual update is ${c.b.name} to ${c.b.dose} ${c.b.shortFrequency}.`,
+      (c) => `Don't record ${c.a.dose} as a new ${c.a.name} dose: no such change happened. ${c.b.name} WAS changed to ${c.b.dose} ${c.b.frequency}.`,
+      (c) => `Correction to my earlier text: ${c.a.name} was not changed. Only ${c.b.name} changed to ${c.b.dose} ${c.b.frequency}.`,
+    ],
+    dev: [(c) => `The proposed ${c.a.name} dose of ${c.a.dose} did not go ahead. The signed change was ${c.b.name}, ${c.b.dose} ${c.b.shortFrequency}.`],
+    test: [(c) => `Scratch the rumor about ${c.a.name} becoming ${c.a.dose}; the clinician explicitly ruled it out. Confirmed instead: ${c.b.name} changed to ${c.b.dose} ${c.b.frequency}.`],
+  },
+  uncertain: {
+    train: [
+      (c) => `maybe ${c.a.name} goes to ${c.a.dose} ${c.a.frequency}? I couldn't hear. Not confirmed.`,
+      (c) => `Unsure whether ${c.a.name} was changed to ${c.a.dose} ${c.a.shortFrequency}. Need to check the paperwork.`,
+      (c) => `I wrote ${c.a.name} ${c.a.dose} ${c.a.frequency} with a question mark. Could be wrong; no confirmed dose change.`,
+      (c) => `${c.a.name} might change to ${c.a.dose} ${c.a.frequency} after review. It has NOT been decided yet.`,
+    ],
+    dev: [(c) => `The audio cut out during the ${c.a.name} discussion. ${c.a.dose} ${c.a.shortFrequency} is only my guess, not a verified change.`],
+    test: [(c) => `Tentative and unconfirmed: a possible future adjustment of ${c.a.name} to ${c.a.dose} ${c.a.frequency}. We do not have the final plan.`],
+  },
+  unchanged: {
+    train: [
+      (c) => `Reviewed ${c.a.name} ${c.a.dose} ${c.a.frequency}; continue unchanged. No medication changes today.`,
+      (c) => `${c.a.name} still ${c.a.dose} ${c.a.shortFrequency}. This is the existing dose, not a new one.`,
+      (c) => `Med list check only: ${c.a.name}, ${c.a.dose} ${c.a.frequency}. Doctor made no changes.`,
+    ],
+    dev: [(c) => `We compared the list with the old sheet. ${c.a.name} remains at ${c.a.dose} ${c.a.frequency}; nothing was adjusted.`],
+    test: [(c) => `Routine reconciliation marked SAME for ${c.a.name} (${c.a.dose} ${c.a.shortFrequency}). The visit produced zero dose revisions.`],
+  },
+  unsupported: {
+    train: [
+      (c) => `${c.a.name} is unchanged. They discussed ${c.unknown}, but I have no actual drug name or dose.`,
+      (c) => `No change to ${c.a.name}. My scribble says ${c.unknown}; cannot identify the medication.`,
+      (c) => `The only possible update was to ${c.unknown}. No readable name/dose. ${c.a.name} was explicitly left alone.`,
+      (c) => `Can't identify ${c.unknown} from these notes. No usable medication change. ${c.a.name} stays the same.`,
+    ],
+    dev: [(c) => `The after-visit list mentions ${c.unknown} without an identifiable medicine name. ${c.a.name} has no change; that part is clear.`],
+    test: [(c) => `One line is illegible except for ${c.unknown}. We cannot tell which medicine or dose it means. The existing ${c.a.name} entry was untouched.`],
+  },
+};
+
+function entityKey(context, scenario) {
+  const meds = [context.a.medicationId];
+  if (scenario === 'multiple' || scenario === 'negation') meds.push(context.b.medicationId);
+  return JSON.stringify({
+    doctorId: context.doctor.id,
+    questionDoctorId: context.questionDoctor.id,
+    attendeeIds: context.attendees.map((person) => person.id).sort(),
+    mentionedMedicationIds: meds.sort(),
+    unsupportedMention: scenario === 'unsupported' ? context.unknown : null,
+  });
+}
+
+function assignedSplit(key) {
+  const bucket = Number.parseInt(sha256(`${SEED}:entity:${key}`).slice(0, 8), 16) % 100;
+  return bucket < 70 ? 'train' : bucket < 85 ? 'dev' : 'test';
+}
+
+function medicationChoice(medication, rng) {
+  const frequency = choose(medication.frequencies, rng);
+  const shortFrequency = ({ daily: 'qd', 'twice daily': 'BID', nightly: 'qHS', 'every morning': 'qAM' })[frequency];
+  return { medicationId: medication.id, name: medication.name, dose: choose(medication.doses, rng), frequency, shortFrequency };
+}
+
+function contextFor(split, scenario, rng, catalog) {
+  for (let attempt = 0; attempt < 10000; attempt++) {
+    const medOrder = shuffled(catalog.medications, rng);
+    const attendees = shuffled(catalog.people, rng).slice(0, 1 + Math.floor(rng() * 3));
+    const context = {
+      doctor: choose(catalog.doctors, rng),
+      questionDoctor: choose(catalog.doctors, rng),
+      attendees,
+      a: medicationChoice(medOrder[0], rng),
+      b: medicationChoice(medOrder[1], rng),
+      unknown: choose(['the blue tablet', 'the unlabeled capsule', 'the tiny white pill', 'the unnamed liquid'], rng),
+    };
+    const key = entityKey(context, scenario);
+    if (assignedSplit(key) === split) return { ...context, entityGroup: sha256(key), entityKey: JSON.parse(key) };
+  }
+  throw new Error(`No entity context found for ${split}/${scenario}`);
+}
+
+function dueDate(date, days) {
+  return new Date(Date.parse(`${date}T12:00:00Z`) + days * 86400000).toISOString().slice(0, 10);
+}
+
+function makeRecord(split, scenario, familyIndex, render, variant, catalog) {
+  const templateFamily = `${scenario}-${split}-${String(familyIndex + 1).padStart(2, '0')}`;
+  const id = `${VERSION}-${templateFamily}-${String(variant + 1).padStart(2, '0')}`;
+  const rng = random(`${SEED}:${id}`);
+  const context = contextFor(split, scenario, rng, catalog);
+  const dayOffset = Math.floor(rng() * 90);
+  const date = dueDate('2026-06-01', dayOffset);
+  const attendeeNames = context.attendees.map((person) => person.name).join(' and ');
+  const headers = {
+    train: `${context.doctor.specialty} today (${date}) with ${attendeeNames}.`,
+    dev: `${date} | ${context.doctor.specialty} appointment | present: ${attendeeNames}.`,
+    test: `Notes after the ${context.doctor.specialty} visit on ${date}; ${attendeeNames} attended.`,
+  };
+  const question = choose([
+    'Should we bring the updated medication list?',
+    'Can you clarify the written follow-up plan?',
+    'Who should receive the visit summary?',
+    'When should we check the appointment schedule?',
+  ], rng);
+  const deadline = dueDate(date, 3 + Math.floor(rng() * 14));
+  const followUp = choose([
+    `Bring the printed medication list on ${deadline}.`,
+    `Call the clinic about scheduling on ${deadline}.`,
+    `Send the visit summary to the family on ${deadline}.`,
+    `Get the requested potassium recheck on ${deadline}.`,
+  ], rng);
+  const questionLabels = {
+    train: `Ask ${context.questionDoctor.specialty}: ${question}`,
+    dev: `For ${context.questionDoctor.specialty}, question: ${question}`,
+    test: `Question addressed to ${context.questionDoctor.specialty}: ${question}`,
+  };
+  const followUpLabels = { train: 'Follow-up', dev: 'Reminder', test: 'To do' };
+  // Alternate including tasks so models cannot assume every array is nonempty.
+  const hasQuestion = variant % 3 !== 0;
+  const hasFollowUp = variant % 4 !== 0;
+  const pieces = [headers[split], render(context)];
+  if (hasQuestion) pieces.push(questionLabels[split]);
+  if (hasFollowUp) pieces.push(`${followUpLabels[split]}: ${followUp}`);
+  const note = pieces.join(variant % 2 === 0 ? '\n' : ' ');
+  const medGold = ({ medicationId, name, dose, frequency }) => ({ medicationId, name, dose, frequency });
+  const medicationChanges = scenario === 'single' ? [medGold(context.a)]
+    : scenario === 'multiple' ? [medGold(context.a), medGold(context.b)]
+      : scenario === 'negation' ? [medGold(context.b)] : [];
+  const warnings = scenario === 'uncertain' ? [`Uncertain medication change: ${context.a.name}.`]
+    : scenario === 'unsupported' ? [`Unsupported medication mention: ${context.unknown}.`] : [];
+  const author = choose(catalog.people, rng);
+  return {
+    id,
+    split,
+    templateFamily,
+    caseId: `fictional-case-${sha256(id).slice(0, 16)}`,
+    entityGroup: context.entityGroup,
+    entityKey: context.entityKey,
+    scenario,
+    synthetic: true,
+    input: { note, authorId: author.id, date },
+    gold: {
+      extraction: {
+        visit: { date, doctorId: context.doctor.id, attendeeIds: context.attendees.map((person) => person.id), summary: note },
+        medicationChanges,
+        questions: hasQuestion ? [{ doctorId: context.questionDoctor.id, text: question }] : [],
+        followUps: hasFollowUp ? [{ text: followUp, dueDate: deadline }] : [],
+      },
+      warnings,
+    },
+  };
+}
+
+function validate(splits, catalog) {
+  const ids = new Set();
+  const notes = new Set();
+  const familyOwners = new Map();
+  const caseOwners = new Map();
+  const entityOwners = new Map();
+  const validMedications = new Set(catalog.medications.map((medication) => medication.id));
+  const validDoctors = new Set(catalog.doctors.map((doctor) => doctor.id));
+  const validPeople = new Set(catalog.people.map((person) => person.id));
+  for (const split of SPLITS) {
+    assert.equal(splits[split].length, split === 'train' ? 336 : 72);
+    for (const row of splits[split]) {
+      assert(!ids.has(row.id), `Duplicate id ${row.id}`);
+      assert(!notes.has(row.input.note), `Duplicate note ${row.id}`);
+      ids.add(row.id);
+      notes.add(row.input.note);
+      for (const [map, key] of [[familyOwners, row.templateFamily], [caseOwners, row.caseId], [entityOwners, row.entityGroup]]) {
+        assert(!map.has(key) || map.get(key) === split, `Cross-split group overlap: ${key}`);
+        map.set(key, split);
+      }
+      const { extraction, warnings } = row.gold;
+      assert.equal(extraction.visit.summary, row.input.note);
+      assert.equal(extraction.visit.date, row.input.date);
+      assert(validDoctors.has(extraction.visit.doctorId));
+      assert(validPeople.has(row.input.authorId));
+      for (const attendee of extraction.visit.attendeeIds) assert(validPeople.has(attendee));
+      for (const change of extraction.medicationChanges) {
+        assert(validMedications.has(change.medicationId));
+        assert(row.input.note.includes(change.name));
+        assert(row.input.note.includes(change.dose));
+      }
+      const expectedChanges = ({ single: 1, multiple: 2, negation: 1, uncertain: 0, unchanged: 0, unsupported: 0 })[row.scenario];
+      assert.equal(extraction.medicationChanges.length, expectedChanges);
+      assert.equal(warnings.length, ['uncertain', 'unsupported'].includes(row.scenario) ? 1 : 0);
+      for (const question of extraction.questions) {
+        assert(validDoctors.has(question.doctorId));
+        assert(row.input.note.includes(question.text));
+      }
+      for (const followUp of extraction.followUps) {
+        assert(row.input.note.includes(followUp.text));
+        assert(followUp.text.includes(followUp.dueDate));
+      }
+      assert(!/[\u2013\u2014]/u.test(JSON.stringify(row)), 'Forbidden dash character');
+    }
+  }
+  return { uniqueIds: ids.size, uniqueNotes: notes.size, templateFamilies: familyOwners.size, entityGroups: entityOwners.size, familyOverlap: 0, caseOverlap: 0, entityGroupOverlap: 0 };
+}
+
+function main() {
+  const args = process.argv.slice(2);
+  if (args.some((arg) => arg !== '--check')) throw new Error('Usage: node services/river/generate-dataset.mjs [--check]');
+  const check = args.includes('--check');
+  const catalogBytes = readFileSync(join(DATA, 'catalog.json'), 'utf8');
+  const catalog = JSON.parse(catalogBytes);
+  const prompt = readFileSync(join(DATA, 'prompt.txt'), 'utf8');
+  const splits = Object.fromEntries(SPLITS.map((split) => [split, []]));
+  for (const [scenario, splitTemplates] of Object.entries(templates)) {
+    for (const split of SPLITS) {
+      splitTemplates[split].forEach((render, index) => {
+        for (let variant = 0; variant < COUNT_PER_FAMILY; variant++) {
+          splits[split].push(makeRecord(split, scenario, index, render, variant, catalog));
+        }
+      });
+    }
+  }
+  for (const split of SPLITS) splits[split] = shuffled(splits[split], random(`${SEED}:order:${split}`));
+  const validation = validate(splits, catalog);
+  const files = Object.fromEntries(SPLITS.map((split) => [`${split}.jsonl`, `${splits[split].map((row) => JSON.stringify(row)).join('\n')}\n`]));
+  const splitInfo = Object.fromEntries(SPLITS.map((split) => [split, {
+    file: `${split}.jsonl`,
+    count: splits[split].length,
+    sha256: sha256(files[`${split}.jsonl`]),
+    templateFamilies: [...new Set(splits[split].map((row) => row.templateFamily))].sort(),
+    entityGroupCount: new Set(splits[split].map((row) => row.entityGroup)).size,
+    scenarioCounts: Object.fromEntries(Object.keys(templates).map((scenario) => [scenario, splits[split].filter((row) => row.scenario === scenario).length])),
+  }]));
+  const heldout = {
+    schemaVersion: 1,
+    datasetVersion: VERSION,
+    seed: SEED,
+    immutable: true,
+    policy: 'Pinned before model training. Never overwrite this version; changing held-out records, prompt, or catalog requires a separately reviewed new dataset version.',
+    promptSha256: sha256(prompt),
+    catalogSha256: sha256(catalogBytes),
+    splits: Object.fromEntries(['dev', 'test'].map((split) => [split, {
+      ...splitInfo[split],
+      records: splits[split].map((row) => ({ id: row.id, caseId: row.caseId, templateFamily: row.templateFamily, entityGroup: row.entityGroup, sha256: sha256(JSON.stringify(row)), inputSha256: sha256(JSON.stringify(row.input)), goldSha256: sha256(JSON.stringify(row.gold)) })),
+    }])),
+  };
+  files['heldout-manifest.json'] = json(heldout);
+  files['heldout-manifest.sha256'] = `${sha256(files['heldout-manifest.json'])}  heldout-manifest.json\n`;
+  files['manifest.json'] = json({
+    schemaVersion: 1,
+    datasetVersion: VERSION,
+    seed: SEED,
+    synthetic: true,
+    total: 480,
+    generator: '../generate-dataset.mjs',
+    generatorSha256: sha256(readFileSync(fileURLToPath(import.meta.url))),
+    promptFile: 'prompt.txt',
+    promptSha256: sha256(prompt),
+    catalogSha256: sha256(catalogBytes),
+    heldoutManifest: 'heldout-manifest.json',
+    heldoutManifestSha256: sha256(files['heldout-manifest.json']),
+    splitPolicy: 'Template families are assigned wholly to one split. The exact combination of visit doctor, question doctor, attendees, mentioned known medication IDs, and unsupported mention is hash-assigned to one split. Fictional case IDs and notes never repeat across splits. Individual known entities and short semantic task phrases intentionally recur.',
+    trainingPolicy: 'Only train.jsonl is an SFT training source. Dev is development evaluation; test is final evaluation. Never send test targets to training, prompt optimization, or model selection.',
+    validation,
+    splits: splitInfo,
+  });
+  // Validate all immutable outputs before writing anything, including train.
+  for (const name of ['heldout-manifest.json', 'heldout-manifest.sha256', 'dev.jsonl', 'test.jsonl']) {
+    const path = join(DATA, name);
+    if (existsSync(path) && readFileSync(path, 'utf8') !== files[name]) {
+      throw new Error(`Refusing to modify pinned held-out artifact ${name}. Preserve this version and create a reviewed new dataset version.`);
+    }
+  }
+  for (const [name, bytes] of Object.entries(files)) {
+    const path = join(DATA, name);
+    if (check) {
+      assert(existsSync(path), `Missing ${name}`);
+      assert.equal(readFileSync(path, 'utf8'), bytes, `Reproducibility mismatch: ${name}`);
+    } else {
+      mkdirSync(DATA, { recursive: true });
+      if (!existsSync(path) || readFileSync(path, 'utf8') !== bytes) writeFileSync(path, bytes);
+    }
+  }
+  console.log(JSON.stringify({ ok: true, action: check ? 'checked' : 'generated', seed: SEED, counts: Object.fromEntries(SPLITS.map((split) => [split, splits[split].length])), validation, heldoutManifestSha256: sha256(files['heldout-manifest.json']), promptSha256: sha256(prompt), splitSha256: Object.fromEntries(SPLITS.map((split) => [split, splitInfo[split].sha256])) }, null, 2));
+}
+
+main();

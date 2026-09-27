@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "care-circle-corpus-v1",
+  "seed": "care-circle-synthetic-v1-2026-09-27",
+  "synthetic": true,
+  "total": 480,
+  "generator": "../generate-dataset.mjs",
+  "generatorSha256": "6e176d35037d15b5e40b5e55381c59eebe9888e25a382f5b15800da1672da7ad",
+  "promptFile": "prompt.txt",
+  "promptSha256": "010e5b6032951e699de04e8ca5d7e3ece7f35c7b5d78f83d4d33b4bd29602fd2",
+  "catalogSha256": "8b5ad32f4f2f2459bb41e0c6d52b4d4712a421bf4b80c7215b115718257c50ae",
+  "heldoutManifest": "heldout-manifest.json",
+  "heldoutManifestSha256": "06ab34cdac7d24a571af781c44a61f8bb28468a293d39235d75ec375c32f395f",
+  "splitPolicy": "Template families are assigned wholly to one split. The exact combination of visit doctor, question doctor, attendees, mentioned known medication IDs, and unsupported mention is hash-assigned to one split. Fictional case IDs and notes never repeat across splits. Individual known entities and short semantic task phrases intentionally recur.",
+  "trainingPolicy": "Only train.jsonl is an SFT training source. Dev is development evaluation; test is final evaluation. Never send test targets to training, prompt optimization, or model selection.",
+  "validation": {
+    "uniqueIds": 480,
+    "uniqueNotes": 480,
+    "templateFamilies": 40,
+    "entityGroups": 435,
+    "familyOverlap": 0,
+    "caseOverlap": 0,
+    "entityGroupOverlap": 0
+  },
+  "splits": {
+    "train": {
+      "file": "train.jsonl",
+      "count": 336,
+      "sha256": "8f2680991e85a3d630cad3feced0594bbd3949c1fb0219c140ffc195edc05395",
+      "templateFamilies": [
+        "multiple-train-01",
+        "multiple-train-02",
+        "multiple-train-03",
+        "multiple-train-04",
+        "multiple-train-05",
+        "negation-train-01",
+        "negation-train-02",
+        "negation-train-03",
+        "negation-train-04",
+        "single-train-01",
+        "single-train-02",
+        "single-train-03",
+        "single-train-04",
+        "single-train-05",
+        "single-train-06",
+        "single-train-07",
+        "single-train-08",
+        "uncertain-train-01",
+        "uncertain-train-02",
+        "uncertain-train-03",
+        "uncertain-train-04",
+        "unchanged-train-01",
+        "unchanged-train-02",
+        "unchanged-train-03",
+        "unsupported-train-01",
+        "unsupported-train-02",
+        "unsupported-train-03",
+        "unsupported-train-04"
+      ],
+      "entityGroupCount": 299,
+      "scenarioCounts": {
+        "single": 96,
+        "multiple": 60,
+        "negation": 48,
+        "uncertain": 48,
+        "unchanged": 36,
+        "unsupported": 48
+      }
+    },
+    "dev": {
+      "file": "dev.jsonl",
+      "count": 72,
+      "sha256": "2259cded7808c4974181125ed85892e4727d308e1912f58ff9509d31cc572fac",
+      "templateFamilies": [
+        "multiple-dev-01",
+        "negation-dev-01",
+        "single-dev-01",
+        "uncertain-dev-01",
+        "unchanged-dev-01",
+        "unsupported-dev-01"
+      ],
+      "entityGroupCount": 68,
+      "scenarioCounts": {
+        "single": 12,
+        "multiple": 12,
+        "negation": 12,
+        "uncertain": 12,
+        "unchanged": 12,
+        "unsupported": 12
+      }
+    },
+    "test": {
+      "file": "test.jsonl",
+      "count": 72,
+      "sha256": "d4fa9735a9a64e8d2e460b9baecfd8e2ba0af95fb206f006af14943fd2d565d4",
+      "templateFamilies": [
+        "multiple-test-01",
+        "negation-test-01",
+        "single-test-01",
+        "uncertain-test-01",
+        "unchanged-test-01",
+        "unsupported-test-01"
+      ],
+      "entityGroupCount": 68,
+      "scenarioCounts": {
+        "single": 12,
+        "multiple": 12,
+        "negation": 12,
+        "uncertain": 12,
+        "unchanged": 12,
+        "unsupported": 12
+      }
+    }
+  }
+}

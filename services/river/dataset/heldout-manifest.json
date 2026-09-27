@@ -1,0 +1,1355 @@
+{
+  "schemaVersion": 1,
+  "datasetVersion": "care-circle-corpus-v2",
+  "seed": "care-circle-synthetic-v2-2026-09-27",
+  "immutable": true,
+  "policy": "Pinned before model training. Never overwrite this version; changing held-out records, prompt, or catalog requires a separately reviewed new dataset version.",
+  "promptSha256": "010e5b6032951e699de04e8ca5d7e3ece7f35c7b5d78f83d4d33b4bd29602fd2",
+  "catalogSha256": "8b5ad32f4f2f2459bb41e0c6d52b4d4712a421bf4b80c7215b115718257c50ae",
+  "splits": {
+    "dev": {
+      "file": "dev.jsonl",
+      "count": 72,
+      "sha256": "3d84ba93956e09e3d0b87a25a7a3e8725290ae17925f16cc3a4e61e8d202ac15",
+      "templateFamilies": [
+        "multiple-dev-01",
+        "negation-dev-01",
+        "single-dev-01",
+        "uncertain-dev-01",
+        "unchanged-dev-01",
+        "unsupported-dev-01"
+      ],
+      "entityGroupCount": 66,
+      "scenarioCounts": {
+        "single": 12,
+        "multiple": 12,
+        "negation": 12,
+        "uncertain": 12,
+        "unchanged": 12,
+        "unsupported": 12
+      },
+      "records": [
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-06",
+          "caseId": "fictional-case-d076fb20995704d7",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "6b2a368c84a7f4a464942f1b0727474e29abcb38d06e9350b18d9ab5536cb65c",
+          "sha256": "a3e9b9ae5f8f125bd77fb70b7c1b5bc3dafb1fb538827dc2ca8ae56e72986efe",
+          "inputSha256": "78b6a59b24579e84cb9ce92bb5eb7f7f8fc3a3caede2884df51ae833ca7afa55",
+          "goldSha256": "2509231abdbba5836463eb4777f4874e3ea97e094ab2c0c0651dc8eafb0c8364"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-01",
+          "caseId": "fictional-case-6df3f3ff85991ce2",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "0246f7d010b981b7b75200ad2485908630d68449b1e49247ff13ce6078af5103",
+          "sha256": "64bad54a8cfee26fb7c0ae8aaa2d172ae99133ca54eae40d6409725cd6158cb5",
+          "inputSha256": "78eb17ede258213439d6c8c8bb2fecad0e501e574c2128fd48db93a8eccb0244",
+          "goldSha256": "1ccfd0b93622eeca74de3c4f1facf0837c8c053c90a049ff3fdd728d7f78925b"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-04",
+          "caseId": "fictional-case-6c35eedd62e226bb",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "b9a46e04369a59f2ba82b6ff0bb04d6516019a7f1a556c1973516f0c5e8e2ca8",
+          "sha256": "358e730df692a965acd79f86cce5fc917d87a101e699fac5f3d23d50042e039a",
+          "inputSha256": "dffe9ae29c2ea3dde23db116518eb3e016f0e8e82f09cf3c2c2cf0e1cce0fdb7",
+          "goldSha256": "766e65f8569e335fd0b5c09d2a671000074b50db728a937e865c6e738155baca"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-08",
+          "caseId": "fictional-case-5d25e8f7a153e1ac",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "d8c2944a5b96348b20366950458434ddaf078aa2ab1c6428f2ce0cc03981bd71",
+          "sha256": "980fe099339c51e3d644b6cd53d48fe7687016580044299b46c0802b85a5fd1f",
+          "inputSha256": "56b78ac8802006a6d033613a1d9f893c72ec0ae17b19b4663e9bbacbf63ac013",
+          "goldSha256": "9343788bbda1c1dc134e83ef0c51c8273f32e43e2303e0565b669a2cdf44e2f5"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-11",
+          "caseId": "fictional-case-c742b5d599ad6d23",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "bf2d498184951da0f96bab482e7415c829d6f52217ac6106c45345381faadddd",
+          "sha256": "4bee93e23af49c7d072c58bb7c61395da25392a0f0dabdac2aac2258f0fc326e",
+          "inputSha256": "7a6bdb4429d98bc08507290308ef5f833e9cf9b4140da5cd26b2a37c36bffed8",
+          "goldSha256": "6b124200df0dd9a5e36a301448c63c8ce63168433f1734004b1ee98ded27014a"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-12",
+          "caseId": "fictional-case-8fcb4c966442be8b",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "fa8b3adbe86b2a790682041e5303c3b21cb760fe661b26b21d8ea09d1edb0f4d",
+          "sha256": "e4a8d3cc5e388d9986158a493474a9baf09a2fe9941c1dcc6782382305c95b78",
+          "inputSha256": "aa742e6abb880b8b718ec4c7334acbf41ae8e717401eb6c912054e09f9bcaff0",
+          "goldSha256": "5984582e358d5142169eab361a5f9c14699c8387b1b8bb655c824299ddf4ebe7"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-05",
+          "caseId": "fictional-case-f40bb4faa4b32d08",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "ff1e9f1584d993f9c0403e45ffa6e87306bfe385cc2e73c7f0b85c9136d6bd59",
+          "sha256": "cfd6aebef0a7f09b87d6664cc59c17caccdee156fa08bc6625354c1459a74750",
+          "inputSha256": "8bde26bfe13e36fdc02dae6198fd3dcc26463cc5d863f086de225bae0ee34579",
+          "goldSha256": "f8a3d6ecb526347202a0de0e4489e045d6660705fe967da10dc41c11e9b211dc"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-04",
+          "caseId": "fictional-case-721d9a97c2a2efa7",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "0246f7d010b981b7b75200ad2485908630d68449b1e49247ff13ce6078af5103",
+          "sha256": "488b7ca2e7afab553fec7f1d8ac82e23d27e90714648345dfccffa19c8b9a963",
+          "inputSha256": "ce9cf03ac7b083d7499281ef41ed86e60d82527997ce5b46ec622930cacf3962",
+          "goldSha256": "c4810c16049c6e7552bcd33f6dfb14005f59f8fd731be50619b6673913c585d2"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-04",
+          "caseId": "fictional-case-dfd372e1a4ba7d2e",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "57a147438859166123944f571fd38cbcdca73d3c4a1c70e69b4f161ea5418587",
+          "sha256": "d83bb2344c4b0acdf61a300d481acf4450e0e8ba3651c8c0e24b9d9ac97af0d6",
+          "inputSha256": "f99f05350c3c36484016efbbb99bd20fd396eade8396dea6f8bad0c5d1873fe7",
+          "goldSha256": "05539ddf6efeef07d414514379f119799afdeb889926b34c949d69ef238f8e71"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-06",
+          "caseId": "fictional-case-a2a17638127664f9",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "b9f0f174ab2e41990aff86334dea2c19faff00e1794bf3b3300b49fdc6527d5f",
+          "sha256": "85a46ed64e15100912e62e32639466b6a00f76175431e6c740c1a6054b950af9",
+          "inputSha256": "9e3061e623147a89628084d307be791a252d1433b4f5fa145f2807714896cb32",
+          "goldSha256": "60e419578505a7363c0c2296ca5532cc88a122b5819c66aa2aee2f55ffc31719"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-06",
+          "caseId": "fictional-case-931b6d00e55a62b8",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "a03108a1245f1d32e1220eb758faaa7fe6d67e77ff4e98a214b44a6f74272c3d",
+          "sha256": "c9b36b007dd2f8537143fe271211a14bc06f2671e6ec0cc56b760308426d3f4e",
+          "inputSha256": "dc25167c2cd9d1908cccb739e28ff09c55c2f48a61ec085ea56360aa2942f9f1",
+          "goldSha256": "21043da2ae41decee59b2819e9f9306c3e0668d012c638efccdeb7e493a6c40a"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-10",
+          "caseId": "fictional-case-8555866135364e75",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "db6b53f8c40dd15fb839f1e017fd80ecdcd6a9ad2b49550920cc6648db1c72d0",
+          "sha256": "3e244c35162a3ef142c77753c311e73d566607f2a321db4a37c76b299e279454",
+          "inputSha256": "852d0cdb6b69a9cb321c29eb209f7b29998a3cfb264da686030157fbea1083c4",
+          "goldSha256": "67888b670b5f2b1b4fd6c5f59b0b3e755f585da341d85ad7d6167b9c7495a7d1"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-12",
+          "caseId": "fictional-case-fda36a5b8c1212d7",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "4b040dcfacaa24c8d50378c4f18512ce4e3e1195820024dd12f05a307a38ee79",
+          "sha256": "cebc33656e7114d95cf7b717ac011bfdc012ca5e6284e26c98844e1afc8a7f4c",
+          "inputSha256": "2dd290bb795499fd64aea2529e4862ed060cc77115e31f1054bb16c7da29a796",
+          "goldSha256": "3f733967b82aca74def5042ae2efb0ce09f200c012beef6d411ac4eff290467a"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-08",
+          "caseId": "fictional-case-401df431ec299ec8",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "3a54f504f786f9fd774b528b08154139fd88fc7caf0130c0226b509a51f7d909",
+          "sha256": "4b6396dcde8b759c9c7686455c26e2e0f6ad39fbd0272e70b372bccfeb39d98f",
+          "inputSha256": "1ab8827ae244214c23f0caab0bfb5231cbcd6eecb420539bd693e060aaba2745",
+          "goldSha256": "d4bce84d4166e591b891c9fec8f220432f4874c9bdc30c7013d0f3920ec7e55d"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-02",
+          "caseId": "fictional-case-58347b44ad62ad63",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "1fdbb3ceccec4c4fa0d008ec75439275a2fc3bdb8ef2d32c0ff78848b6b3a247",
+          "sha256": "676c10127b7d00a9da5bca3d0218c763bf0c2dd06488d0b0f31d971dc77ab91c",
+          "inputSha256": "5368988a48db628fb83936dd485b37c918224f32929cd1624e4826107bf62be7",
+          "goldSha256": "6351f431474b616874b671d87f6abc4bb69bd185a0d85840352b658d08d6755b"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-11",
+          "caseId": "fictional-case-6f78038c64518e35",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "28e846ebb7067d105c55bee51f1852151c5c33e36a23dfa994e6bd8e89b1e783",
+          "sha256": "4183dd82abbbc72296abd7c1fb48b9f99156397bf1a86871a8356306109eff9c",
+          "inputSha256": "4e5632c37202ef4d955862841a7ac4556393b9203cb68c29305d3e615f04b4fe",
+          "goldSha256": "493840b8f50a35267e23c43aea81080877f9ede61d3ff70a9d3ed918631b4fa9"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-05",
+          "caseId": "fictional-case-389dc0586f44cb9b",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "99853db3598575b173e31f998e3bf379e0eec059c115b29b60490ff92dde7891",
+          "sha256": "920c0fa8c8209f0672ad0358122030a806e0279504fb5ba3ba4657b984f45964",
+          "inputSha256": "3d2594763e96b64a3278d5b9ca496edf489b5d5ded80da221ad6b4e7343b06b1",
+          "goldSha256": "bd6d1f5438bb7c09156b137f3a524c4bedcdbb9917159c1d9424ed0d58cf0ec2"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-11",
+          "caseId": "fictional-case-645087ad7c210fac",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "2bcc46d92c296fef4d7b5e074ec10cdc484263132ffae7b0054a2146d05bcf60",
+          "sha256": "4ff9bd3b36b938b4f701639cf96fba2bb3f86ff13344afe903177c7515d9d7f4",
+          "inputSha256": "6a7e9e435ada08cc24175e894dacdcf484f03965d1c739dcdcef680025b60c37",
+          "goldSha256": "99159244f002634b0f046ab3cbc82d648952ef1c89fdadfc1075c84faca50148"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-05",
+          "caseId": "fictional-case-cbe53244ea4b62f8",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "21d3ea612b0bac44f6ecbe283ab940a66b87f424e8f7027dea6e4191fad74698",
+          "sha256": "2db48b6ed6e5d0c6b97a08c5aed9dcfca137fc15ec4120907877fa4761833dd1",
+          "inputSha256": "efd3a596684fe74b6ef0e89e51c1a265c4ddff5c78b7455f6e92770acee27c45",
+          "goldSha256": "b65f1b2389107f5087203286f294e38f4fd62d0f68c563fe0a53a74735453bb8"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-03",
+          "caseId": "fictional-case-8c13b64e3e04958a",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "cf50a536634430d5741083ab0adcdf2cbb6b546180e948e1b6f0063135793118",
+          "sha256": "bf91db9a3785d554103238d7acd54d68ca5c4e85ac525e03617456f2edbc761b",
+          "inputSha256": "d6856def05b012f8dcb9b27aa177dbe4a988184277f3deed09496a2c796efcf4",
+          "goldSha256": "f5be8271cc751b296334c9204b86a3b4449cce5dbb099120a311f18bc32c3d51"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-02",
+          "caseId": "fictional-case-1a2859e57747e2a0",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "3bf3949aed140a40497fad65ba4c3327de67426befc9490ab6d19090f76456b9",
+          "sha256": "6b1b25edcdbd9231eb9cfa06b78ef7b10dbf9916e208a948aa073848386c64f1",
+          "inputSha256": "9e46056b3c185f8376e3413a1af876c784b6aa41798f51e261cf454a98298ca4",
+          "goldSha256": "0eda38883d4a9c20fb0d9640fa4c1213881fc8d2ebedee8f73f85d3fad2db076"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-01",
+          "caseId": "fictional-case-5e48033f4f584182",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "27c71166f506ac4950a9c2734198e2d026d6c8c6e18086241c819abec192b4f9",
+          "sha256": "56953a434212d286d8a93aef4fe22677ec8c009d3a781f81358a11c60954a052",
+          "inputSha256": "6a1bf2c6e18984a8b89ac2f39a4e3e6a22ca1816ecae2c2929099c448bc7809b",
+          "goldSha256": "a53eee23dc0c68553db3b8c57c6296f62cb7a44ca62e28272fb1c5dedaa0b0bc"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-01",
+          "caseId": "fictional-case-3be558e7a5848d1b",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "dafdeec694d17e45e5502cbb5c9d17665c0fad02f85f1447c55b8cd39e7022e6",
+          "sha256": "efd06543a787f9cff5c663cbd14f6327d4d6659c478fab1e57fcfecf9e4da5cc",
+          "inputSha256": "eed4350d784efb4c6167fc66bbd60d8401b79f1493bdd9bc441b964e15cf092b",
+          "goldSha256": "0bad261fc34eb0664173e2c6b632f39f885636d656b73191df5d06e833d82509"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-03",
+          "caseId": "fictional-case-e7ad6b995f480cf4",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "068a2860bef3d9a32b396f06f370367f3259678379122b2c4f24ffeba852c657",
+          "sha256": "e9de97fc8633d444fa267da4c23cd456ed38ee94cfdfd9c9c9939f709c1b550a",
+          "inputSha256": "929dc00e704460863241d661ba5d8cf14933f03c33f250de65944d134ae57c6b",
+          "goldSha256": "9d5b88664464c29a2e7163ba5f941d8ebc4126e97cc32edf74b01bc8b8f7761c"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-12",
+          "caseId": "fictional-case-06e17d91bd2d4eef",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "53a80b34f126f2bb63e1bd9e35215cb6aa61098a13570f4c97b06ada9b97ca4e",
+          "sha256": "b48e53606b2e51d283fde60d6cf2b88df6f3bc7d1ebca3d55e32d286ffa0a887",
+          "inputSha256": "03ba4e049d0c2f2e5b1817ad24034e184a2cc0e63a055818e0b6aec9d0590823",
+          "goldSha256": "a6031fda67c430cd733be3d9a22edb44a74e828c75ab7403effc7b48f45f3a10"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-08",
+          "caseId": "fictional-case-5fa6862f8cb88477",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "2070ec03f5ac9abb1259fc8e35d1e1de98dcef48897ffdd780f4a90e1c39d26b",
+          "sha256": "09f222360a7fd8997feaff8615f92d7d33336d36adc483df2d327b091ddc617a",
+          "inputSha256": "7bf5753f9d244801dfbb3cbb80c981df5a5308e5ccff32c9e3f4baf846b0b215",
+          "goldSha256": "d492b960cb20897f4ef8362b69b9100dc19efde6b040a8dfd2cda963da2d13fa"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-10",
+          "caseId": "fictional-case-dd6cf05761ca052d",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "8a6b41f95cb9a67770acd21c28dc5bb6ea79d03a46a8d0bb749960a572bc1cb6",
+          "sha256": "baf3c4a0c7396528149ad40e3dc3b430f2cd9c284832497ddf1ab2d8533c18c1",
+          "inputSha256": "ca8a99a866cf8f466143f22cb017319c57bc127cbc0ee0b2f90070dd976086a1",
+          "goldSha256": "01362dfd6911e9143d7e11fdc2cc6f6c4d98d0346ffd8137bb5418a9114cef05"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-04",
+          "caseId": "fictional-case-3168a6dccf6f5e8c",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "ecad77aa4a8c50257218e6d59b3c8416f4c09204d9a9911115ac219708bdfe45",
+          "sha256": "0d04ebd9853348f5a24a2f06460de1c9ee4a01e2538c1085dd3e745dae406990",
+          "inputSha256": "c9ebbd9f39d1912908a3ac73b4c74d83246ddb4d086354dc84eef56811a64e9f",
+          "goldSha256": "4a47e79e9141b1ed09fc82a71e3bc882988fb4a11f1b7a0337db26f0c65812d9"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-08",
+          "caseId": "fictional-case-1282644b1e54d02a",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "6bc262796e3ad767b51510a8f15d804c6abd8c9e024b6b4cadb079eb52ef768a",
+          "sha256": "c9af3677db0ddb1dd1602e37658c9fdc57c78c62c1050c66475ce39e08d70c1a",
+          "inputSha256": "6937729355c1cf124f983501dbd47e3f692f1181f34c58f2e622726c7f9bdab6",
+          "goldSha256": "cdd9b1719240559cc8c5d23ac349d9ac064a765d1c991e9e047aec6356dc1ecd"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-06",
+          "caseId": "fictional-case-8b13675e5df41137",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "bf2d498184951da0f96bab482e7415c829d6f52217ac6106c45345381faadddd",
+          "sha256": "d332049e293214b311ec2885785baf95db454658911981c62e2a7d7468a36cc9",
+          "inputSha256": "1261ea6581df3089667fc716b6ac7734fa95bb9ea724716b7c886c07b4d98599",
+          "goldSha256": "838e93d22eea23afadc5520df3376e81c95aff417d41c6dfd33757c541816083"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-12",
+          "caseId": "fictional-case-6a7e8a83656e416f",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "6e2265cd750323badbb18716d3d65fae4007524daf266f21bd0d7f868c87b45a",
+          "sha256": "3f611c2ad354529cfbf59e9a29a0f1738ff32e955a0fbbfc6139a91715f29735",
+          "inputSha256": "504c2e0f3f7084e2bda23de569a510a2dd3c9908439e93979ad3964c690b6f2f",
+          "goldSha256": "11cb75299fc2ef5857c002aee60ddf0a4c46ce048da883978bb7fc95ff0fdf2c"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-09",
+          "caseId": "fictional-case-6737b19c06c9be3e",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "7450b142651ca5c711cc182f7e0bcb42d60026b5df250dba2ea47c8e392afe04",
+          "sha256": "10b72489535720d496fb142358146ab7dd0933afeccefb16313d15b43c4180ba",
+          "inputSha256": "4f5eb77a8ac16cd4147705e0ec19d5f288d5d17d2f10e3094ea4cc866b94e1ba",
+          "goldSha256": "5534bc096acd8bbd3e80753db19cfaa2f92b840dca839d966ddd47d1d4c64e49"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-09",
+          "caseId": "fictional-case-a10646d674f89c75",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "1b727939da1c7a57aa0db0f1813041fe710ab3c69b23f9bf7cd13eeb2c295f73",
+          "sha256": "182241697ed9637912f930744a77e3dbecf46d619cfd7d83876b966200e924b8",
+          "inputSha256": "16b83ba4e9fc4afa0e64c46129337d6e856cbfe503d55a21b6c91a226efa35b2",
+          "goldSha256": "47a9ccfe6bee2d2840631b25745194f592e4822628c65950a94eaf2eed5be642"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-02",
+          "caseId": "fictional-case-b086b840e465de67",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "d4d617f7e145a9e3ab12f11bd9421292f56e428afe5ae10c2ae5541d119366c9",
+          "sha256": "28e0135771ee51839881d00e7b196dcf7b0fa17ec86727cfee5f7ea857916f44",
+          "inputSha256": "be4a22cfe5f10e048fc50a1f830960c7e79d752e9992da8706e4119c7ed872d8",
+          "goldSha256": "04723081472a1fac921e2ec57596e78b0432734ea9b3b51466f6882e23ac07c1"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-10",
+          "caseId": "fictional-case-9eb9e04f34957b1d",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "2bef9fbb1ff61f25dcda8abd1edfad0abe00363f591fcf19740cba0fa9fa4a17",
+          "sha256": "afd814789738b4fa0c769a0a6f297ed2465b784c28515936faf78dd37e0daf98",
+          "inputSha256": "63b9e2412924c8ad3a182bc0a94640827d481d01dac306ee5fbc86cc91bae5bc",
+          "goldSha256": "f9f2adc911e49940276ec36043a02ccf9d4e4f8a90c348a6b17e2c87f09b363f"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-04",
+          "caseId": "fictional-case-2c9a52f7ed2b2a8b",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "cfaac6c8455744b1a4dae313cf1f35e4f55a7c1bc56047bfa179c4e21ec4c90c",
+          "sha256": "bd51d5f7eb617136c0ff97d4cebc710d42dc12937961238e7739da015f86b4f5",
+          "inputSha256": "a89e95873dcb1e953df297373c8050eca5b6f0cfe8b6ed64795f9914a7c091e4",
+          "goldSha256": "24a3ee74d951045fa86659bc280ac9ea9724aa46cd26472e1ccc10f9985fa44d"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-07",
+          "caseId": "fictional-case-ec89957c42942a24",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "db6b53f8c40dd15fb839f1e017fd80ecdcd6a9ad2b49550920cc6648db1c72d0",
+          "sha256": "f518a8d57fe4d48078d9f666967874a1b36231859965036bededf1f43691bc2b",
+          "inputSha256": "be13ec6eff2de569ae1db76fc595a8b42fbf221e6079069c36f01d0f62e1f726",
+          "goldSha256": "2d2f4e85ca381538e55c8a2519a9cb7964c721c33c3d5fb5a2bf0b14a0c1e252"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-03",
+          "caseId": "fictional-case-090a43d4d78bc7ac",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "85a38b9c04ecdf4c42888affcf2ac7032ec4577ae3fdcc7327518e3fe2960bb2",
+          "sha256": "057d876333112cdca959e8cd54d5e87a91429bff46e9bbf1107e6819d8d1931e",
+          "inputSha256": "ca97e8cd04bbfccf7c7d8eccd319badd86fb957f756c46605ed39544dc992e82",
+          "goldSha256": "9b88a99dc941d63ed5f68594e77fff0fa330f90a0db485e4ea8b6f35dd453a8d"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-01",
+          "caseId": "fictional-case-e04a4ef7e4ff2ee8",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "257e3b5215658cbdda273c42dd479f484dbe4f0985aaa7899328e250a4a7b66a",
+          "sha256": "e2d8312d51c4d326b0e51fdf55318806275d9d187092e456185fa254473cc75d",
+          "inputSha256": "1f128954e59d4c7b534ccadbe6dc02ae31dd8a9d773c203041f47c95789119c5",
+          "goldSha256": "2bbcd0b2bfa02d7b6a11ef731dee59bcb3b714bf89d0998617724e29d5cdbb0e"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-02",
+          "caseId": "fictional-case-c41a84e0df8cb02d",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "4be352e5b59bb5be7b8e28a3dfbf94b11d315d4d3ad11048f1defd9f8f817b43",
+          "sha256": "a727036bd3040b673eb0669a29dafcf8060e1f0cf7bf3cb041fb341f29cc5deb",
+          "inputSha256": "bb89bf53fcf63225975afe925f0f65192627c593cf4bee1028e7fe50e7186b48",
+          "goldSha256": "35cc2081a60d34a6e0b82bad2ce2b959221726996e3b388d40653821c6c0163c"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-09",
+          "caseId": "fictional-case-60103eb9f6e2e0c4",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "19ccc07fbbbb2e553ca8d6fcb6b1b77e0dab9ba9612363a188a57414d995d35f",
+          "sha256": "5ba83d85ff726efce19065e57a32b48ee998cbf9909f3d3f73d84cdbc4f29796",
+          "inputSha256": "917774a186d42e323d13933c6b9cea908920af6a692eeb946c970ebd6eff4944",
+          "goldSha256": "8884c52a75887fc3de3e452343c6c0184d1044a943d23d7f154bc956aecf0caa"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-11",
+          "caseId": "fictional-case-585d09d778593ae2",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "bf2d498184951da0f96bab482e7415c829d6f52217ac6106c45345381faadddd",
+          "sha256": "c4ab956ec7695ba093fa6a0781893b7107ec3a5d4f2d52e027a06300ecbf113e",
+          "inputSha256": "8173a96498b917ee4bf5296019a938364819e31f691ec174e1ede16362ebd016",
+          "goldSha256": "1482275368fe3a270deed46d43ebdbf48b497afca2b4050aac825a3714c572f9"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-03",
+          "caseId": "fictional-case-75194982624e4a78",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "334661b2ea9926daa6a18330f09cd95ff39ae81c5c62df9efecedb2ec394b0d4",
+          "sha256": "8b7540de405d79a7bd1197fb34cc06b087d52f6b516aca8f3642e8033183d599",
+          "inputSha256": "ec619604dd15f06bb85ca51df0d1e94b91733412082f475f40c6dcc3e960f554",
+          "goldSha256": "9b2d7662a779c420a21a308764ca605af0c335009e77bb0125aec449299f18fb"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-05",
+          "caseId": "fictional-case-4aaace124895a84b",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "c8fe4acb30b1633c47915b3ab13256a7ff9223e5e284a3db90d63c40633acbfd",
+          "sha256": "46f98d629d333c08fe6a734ba20fe320fe8044a8242cdbc831442283879c6b2a",
+          "inputSha256": "e8de3b01923bab0619005316b054fbf297d16675d739632fcd98e25340df8701",
+          "goldSha256": "a4e6097dd8dc345ba695cba40a95df36f12e66339055f1a5b5c5010809a89593"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-04",
+          "caseId": "fictional-case-f75f7894ac61975f",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "2c82ff503ffc2e37f98044c9325dce5dc33983aba286e7d9443753d35203ef83",
+          "sha256": "9b46111fd5a9d0498ebbcb2fe44ededc4ba8bed3b62736eda6b71bd42055066e",
+          "inputSha256": "2bf1c5dd8d87f8798bb10fcfce008d2d99d165bcf33366c7a9b9f6fc28c4abbc",
+          "goldSha256": "af1206274f028b19c65ca28a9642b62e2f557f3c3c1837c149dfb071aa813eee"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-09",
+          "caseId": "fictional-case-c3cffb2b9fc01137",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "22e16b2fae33767f65771fe339e88cc60a114b00ddfb56e9d06205cc061351c7",
+          "sha256": "8965278505ba68c3aa9aecde1885358317bc607a9245d62338c5a5073d79cf31",
+          "inputSha256": "a4d7d552e28c8a8da4a1153e044deff4ed48b1e2c75cf80af6ed8eb783c2e8e8",
+          "goldSha256": "36d0d4229716a09e9196e5cf78a88a45bf36bfbf16b4e14ff658e0791345de25"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-05",
+          "caseId": "fictional-case-9b46cabe8c408ce6",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "2854741a94a1ae2d90d43000e29bdaf8c13880297ca39831478b109aada0e50f",
+          "sha256": "2d23609d54cc5b7ede4d875baeb64336bc1700872c816e9b031eb7f195eba479",
+          "inputSha256": "83524636d73f401aac9548cdc7bc3c34c278ebbb85cd2b657747ea4326cc96b0",
+          "goldSha256": "a13742d6072acaf7e9383effe1b4f16050361136f423d37eab958315909823d6"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-07",
+          "caseId": "fictional-case-1e97b1b6dfa9a494",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "b402ac614eb9798b9e7919216a8949908a1ccfe06ac8a59431fe75da31d0852c",
+          "sha256": "4f06f17e01157aab653f1205edfd737f10ab725c3615c0a8a7cbd54f75bbc2b3",
+          "inputSha256": "b737e88d6df7fc5d595e7351e793f7f6fc03505b40a09b0362bd5caa3349dfe0",
+          "goldSha256": "f70db6d79625d1b240b35325b1d71d1e3fd666478d9f2116cf718e1f3040cba4"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-01",
+          "caseId": "fictional-case-9864e2d1a38351c0",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "a4f1895bfd3855ba05277560e227eb6e40a250b7c9a75915292840e5a1c20d91",
+          "sha256": "0dd4ff58de17a2dc083842f66185681ffd97fe6601bc9a6845dc48c19d92aceb",
+          "inputSha256": "ad9a40cd2a628dc9c3fda33d5d1a6b292c12f35a94540dc46b6682c304feb919",
+          "goldSha256": "f2dc76a50b721a905a4c5e3ada7e7ffa0e23ac6513a43071d8b122bd76a01d87"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-07",
+          "caseId": "fictional-case-fc47f8c84a98d162",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "9baf734f9ed1658dd79368241bcdd9dd673724baada0b1e7bf7ea6cd2ba19455",
+          "sha256": "b0412937e2015307860c4cce9faf2d233d85d06eacdb3b5255302311cd7dee8e",
+          "inputSha256": "583b758ecfe4894961bc52caf92b9ff9d2484bfbf2afa453188b27de3efe629a",
+          "goldSha256": "dc50a29292e8af09c59db88271d857979529e8e5845fc14bfce2e511abce2e98"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-01",
+          "caseId": "fictional-case-e0bd8e9a8bb53d01",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "444657970a05ff348f58f9ef53e05f1580f5b2b842f95e776698e10c93317e61",
+          "sha256": "2f26b8564b5edced627f5110549c5d52786b87545894720f678519e0dc971f16",
+          "inputSha256": "ad05354a5f81f76d0b5d35e3daa164a9978c8461e9a53986c2334e8140eee873",
+          "goldSha256": "7a6ee4f8fe70b852004cd199b03b7b57aeecf92d73a6c422d7d55e61573ff3b9"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-11",
+          "caseId": "fictional-case-8fe4a78124924b3d",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "14b89a36f0c0d6f16a2668ccb1ac5bbea8eca3db6c829dffeb343d24ac933fd1",
+          "sha256": "9eb68d0ff16be912df66c6a10f3623a23fff28bc9599e7508d19ec77a0995a15",
+          "inputSha256": "1bf3f038542edb758ac2b209a5b2088fad9e676d8e51089e7be743c67c5d7be3",
+          "goldSha256": "a2aae46f0b16e797dc1c31a74398e1727dd0e0d2cc6d30b07618aac34fadd174"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-07",
+          "caseId": "fictional-case-81d4db2f4ca9bf70",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "f9b19270096e3c8bca25f48c8e8cba054f76df58c2f2734962977aa4c1a485e0",
+          "sha256": "c561938ac803d70ce7f6eef5b1310adaf790d02968d8300ca8f2f4788e500ef4",
+          "inputSha256": "095d05dfcc606d55f580e852ace1cd42a5344b265d3836703976d81ff8263878",
+          "goldSha256": "953f44b8116102e7c4da92a10e1b0751d1bfff9d317ecb02aa87b43ae99a4221"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-10",
+          "caseId": "fictional-case-414fe70b854a1374",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "e7c7e15c3690ae48d31bc523661552c7f3bd5e1c45985ef2b4f23c2bd1b0a898",
+          "sha256": "8c43da4eb1b2f729c36d498e7abc1fd2331f7855b6a870bbfcbbf2ab929028b0",
+          "inputSha256": "a12de1ba0e0e14bea8933e8be57d8d0a2be674f6b41a537feb3095c6112467e6",
+          "goldSha256": "5f4645a47d0e19d605091fed9ea0ae67f80aa1bf3ad93bee5d3344c421bbcd1a"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-10",
+          "caseId": "fictional-case-f0080809658f782b",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "ee6e5cebf0ea2e4c927640dcd0afaa1da9b9578ea29b1a8b74568f499d179d54",
+          "sha256": "64a09ae1348053a52292343a93e69a821d5c02cfdd723b62a42687beefc5858a",
+          "inputSha256": "6bd4379bbb46f73686aa2e4a7bb3d5a15f7541d052338914f72be7963dcd76b3",
+          "goldSha256": "2dd0612e4e6c8448e8725cb3cb29c031160137e6cf50c75afbe6654b9a3c10a4"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-02",
+          "caseId": "fictional-case-6afe152d9a6149c3",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "5a5401a707638c94e3be5f7411869b7dccd37682b69ad205f7c1d89243826a97",
+          "sha256": "76d007fc87c229e577640ca62611194bc01ba94fc40607722347f4bd38ad8b46",
+          "inputSha256": "b4f414d8593d609afb49a8c5e55113b421e070024943a9da709f7648aba5f73e",
+          "goldSha256": "3887d56d7b59f5e3de040c4d13c062a1d14fceb801baa6a51d72ea54c050244c"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-08",
+          "caseId": "fictional-case-d780feab07ed4824",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "f2109d3057e16496e8a1f73be3128bf528c291d37a117d7ab1a22056cb7948e7",
+          "sha256": "1fdb52fb30985dcbed87efb96d772d7cba976f641c21d9a1a9a62ebc030e218d",
+          "inputSha256": "33d3e22fb3bc9abc80c87397a8453f4d1d399069ccbc28ba6ed83f6580a3fe7e",
+          "goldSha256": "7a61d3a11b29d34eeaad2d9a129e9c6cc5019e8b115b73aa600e678f7f407172"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-07",
+          "caseId": "fictional-case-47a34f0e3e28064d",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "243139ed822a601591b740d0515d7847f2bbbb486fa5205c59377a58e020bbf0",
+          "sha256": "fb8d17329c648ce07833b334b37856f158c9bc30569b2c56cce8902f40776a94",
+          "inputSha256": "0fdb59b90e8c48237c0d61c40ebd0f70b48cf6a5baccc3369decd81e34dc7d85",
+          "goldSha256": "8313b3f9999b9471fd9bfc4f83717010af361057fcacb66fbbb83da8d0bde123"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-09",
+          "caseId": "fictional-case-caa240da54a0d99e",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "d61bd176f97267b3d92cf6d59ccf05e3d1d8664a2fd45712e8dd625a88e3ae11",
+          "sha256": "af0e1774ec41fe9a46441509530b3534c53aba3cbd0ca33c7c73a218007756ef",
+          "inputSha256": "cb847ec64323be6f717629473b3b88ebd6655236f4aaa5644b8481ea99d85c04",
+          "goldSha256": "70ec54fd910822f32fd6c3b4b887f52708c5e9fdf35311b53f932f3058408799"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-06",
+          "caseId": "fictional-case-2f3448255ead9129",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "d738b5d485685fb003ff25325c01cac73e80a5413929f0c084c58914dbbed6ee",
+          "sha256": "ddf16a0b5b910497eea6469fb456b4c8d2e65d36f2054429207f9ec7b158e25a",
+          "inputSha256": "73017bbb461c150143319e6d111c15af0be47920a0ca49d49f6c49a71b8a6518",
+          "goldSha256": "94d5e7a8912d704e9ff064a79e7db174e0fe5b79403d2e1758abf6ebd3db3047"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-08",
+          "caseId": "fictional-case-e23155d4a81aaf93",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "b9f9c8dff55f5b318059e0c1f4080a26a1f3e166db049243975bcd2f8c9ba531",
+          "sha256": "3919b4448154d9009d124308bdbfb700f622abaf32bddaaf877b1f0c595eca68",
+          "inputSha256": "24e1211b57428207c430dbbab008d362c3e858d6bf5d09eb03fe605b1f38cee2",
+          "goldSha256": "88fcf5c0bd346ddd42724e81012d65f709512c3bf10a598bd55ce3e87e5edb70"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-03",
+          "caseId": "fictional-case-0efa703f745831e2",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "903d073002aff75be6f514b81492b03129c2894d8d64fc667b5f3ed1690133ba",
+          "sha256": "82ce87c75b242dbbafba634895a43aa41825dd262dcbcb5ecd4c2c424db699db",
+          "inputSha256": "9469326edda71084b543baaddcd494cb6ca29d1b2f1d4820ed558a725e995ada",
+          "goldSha256": "c6807394b18b7da928cf91c6292e6ba4af6d90c857bfc6c8a2ca6c9275fc4a71"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-05",
+          "caseId": "fictional-case-38db582899f6f91f",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "e9099bfde8b2ce913b1b8f57a0022533450de73128f6720a3d9ec102c3fb4e67",
+          "sha256": "6a12020e8f909ecdcff441a0c410cd621ac5c93b2b23e95e088dc00853352764",
+          "inputSha256": "438b41d961706a6d36830c9932f2310e19c3387ef6d12b9e6a0db9e78b7cc1c1",
+          "goldSha256": "dd12114d3a4bed815a5108811e018e847b68759b3de3ce0106019cc24b342922"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-11",
+          "caseId": "fictional-case-8c0dd71e69c352f7",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "ae89175dd81ff84550fd8de38cbd8b51ab898e09713069c34e5782a9a8e4cd1c",
+          "sha256": "b62daa271526702d06989416acb7a3e4b0c73b29474ba8281debb5ca89c36b21",
+          "inputSha256": "391fa7a5c10c6b34a719b8243a22fdc327e329f13ae0531fdc2fab1b92de7d8b",
+          "goldSha256": "9ba0aef5bef37ddbde2142cf5debd2e2c9c74b0e34eeadd996005d9ac5e4fe69"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-dev-01-03",
+          "caseId": "fictional-case-b67213e2f91d0d6f",
+          "templateFamily": "unsupported-dev-01",
+          "entityGroup": "e35fc8149cd702e6599e658e982361977b73a8c8984c1597c348dad8f025f3f1",
+          "sha256": "166cb7da83d9dc0862b19e1dfb0a2c5306a2a76a517c8ce0d5aaf6a73c71b498",
+          "inputSha256": "b0bed2c509b0024620c49e369d8a1472e9998289e7279bb7eaa7f23314c18f1d",
+          "goldSha256": "c4e7e3ede873c4593b567b445bb78df00858e1098b006895938435749f0f86ab"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-dev-01-02",
+          "caseId": "fictional-case-676fcdf69dacdf19",
+          "templateFamily": "single-dev-01",
+          "entityGroup": "3a54f504f786f9fd774b528b08154139fd88fc7caf0130c0226b509a51f7d909",
+          "sha256": "9c5afbbedbfe7ba08de09c45c0319da736ce14715f357d781c896f33058fa738",
+          "inputSha256": "c66048f1ca1da7914c1a13f2d43ca287556cf4d242d2b5e3b236f3c7a0c5444f",
+          "goldSha256": "3b509a6635cb3aa496c659789ff18b0d9a114089da7803f84638afbdf11eb3e0"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-06",
+          "caseId": "fictional-case-2af2ca54b8903e32",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "ae89175dd81ff84550fd8de38cbd8b51ab898e09713069c34e5782a9a8e4cd1c",
+          "sha256": "76917f6fae5bd8050bc542258b56fdf648c2ad70a6333f1c3c08e5974ae3f9e7",
+          "inputSha256": "5af12c745cd9c4e2964a71d71302588c9f09c82a04edfdd10d2ff273c34777d8",
+          "goldSha256": "bf1979f3f42d964cad2ccfa3dcc1d44fc14c44f91da7603c5e9210e859d6543c"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-10",
+          "caseId": "fictional-case-772ee8afc9600fb6",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "aae468ee8fe5eb70e7259ee35132a11a863596b87dccc505e196c149e3bffefd",
+          "sha256": "e03e8531729b335c6808f8a2d200c4c5d2eaad69a297c1db76057058d3821190",
+          "inputSha256": "88f7acc3b7b16d4722641dd7b1c4f1c7c4d796cc158899d463f1c906332d3a54",
+          "goldSha256": "d07ea15edddcd0b7d3ac47f08faceca24075b09166a958eb31ec8a500e474625"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-dev-01-12",
+          "caseId": "fictional-case-42e7a187ae3fb8c8",
+          "templateFamily": "multiple-dev-01",
+          "entityGroup": "5adaa2a41b06d6dde5dd7f16fe1e97b73ea046bdb7ce6b32c3989cb3ce36902b",
+          "sha256": "ae91c79c1a1e85bca967c5f1f6a063167e21d4faef455d1e4ca4f81bd0f777f3",
+          "inputSha256": "82b348ff12fe2bb37ac8023651152feb58496a9e6c9ebc8716e81c3616b795f7",
+          "goldSha256": "35da28ebb64ac8671b66c3b35806f5a018b3e437d3658b4656d1c7c9098e28ab"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-dev-01-09",
+          "caseId": "fictional-case-ed0be94ebd7e012d",
+          "templateFamily": "uncertain-dev-01",
+          "entityGroup": "c4fb83d503006fe7769693101500fffde8c297d547bc0df80c387d9e8fa00130",
+          "sha256": "6ef5d48039d7d933d90ec1fb112b42d4633cd332ec60681887cbe37f2a90a169",
+          "inputSha256": "9a2f54db35626cc8ad707101b96c56d870b0a63df850bdfc2c9a889425c9a9ff",
+          "goldSha256": "44c32264ca43d3038decbaaf637830a2770688c5d3f9d4d525c1215b99bddd6f"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-dev-01-07",
+          "caseId": "fictional-case-d674f29292025b15",
+          "templateFamily": "negation-dev-01",
+          "entityGroup": "1dd92429949267b7eb9f6b781fb225d057923ded34b0c05cb2fa622b708ec07c",
+          "sha256": "860ca7c64c85413a72a112b5ef4387e58cde8ce4ff7c00b0043a1a9294e2bf0f",
+          "inputSha256": "8f421c41bdea6da664eb429fa335e11ae1166d0088384b39e19ea85eb72a1592",
+          "goldSha256": "5d40d668d9ac7906f0f8484c84d804863eb4cd6563ba48ce75c790a3d3096efb"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-dev-01-12",
+          "caseId": "fictional-case-7fe30365257c5749",
+          "templateFamily": "unchanged-dev-01",
+          "entityGroup": "4fdeb0d4498a48324b998cd09b210bdf2e80372a91ca0ef349697f37ff9d1e52",
+          "sha256": "235a709d8bf11e3afd3f93120b4b20631dfb9fd0528b2ab73ea5d3e1a43da6b2",
+          "inputSha256": "3594cc6ed8e12597a1931d4992ef6c6814a3f90f13a2591a784eb8742cf6daaa",
+          "goldSha256": "b9a116b9d11487d3e2a2fe0201673633d2067ec1947f8e95a5a32d5e0ad28aa3"
+        }
+      ]
+    },
+    "test": {
+      "file": "test.jsonl",
+      "count": 72,
+      "sha256": "040953c027b4a79ebb23f531345a5e0f05962002749545808a3e822de70de100",
+      "templateFamilies": [
+        "multiple-test-01",
+        "negation-test-01",
+        "single-test-01",
+        "uncertain-test-01",
+        "unchanged-test-01",
+        "unsupported-test-01"
+      ],
+      "entityGroupCount": 67,
+      "scenarioCounts": {
+        "single": 12,
+        "multiple": 12,
+        "negation": 12,
+        "uncertain": 12,
+        "unchanged": 12,
+        "unsupported": 12
+      },
+      "records": [
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-05",
+          "caseId": "fictional-case-ffe3e88a51619e2a",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "fbd2079040d6bf13d50019105527092ca03de34385f08369d7046ac65bd240d2",
+          "sha256": "1c65ae23e97a5bb3bbccb78f1d66d75c4e6dfa211c0f752246a2e68db3fce87c",
+          "inputSha256": "24a8123b0987a1c4cb8fce6f823d18d1e38fcdfdfcccd89cb9814020840ca60c",
+          "goldSha256": "9467b0ff36b2c4f1b28ba19869c71cf0e9d49538c733619aea78292ca36a7f15"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-08",
+          "caseId": "fictional-case-4a670a45c2301d7c",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "43706dafa36f1f33bd40cf58fba764a801810407532f442809e4b383e41e78c8",
+          "sha256": "ebeb33d1ab831623bce9cf2c21b6c69017d9adda80bc3a3ef8cf081dcaac193a",
+          "inputSha256": "0563ab01bd616332de79c25e1392f4bc3b659ce249bec94ef8d5ee308c23b61b",
+          "goldSha256": "3acaa5bd4eeac120e3173d060fe438f4a87482691bd78b2c6d689476d1fa2fb7"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-11",
+          "caseId": "fictional-case-ef4625b82ca61b0f",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "0c1ab90343e23fdcdb17d115d25a9174e565526c91b7386749199ff7f1c3907f",
+          "sha256": "cbf0a16d6de75889ef5f634fddeeaf8721a032cf8c73c014df4508fb45d4fa06",
+          "inputSha256": "70117b65fac31a11e912176b3e3c98e801132784e44c6499c9b8d647d44b0fd8",
+          "goldSha256": "0dfc1736b659633ffc63c66d0bbdfd238d73e2a4bcfa14b3b00d2e1e366b1a9d"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-01",
+          "caseId": "fictional-case-53fd15300670d2b5",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "0eca07c15404cb1dc8273fde520315b1be5c041f0a6099ebdf10a84675872853",
+          "sha256": "4ab0f99bdfa325c02f26397de01d7699ce2f1fcec8e15334ef53276eae284879",
+          "inputSha256": "08fdb5eaaa2f477c48b306750047f8a8816bdacd4cbc2633ee3949ac6d8a2ef4",
+          "goldSha256": "f6fc56d6184bf088af0baf431cb2d8b107b80b40936d92a120aae573d90c9ab1"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-05",
+          "caseId": "fictional-case-a6eaef6bc5522dd1",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "996bc0dcb7060a27a11fe8e46ce4ea5d7a945b26f77da5585b6191786b98342c",
+          "sha256": "4ad11dbb88a03185e258e07a3e663c9979240aa0972350e987d3bf2bfd0e71ff",
+          "inputSha256": "2b897aa4e644d1af831b6e840a7cfc31ce77ebecdf0ef4d777b83fea1f11b5ec",
+          "goldSha256": "0a5256263ebcab39f305646421d1b9cf39dd1874d31a8a5011f075e9b50eefcc"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-09",
+          "caseId": "fictional-case-f05285627e5eeb93",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "025314e0f47f6360587c88646eeb27aab610f0a050ad797a3f63c5aa96b245e5",
+          "sha256": "8a4b9c195fe07e9dc396f5b1cea485514001eb77ef65e32c4655634c9a5ab795",
+          "inputSha256": "c4e8aa9c9697534c6e2acf0a997d18533eb9e5dc02d2d75bd71a8f6788f140c1",
+          "goldSha256": "a7dce3d26c50d0a982ad80fdeafa61a8e081c5595370f855674840e20c194246"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-03",
+          "caseId": "fictional-case-7085a67026a97605",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "b80e9e8469b615158ff08ab92fdea115e284f7e046ab75539a9beb3fb71ceefe",
+          "sha256": "0ccfa620ad700763b11c08613635e22b5dc06d142fba9b93e1e7674aa412547d",
+          "inputSha256": "ca7a8abf4af8b1c152988fb8371415cf3db5c8770f56a3b37fde025cf9f82133",
+          "goldSha256": "25747b8c2c6cc61dc20b4333074753ce7f4ffd7108464e78ab2f161659341a63"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-02",
+          "caseId": "fictional-case-37e392d57961dace",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "da851b21c757c1ecd183679a1fa0fd7fb32fcb1a2a1900af8a24c92aa8122b71",
+          "sha256": "84857c9461a166c609f4598c447df2c80ae2586ec5f2bfb82f443c98513dbf52",
+          "inputSha256": "2ad6d3b7ade6021bc0e8d045f34274497eff1895362e10e85d54f361c6c33f81",
+          "goldSha256": "710c10e88bab7f03a9835989ff6b06093960fc81f89e211f612db29fecd8ac78"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-01",
+          "caseId": "fictional-case-ca36b283c9380d47",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "aa6194787a492c966baf97c0fbc8c2917f3fd3403c1c0b50baf9931a198306a3",
+          "sha256": "3357d1e00d21e2e667eefbb33b58f84b123fa9653ee1c8282db3bf2b2fd7ffae",
+          "inputSha256": "548d629d8f67175f556440b96b148b85708045ae9f3577ce4d5430d98d8ae6e4",
+          "goldSha256": "fc3c973270352e0b3c4c9c0dfe94b3b6374ffdee9033d4afd96e1304381cebc0"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-03",
+          "caseId": "fictional-case-7030827aecd2ed7b",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "b8504b1ac69e526a56c210451da07c6a25926806e09838013c110bda602eafc2",
+          "sha256": "bccd112c1191a9b39c73a3eae9e3ca03f9a4a583bd3354a06c79f4250dd22144",
+          "inputSha256": "a0631dfcd81df1c0194fc7c4a4296cabdd60bdbc20cc6b6d30541ea2393a950b",
+          "goldSha256": "c4aa851ce3b0d0bdc34f60d5c08774418a19ec4fcbfc51e258e371374c7a188a"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-03",
+          "caseId": "fictional-case-8839413bae573b53",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "322a109650b7404b9da736a0e793831aad16bd1b642c85c1fb7693c160cf388a",
+          "sha256": "625df627db0c99f1df88ba150e0680c3098adc3e548c2a08dfedb575757308a0",
+          "inputSha256": "40c16b4d8df55e8f512114823c264f36f49d0c61f76edb130a15bbea89db82cd",
+          "goldSha256": "295c3f915febd7ed8d07b0595458497e4e11fdd0678cbe8b91ed618d02382747"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-09",
+          "caseId": "fictional-case-47620f28b2f4ce80",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "847cc29888fa083cbeb10b829ba6cbba7eccfeaa0da9f29f95a9aa3198da11a7",
+          "sha256": "1c90fa2760f64115db61212268dbd30852e34a4a8e787521299fe4e374d56f7d",
+          "inputSha256": "62ac6420ff9727f25a88da924b880e57a2ac9e28df59d22240b6aa09f97749a7",
+          "goldSha256": "44dad37a06b418574ed857fbe75385955dda8ec92dadd0b23f303997f441783a"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-06",
+          "caseId": "fictional-case-017cda71c933474e",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "6fac862a2bcecb10f74651f3b79f07e5cde5ca5ad4ea06ff8d29561b7261d0d2",
+          "sha256": "68f082ca7c6835704fb217eb5469be0a09a961ad23439641fedf6f10d1b53cf6",
+          "inputSha256": "80538adac6ecff03642dc241be0c77400f57f114068614cb6166226241e9bc99",
+          "goldSha256": "90570456517927724abf77068d26102ffd7023d950b7308ac4904be91b48c9b2"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-12",
+          "caseId": "fictional-case-8f7b00ff45c1e107",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "84eb52896adbc637b8af4e4fa610ceb4f2a48997a1b4cb7c746db73796e65a16",
+          "sha256": "e19639e5f74a89eb4586f1ebe865820fadafd6aeb30e28586bab6293c4536de2",
+          "inputSha256": "121e9d74b3ffe7adcc5d6e1e05adc7c87cac0367e73d590f78f8c99bcec7f6d1",
+          "goldSha256": "5d0473553402ae9e15eec77d6b87242cb98907e32f05b4b5c500a52fc2bbf181"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-10",
+          "caseId": "fictional-case-ad8f39f15383ce35",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "43a27c54382684df31901dbd73905a6256531dd52ded5ac4a3978fb1cece4e50",
+          "sha256": "db125b00f35e6177244c976b20feb3751ee85498f205c7573660d0f87e072af1",
+          "inputSha256": "6d8dcd52f469be4d950390b3cf3110100ae0df3a664b438fbff612d0941b6209",
+          "goldSha256": "ace696efdb7993a64d082ba3a951fdaae84b43a0dab3c181b93b73ea7b0e1cc3"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-04",
+          "caseId": "fictional-case-a59386b89c4eded9",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "6a70264a6d50e6f40ca65427e82d0080785c757fd1b80401633530b4570bed7f",
+          "sha256": "af8f50a90c99ca1ee01a1584c41e241f1d0e8896bf12c05504ea0c9835bb619b",
+          "inputSha256": "5a850a4aaf6dfed43bc3729a6b5421ad492bd297691c18bcde108d2864786789",
+          "goldSha256": "01c76fed0621c94725b7912d195186af08a19cb979a01b210035401fea94f0de"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-02",
+          "caseId": "fictional-case-d407356ccc718548",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "780aefa9d6c9dba5e3d6988ea9cd2372e4dcd25437b40e1a888800cec2519e8a",
+          "sha256": "b9914b64dcb9af41339bbf499b4414d7a35c1c3cc5708fb7599b5c5f4c4e5ab6",
+          "inputSha256": "9c2fe3b3b6ba46dc996005010a869db1a546a01d0e318caaeea3f1d8e14a6d07",
+          "goldSha256": "a0189fec628c7f37fdc644762f3fab95ef083be7b0ee1020978d7d5717b6e57f"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-07",
+          "caseId": "fictional-case-90461ea096019f17",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "940d8ac52a83d592ed5a8cde5e3ad44477e5e98d4a7b284c2fcdfb7d4c733939",
+          "sha256": "c463cbd22c56aa0e76a2bbace774055e37faf1d7b9ee7ec975925098751c6078",
+          "inputSha256": "ae0a61eccf6941a5c418752569df840361d1f1508adfb4f75135c8b490d889dc",
+          "goldSha256": "7bf3f8d4d29637616b4a437b942d6161dbef37640371037a8ac41cb53226efa3"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-12",
+          "caseId": "fictional-case-9da5eba9659ae701",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "2a30960174631e74600c0cbe211d799e9e9d6feccc316fd68c23a9e477c23979",
+          "sha256": "24037886ab45e10e17aba9942ee87bfd4466c14b97692133a4b532f7d577d6c6",
+          "inputSha256": "e9133bb962238df76b40942db409efc9368d45c28989c12b55f657cc45228946",
+          "goldSha256": "a22f5988c73b110a6fd8785baa8d16afad9a03eb09c36f9373b84e186220d7e8"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-03",
+          "caseId": "fictional-case-731dffa2599b8f2b",
+          "templateFamily": "single-test-01",
+          "entityGroup": "03fd2dbbd3535ef10a79ad4629a2aa961aba407a8aef4d4e15c68afab075fbd6",
+          "sha256": "bf9cf6252a649f20d9cf6fd2623be0447337b6cf8a6ac635abe7d594ad1747d9",
+          "inputSha256": "075b82cdab3a4bfba25f5c9753aa5bff2547740a35f158e94bd3250d1e3247ff",
+          "goldSha256": "dca4adb41eb44f2e71e651c53b4a86f9ed254d839d53eb397c3ec1f9f190bda1"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-03",
+          "caseId": "fictional-case-55676f2579db98ef",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "15f2f37ead83a5e85fd9601c0b3f37cf2943578de63e28daa42a2757c2444a4e",
+          "sha256": "73e8c4308539e3edc1916c0d76611446e0425eb74df67a1f4b28079198e455f5",
+          "inputSha256": "161afbe9b2ad63e9889ec3fa97785a5f59beef82dbfe10c17dd2b6fcf29603da",
+          "goldSha256": "20232172ecdc82d0190bc85a6e9e64d5e4445b3765183bf306634812717a5ba4"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-05",
+          "caseId": "fictional-case-fecf9f90980c2b84",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "a99bc5803b958e5573f8bc40587b9d8b2eb3a45f76212a360c9fb52d72b0b306",
+          "sha256": "df2b989f5a322d397c05832672fa6f543fcaed2793de4c270698f72cf2ceaf58",
+          "inputSha256": "df974fb3cef4e1a30cde3c47dc4e3efd08766523d9526b49e76ec296b15f79a7",
+          "goldSha256": "d6d134b0b315ba869694994d23d0e69a6c109d9f83fb350ab6042433a717017f"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-04",
+          "caseId": "fictional-case-a0b2606c101ece1a",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "e5d2e28012c4b29c73b2b4d08ee20464899419d6a17216d621f623b01e328616",
+          "sha256": "7dba50e29b813c484752c0d8592070bf215346fcfb0cc0ef9243d1b48ca389aa",
+          "inputSha256": "fad4976b1adbd047dd3a9a21ba8175d019f5fc4986cc00a5dd46f05b4da45643",
+          "goldSha256": "1a758c8ae4da0988d9f0090f9f9f2fc266b792724bb6767d0a71e21c37aa4b50"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-06",
+          "caseId": "fictional-case-a232ad80839d19f2",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "4e0127aff777ed70e8c504420e01eefc28cd00094a25890b3cb49bb455a1ef92",
+          "sha256": "fec2245dfc2cffd26b80ffceb262a3be24313b7e87240f159f7ef8f918b19be4",
+          "inputSha256": "aa2ee27047e540d65e2526c351d312f38bb66b89b7d41215369367d074caa53d",
+          "goldSha256": "24c8e987906c44f27449b712dc1a08730c6455570a547587c17df170b7dd2257"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-05",
+          "caseId": "fictional-case-9575ba936f8ff621",
+          "templateFamily": "single-test-01",
+          "entityGroup": "f3e3330cadee5a6fb579c86943a6d73195efdb72cb95385a75c55e3320fb7859",
+          "sha256": "0c6a1b1c9d24757031446f9c63248d9d6c894488d1c16f1e1113adc57f3e9414",
+          "inputSha256": "ffc5a58ae995eff88a8006eb66f50ac9f889bf4911c24c1001a121e272f01fea",
+          "goldSha256": "fdfb40c79fc841038446c35da100ab42adda6dfb3b0462c602cb2f840e26df8f"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-07",
+          "caseId": "fictional-case-3e2abfc820bda1bb",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "84153cb75f7ccd66249c144e7699177d271c745badfab3d97e575527d2422161",
+          "sha256": "772423317abf672cc0b9b592ed78b479417eea785a4c9c8f0583a5f2fb66b067",
+          "inputSha256": "b25020a26d414b5842f7e092ecc09d6ced499b35b8dd26ec92493d7a307d9f42",
+          "goldSha256": "7a2b0476885d2df1e8ed3864ff493e0db177ce7f6318468a458055e44b23013d"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-01",
+          "caseId": "fictional-case-a04dafb401adf522",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "ff23156f9982050138b7d419bda45d82364cfa0426da10c141d2e73125c7e367",
+          "sha256": "368f16f91f48e71d444233f012e2b331621a0056795f896ba8e385bd75fe9868",
+          "inputSha256": "30fd471e245100ac1b0465986b48d29268a6f05c866cf0e0f30f0ff6c0af5cf5",
+          "goldSha256": "c5f8e3552319279cf0a28bebc261b1b834d7826a70bd57f24c941a375119c819"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-12",
+          "caseId": "fictional-case-2ffaa49c6c4842a5",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "9e7b3aa8e527eff03e8e6f93f67d2ca12825ea9676188f88524f3d6ace79c77d",
+          "sha256": "8a424e25a4405df5ace33d43926bc54f288ab8fc1baafba98925607f8b240e5d",
+          "inputSha256": "efa6da15e6cb8a19d005ba7a93ff1078ab9fb664bb76b2a40d7dc0722790cec7",
+          "goldSha256": "199df8cd6d363542c604218e659b4f987de59a6445d0b38d081fb5f58cc54ea2"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-07",
+          "caseId": "fictional-case-12e4ede63dc382de",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "92e79597673ecb38c8266364eee38a4d99d018f31eb0fbcfad95f2ec4adb8f68",
+          "sha256": "aa8ef4e1864269a77393ff2854c6eb7adb83e318a8f36bfd454d8170bce82b05",
+          "inputSha256": "6a24aab02854e52cb77291e56741b420e057ac9855cd7c99a0472c4331ae9e61",
+          "goldSha256": "b9e8814b481fda78087f0e547903ff6bfad3c4f0a4445a9d3ffb38a327b0eb11"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-11",
+          "caseId": "fictional-case-06408c323969fb13",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "653d9ab9918fbfba09496ff190b3ac269c003c2c9def9e6b045935525b4617e8",
+          "sha256": "e31d0b76c94f89ed4c1efd1221bde14d765a8288f619942a2c6009c7874af59e",
+          "inputSha256": "c47900bb045112d29fb5da82cb57638a6eeabdeb8341ea330b7f7cc77df91dad",
+          "goldSha256": "1c0b62281e0a8196063d758bdb116f42392e23ddcd2c82dfba20646bcff7ad1a"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-07",
+          "caseId": "fictional-case-d8f6ed7bd7397ac5",
+          "templateFamily": "single-test-01",
+          "entityGroup": "2c6e0ed1cb38ff76e8cbe4165883aff321cdf7b7e1c69e7dd3f326f33b6f7645",
+          "sha256": "1e6733744f92111337e444f0c713bba8d27c4aa4002d3fd876806ed0b6ae523b",
+          "inputSha256": "442db60f7226d7a6c38507203078d5e134a54cca03d19b17887e7a6599ea3e99",
+          "goldSha256": "de30ef03ba1b067ae130c7335077377d025cb12e628c82b814a8d6481770f6e1"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-11",
+          "caseId": "fictional-case-d37939a06285b743",
+          "templateFamily": "single-test-01",
+          "entityGroup": "f2508d607e2c890575b1293eed5c47e191008498c3ac38b7bd1f892c16c076e4",
+          "sha256": "5dc852139108b20010fa4239b33fa2d92cd0abd8640838e7195c745feefd657d",
+          "inputSha256": "db669ea4be86a5bb8b9f438117d87dabdcb11cfefb0b4292425ffa9e01bd2d5a",
+          "goldSha256": "56cd3ba3c7d8dec7d0b736e8c8282bf37b93570bf9dd08c69946fe1a1414be1b"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-05",
+          "caseId": "fictional-case-9f59ab9563f8a120",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "f47451f04f3682fef93ec8bbe237c0f47efcb0cee8258e6e9f71187da64b644a",
+          "sha256": "27bf1437936c52e8af04e7733e63797d9777c617c77831ae2329650bb727367d",
+          "inputSha256": "259cf1aa394e2ec83bd2dcfb1693c97345081e4b6c9df10644304708e983720a",
+          "goldSha256": "dca773029a1942d949187e7d616390cdb88f523fe78e01d7f4e72995758a8b68"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-08",
+          "caseId": "fictional-case-fa921f02645c6331",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "958b02819451569416fd7cd5a276e6f9f82195e4e58cb4e44d5a9a467ca4e354",
+          "sha256": "39d11af801299a8e6bf05b06e4f30345d4d9b5b1dae513bbf412248345764fd7",
+          "inputSha256": "3b8faee6cabdcf4908fa3e2e3d411a7218b85539e58f9193c1327c93cc91727a",
+          "goldSha256": "0fdbdef7df1be4f416794ce781fe644ef073cf92ec547f726347ad11e317bc75"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-06",
+          "caseId": "fictional-case-96ec429375b39370",
+          "templateFamily": "single-test-01",
+          "entityGroup": "5d5c967f2caa8ec8382a23e4a7168339383a043c9987e01c6867c9488d669469",
+          "sha256": "371a3b983a0296c2ec7234a1c35127bf4cd79d1c4781547d71883fba63abb548",
+          "inputSha256": "c77aa758eac50c95711e133b6f97649a731295f736ce5281ade5b01432caba85",
+          "goldSha256": "d825701b0b2cd350cb08bc8a0cf494b2c19aeb23db437fe0b3f11e248dccda0f"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-12",
+          "caseId": "fictional-case-a2a2a2ccc8f842bc",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "ae5ee0260879241c7ca1a8813d6bf516dd89fcd91534557933f8401335492fb6",
+          "sha256": "019fde7256dac17dbc762105ec6506ce2029266e920894bfe203a935926dd55b",
+          "inputSha256": "1b3445932325dc5307783fb7e336621a9ad2f0b53ca628a70bba5df25b629f2b",
+          "goldSha256": "c04cce9fa2ddce6ed5c9ff46afcf548f4d829de64646bcf53686726e1d338cda"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-04",
+          "caseId": "fictional-case-ee312fa0eea45bc8",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "e3fa580062be1ebc68d09a78b63cb03bf1be3454526da98fd37c68c2be0f5927",
+          "sha256": "361748136874bc1790fcfa49ec4b738edec5e8e55646212e0684037a62f5c0a4",
+          "inputSha256": "768d54b600494e4d2e54484be3ccfecbbd1822566ae8ba486e1ef827d31ceabb",
+          "goldSha256": "025c05bb4aee5cf6a78cc66cb09e1cecacc0abb914833f080e8664238f232551"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-02",
+          "caseId": "fictional-case-54823406baff9bf3",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "f0b2f0b31d5dd13833bc292ec92775227e1f1276903937564042d6272804259a",
+          "sha256": "613b249762bd08453bf302fff4eeb13d6761010300a7d4c1a12da0c8577ad33c",
+          "inputSha256": "6520d3b64e210cfea59322036bb3169f2365a16b20919e002b414e1178c2b0b3",
+          "goldSha256": "c7191bea33432532e1b49414196073e0be1e1c6af79af4cf8afe73e69154307d"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-01",
+          "caseId": "fictional-case-19356afc29c0e81c",
+          "templateFamily": "single-test-01",
+          "entityGroup": "ff23156f9982050138b7d419bda45d82364cfa0426da10c141d2e73125c7e367",
+          "sha256": "deea62bf0dae87b76168126ef44fe8355c5f38b3da448375b1a0f62d84231a19",
+          "inputSha256": "df74243b0a304b30019d2e0c53ca135ae998de6e9e04797be6f913074f71489d",
+          "goldSha256": "616fbb0862d4690f257c65b7ca735a742679a079f89ae11057649d376c33f29e"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-04",
+          "caseId": "fictional-case-dec347bd00224a65",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "ae51ea89446e8b058ef4ea5b4c66307012d77e0a2bc2a8a3ac82ccaef2478ae9",
+          "sha256": "a31acbf682d390f5f0a82c192e9202a733e4fad007ec463b0d132f9943c6f067",
+          "inputSha256": "f904576b9cfbc681e53df866c00a8c08ef2cf6b3ba5c9394b3a3015fd705503c",
+          "goldSha256": "fdcc708b198d905f859635d9303d5093e21354945a1a370bb11b44d68e31dd18"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-08",
+          "caseId": "fictional-case-ecb996231948be8c",
+          "templateFamily": "single-test-01",
+          "entityGroup": "b1cd4262cf1e5e96b7fcd60ead274bebfef2c1dbe6e7dcb663791c8385664917",
+          "sha256": "adfef557aae8f5c1277d5f87d898eacd7b30386e050dda8ad35333ee55b5a041",
+          "inputSha256": "054b3563ea2f1c96af6e70cc44ba99d79fa76d10b2ae02696bc95498075323a3",
+          "goldSha256": "7ece0880d6f16ed796d7d88d28abeb1e8f1fd4246b1767901b5877feb7e03b08"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-06",
+          "caseId": "fictional-case-d970bb35c4dea266",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "41237a0fffaf4ac347a1eb786ecda19437fc65ae06c400ca0d937e2e3b068b1f",
+          "sha256": "5563a2b385d604d03a166bf6f01e1dfc1aa9e9c040233dab4b60ca90fb6c55a9",
+          "inputSha256": "7400460cbedcb7504b1d5933859075e3d987953013beca16cdd1f22b01b273a8",
+          "goldSha256": "07d6a4de80267694366b38486782898c645fa8f074d8d9624a02a86fa0498dc6"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-08",
+          "caseId": "fictional-case-bd2ee23618611f5e",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "4419c185d7ff500e67df4897007637896825e7bea831249c948a153d35bd43bc",
+          "sha256": "d310c0c67be3deef7feaebcdf908d85307e0be886bfbf62087477c6e8166fabe",
+          "inputSha256": "6d8267a509a9672e6711ae4644ab374b63c04ca5823f92e359fe3adb1048f0ad",
+          "goldSha256": "592ed45a94ea9c17a11664d6a79eafbccaa368d5645936fb21b5851ba3848a4d"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-09",
+          "caseId": "fictional-case-38f3ef429807eb1c",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "56c0623f5ea7a4ab69ce0f4246ab54b4a665d2979c7204b0b0ba00578a796687",
+          "sha256": "b16489fce0634cbc7280e6aac5cef768b5184f2f1865345dfa9efbd98cb6287a",
+          "inputSha256": "7c59d51050a730f783bc27f93e28a1454b09d111c870ad64a5fdc2863dc127ae",
+          "goldSha256": "e2d8d9caa690ff04f86f1f2b8d4564d2052ca1410d0a35edc1c4a08fb359e595"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-01",
+          "caseId": "fictional-case-8188f87578242e36",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "056c9ea64e27162ecc195653f62b7c4da503a1f951e407380faaa3b0a2778509",
+          "sha256": "0228a0dd96c6e43edccc32f69c7760a2bfb2135004769813fab3b9dd4da4b66f",
+          "inputSha256": "018b3b459ba7103ec24b4ed167456b2ad36378a153f52b2035ab18b77960011c",
+          "goldSha256": "337c539c7cc098f1a4c26724db0ae3b24501b1cdb4b74d586f4b4651b21ed80f"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-05",
+          "caseId": "fictional-case-4abc54e32e18051d",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "3c953ae6823e375c69eafe5b5754191ab3abd6a599ee2f1986ccb71d0ff2e233",
+          "sha256": "6b976467321a2c22e39f6e8ea8ad7c46802d7d1995daa857dd920c1f38a478dc",
+          "inputSha256": "76009230a55b77e0328be2b0f41eceab380b99596dde2ba780e4969a3100016b",
+          "goldSha256": "f63bc631f2ae259f169260e7e0ef3e8c7376c1f2d886a6053da2f561341f8927"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-02",
+          "caseId": "fictional-case-ddaf821de4679159",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "5bca6f957fbb163073c75756a8ae8dbe56aafdb00d1f5faeaeeb16e8708e57c4",
+          "sha256": "097d9c11020e6d590195c0f60d4b9725697cdc670b1ae63a3bd209f48b0fd2ec",
+          "inputSha256": "43f79d4426c5c79ade1cda8dbb92641e22e7146e49dd05bf404014a1a5d3adb8",
+          "goldSha256": "b5034ad13dbe6c270eee243b8766f19b5b69a76857e457332303db0c5b628959"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-09",
+          "caseId": "fictional-case-569bdbf66651bc70",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "2b4b1f0ed5f15f25e91272b6a7a0496e37c4efd46a8f83381ec4cd3623b974af",
+          "sha256": "cf27cdc4a5543fd7b4b8103725ba71d659e514978756a04baa49d6d72fd75491",
+          "inputSha256": "677fe80eed8204a4f2a6d505691c4c9ad6d715008ffd211d6c5e4ebcc8f56e87",
+          "goldSha256": "34398a5b1e694ede6d7356cbde0071a9e2327d3b39377c74e16001bbb7e4aaea"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-12",
+          "caseId": "fictional-case-86e7c52de728faf6",
+          "templateFamily": "single-test-01",
+          "entityGroup": "da1ebdd22d57d259a25452a9fa83df117dfc32d2cc31b5f161ea6101b82944ac",
+          "sha256": "6f4863d96c4a6187200c54c73c0a548c8701ae2db38ab2dae5ad55f7f9e3aa72",
+          "inputSha256": "90b27a1808ca5d42355b3452b3fffbda7300a6d2e7514311a7310c8d81658ee0",
+          "goldSha256": "2c3641d39a7697522bf59f5f080e45dec7e0cdca0dba0eb17086686698cd8569"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-07",
+          "caseId": "fictional-case-a038a69ea1d51d87",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "056c9ea64e27162ecc195653f62b7c4da503a1f951e407380faaa3b0a2778509",
+          "sha256": "63103ac410f0c438c3aae4dc159ad4bf016c550ab575b398722dd22eb1075231",
+          "inputSha256": "e01ff1d7a1762b57fde33229b109cbe38215047afc023712209b0466d35f0eb5",
+          "goldSha256": "62676edb533299ebf6f97712703f76a08bbcc28d4c7e5882c317ef95080c8b74"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-10",
+          "caseId": "fictional-case-0a81dbb6714a572b",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "4c10c012de0eb2e2269a01726295611e11df147050b891973f13990f46c0505e",
+          "sha256": "c8c9237cb22a808c68f01242a483de82659e6cc2e67562ada3498a536b8380e9",
+          "inputSha256": "fe0b8ebac270e3a84f66a306b408b310323cc8b894b8101b8001ac81687e8811",
+          "goldSha256": "b4259c0567c2412c4d008bd84fd4978922c8498ae5890bbf1c39c3046928954e"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-06",
+          "caseId": "fictional-case-b5b9f449e6f3fe0d",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "6860689f81d804c5708a33b4163c0a431576dfecb102d430b6bcbd009d148131",
+          "sha256": "edd4ae14bf5f186c674119327065f3a48722f4bc64bcb98e24e3aaa97003e38b",
+          "inputSha256": "9d792fd8064b8eb84404ead8d66dedd64e32b41ddda62df2da33c2c78d350eb7",
+          "goldSha256": "989d33be1af91791b2cba2ee2e89131fc13d22403ca7570b5320f5a3bc233cb8"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-10",
+          "caseId": "fictional-case-e63b875918e364de",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "b9c0d156e8cf23b46d47bafe2f8d473d0ce256763f266d0f3f49adf6dac8dbb7",
+          "sha256": "87e9a37f4b7c25e12fcfa661a4865b2a940509ce317f107f698e54d53f34b16a",
+          "inputSha256": "c4fa8557ea6217e5fd9a5e6af14c5812e120954003448a7d5efbdda09596a6a9",
+          "goldSha256": "af9e85684e49f5c97e02fd41f9b3f14deea70a2436d15219a92eb65f19fdb2ba"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-09",
+          "caseId": "fictional-case-87a7043956b121e6",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "fba94d2db1c0ec3d22fd998ae3d3117f264e326982459391bcfe84011a1d31b6",
+          "sha256": "98d254c68936f182f6b1194cea00c4e54b501cffd8c8beaf45d7729feece1911",
+          "inputSha256": "750e1ccca58a76fb23df0e018aca23c18bfea63ac90d3775808e1c4a9a8e931d",
+          "goldSha256": "7299dc4584d19949b2b6f7ba2bf07ab74261de35c6ea3ea57e4cada1fe0461fb"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-10",
+          "caseId": "fictional-case-d5136e29ccd3d58c",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "a6ebef998ee2aff96a6ebc55b702e30a5365195d498668aef856dd2e4805d8f1",
+          "sha256": "eedbf5baf7e83e8affe48d6bf18e70a614ae798b4733d2aa9291dde97b664aad",
+          "inputSha256": "ef5d7d3161d85f6b305a3751b3e3b3eff3ab7f006c20cff3ca75a300cce0927b",
+          "goldSha256": "c77ee1d63fef93b84c0d73f165071b3f51b15fdbd89c264760c3da902a0e2bdb"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-02",
+          "caseId": "fictional-case-014e1a62a9b69f46",
+          "templateFamily": "single-test-01",
+          "entityGroup": "2f5a91c23b282c2096bd998ced7296937fc844a38467f87fc41987774f89ea91",
+          "sha256": "b5283def5b847106ead2e93e159e48d8f7f38c98b61b0ead2d4cdbe9f9c6f094",
+          "inputSha256": "97b90126f2aa88579a4a9f776d7aa9e60388fecdcf1a65d7e42a0c2afa60201c",
+          "goldSha256": "b7707fca451ae6a9a9b945f428f7673c62dd81de9d93cd4c57a94b140991394d"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-12",
+          "caseId": "fictional-case-567bd99314ddc6ff",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "256db3c1d54b5799277c10c639879c38cabe47ff4b0d4e30b73f282f309cd5be",
+          "sha256": "4136abb64ee8724134f2ee89297d174a48313aa67e05c9ce64ed34312e6c9bbc",
+          "inputSha256": "85ce475c644ea4b8bef503470f141e77805456a498c25ea81d0fd592865872ea",
+          "goldSha256": "bfc53bbc919a7d8fb56876431bb2beeb17e4043f246f37085b3f7fba4a97e4e7"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-06",
+          "caseId": "fictional-case-40b01f13ab89fb5c",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "5d5c967f2caa8ec8382a23e4a7168339383a043c9987e01c6867c9488d669469",
+          "sha256": "323e78dda41a57d76741154f193654820e541093742257ac039ac85462c39763",
+          "inputSha256": "0b7d3c03075539afa71817cdcd95a2fed8f4f76f98fd7dd44093d575c6911264",
+          "goldSha256": "dffd675687ba1014018c54b8bd489b5ba896d2f575c58ea6742d14f84b3a73c2"
+        },
+        {
+          "id": "care-circle-corpus-v2-unchanged-test-01-04",
+          "caseId": "fictional-case-15c316fc4e50ab12",
+          "templateFamily": "unchanged-test-01",
+          "entityGroup": "0aa0a0ae8bffd4427576b7e50cfe08695a06d35a5c4bb4a0cc288176718ea9f8",
+          "sha256": "08606a42eba9ed45475b504291f3b346e25c6d40f7f0a30996d84352e60af275",
+          "inputSha256": "7606d8d8866dec012f0cd8ec6614ec6079d4a177d203c186bfc339ae6b6d1c3b",
+          "goldSha256": "317bd71606d43fcc121ff1ce57df3df3f063367b49dcd871cb258771f488635a"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-10",
+          "caseId": "fictional-case-af9c536975291ee4",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "ef1cda281cef432b5f701d4584288f4a4b62aafe8ee4364ed26743519d18d68a",
+          "sha256": "15f7c0dfb1243970fcf293edb6e167de9b779035aed0a2237e9fe273a5797657",
+          "inputSha256": "14e541c65a3471957097e375ff532115050a4448bdca3192f9d57f0bc3aa8ab8",
+          "goldSha256": "055eaefc3bd25fce511ea784d85b62c5e92d96acafdeef14ab14c5c5e3516438"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-07",
+          "caseId": "fictional-case-ca6b01b61ccb53d3",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "bf8478fbdf858a05da8d88b2c2821be04641220441ba5653006d0f2d3b995e74",
+          "sha256": "50603260ba08275b4da2b465d68b3ff1fc321a81e8c1f968dc3f1d8add2c709e",
+          "inputSha256": "01946125156aeece00539dbf9562f3e25dcea9d2e37abb677d616c20213f8a6c",
+          "goldSha256": "e0d6e7a1180944ecbde830c2f7e7437c4bb7f0ff506aed4aa4095d95d365bc7e"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-01",
+          "caseId": "fictional-case-96a26457b3545c1c",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "52ef1ef30c34278648d9750977d1187a75f69b09cf83b26260e660b22e9bdb65",
+          "sha256": "789f39be35446ceb23b0483c56ae97523668cf7648fe1deeb5f54240fbd58a79",
+          "inputSha256": "6ac54dbf1d625a98d232fc1dd208543438dc254caff944daad9a0f623c8f26ec",
+          "goldSha256": "c7e087b9191f4df8d6414e1f78ef7c65034f444b405bcaedac5a346ac199aed5"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-08",
+          "caseId": "fictional-case-8fa9ded6a202e84e",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "870bcff8aa5ebc9cddb16072db4e739ee5b4d7590978b3cb85284bc473d2d594",
+          "sha256": "b179b1b183c276b02271f311b1946156ae868b0192b4243782438bb93b96249e",
+          "inputSha256": "63eaf437d0c1939825347ab34f361cb504c60e336997de0ff7038fb4f8add92f",
+          "goldSha256": "aede5233547db97ecde6504ba020c4c097f27eef5af0530df327c018f54f30fd"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-11",
+          "caseId": "fictional-case-33a02b7657147473",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "e019c908d5c41deedc6cd5d67ba01cb6724c56ed6bf13d5b20970204ed9b7f53",
+          "sha256": "779f657560b9df6178b81aad677163fa39bdb4906c7d303ac2c18c27f714b4b7",
+          "inputSha256": "ad0ae8f3ef1fa9ce3b853778c65f374884531dd38bfc44b7bb1f903949703c46",
+          "goldSha256": "2c119fbb8a1c1452666807babfb778fbed2ca7b5ce3369aceb5e0ba3290bca67"
+        },
+        {
+          "id": "care-circle-corpus-v2-unsupported-test-01-02",
+          "caseId": "fictional-case-4bccfd03bef91a68",
+          "templateFamily": "unsupported-test-01",
+          "entityGroup": "ba0f9ac8171181a0550f3bebccec081e20afee99240e0648e62e3be2564b9160",
+          "sha256": "62db1fc7cffb0ddb1e2848412a445d894222910163224be28959cf20cf100a02",
+          "inputSha256": "16c8f03df3ee35960a61a828edc4fb17198ac2d4710d1bd7646cde3360b5b58e",
+          "goldSha256": "fe2fa999bb87774711aa3017e40468fcd0e86d258c99c3e42ea7d3619b41dbb0"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-04",
+          "caseId": "fictional-case-80a8bb7ff7c4567c",
+          "templateFamily": "single-test-01",
+          "entityGroup": "acf83465b8ae316c85c4a1cfc66b2b8b65b7f15d864c70fedca52c496c8f9682",
+          "sha256": "010d3095204066202c5b622621f65807a87d5568230c2b30231086cb6ed5e2b1",
+          "inputSha256": "f1e2d3f8159cb21d8ce94d627e4156899f5d03b50832bbe3432166c3c8e6d00d",
+          "goldSha256": "5edff4d5211471ee4a0214b32b7aabdc97c9024706ea87ffeae32e509036138c"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-10",
+          "caseId": "fictional-case-f59e36ec87aa61f4",
+          "templateFamily": "single-test-01",
+          "entityGroup": "aa6194787a492c966baf97c0fbc8c2917f3fd3403c1c0b50baf9931a198306a3",
+          "sha256": "dd964ddf2d2ec22ee1799695999efed80406b046636485c2cf3810880c98e1a6",
+          "inputSha256": "2cba157c7575f6bbced4c69d15250b94f34bbb71761992cfc21168fec59e0845",
+          "goldSha256": "b03069a6d511b15d01e249ca0783e601ce44544c2df6f1f4de61de16c6889a70"
+        },
+        {
+          "id": "care-circle-corpus-v2-multiple-test-01-03",
+          "caseId": "fictional-case-c90059e41ae229a9",
+          "templateFamily": "multiple-test-01",
+          "entityGroup": "ff36c6d074db41f4f38b6a95f7543cd0f69638eb73257edf8bd0cc5088006184",
+          "sha256": "3c528724f226680f8e04409236aa399a93a6c7ebbdb49146c65466f8293c0d1d",
+          "inputSha256": "53ce799cb522862caea85559815e36baf0118e3b855bce2b0481d1251b8c3a70",
+          "goldSha256": "e990e66c5c86fad5825eb10e0b72110f8a158693cd44e930de4b5919a740ebee"
+        },
+        {
+          "id": "care-circle-corpus-v2-single-test-01-09",
+          "caseId": "fictional-case-ad99f4ece788b754",
+          "templateFamily": "single-test-01",
+          "entityGroup": "fbd2079040d6bf13d50019105527092ca03de34385f08369d7046ac65bd240d2",
+          "sha256": "1db409c75fbe67f161af1add13bf3cd266c67ed9738f26424fb3f4543fcd97b8",
+          "inputSha256": "c39621d73441b028bd05ff9eabbb24cb143a7a189d5d6664fdee6d445fd51a3b",
+          "goldSha256": "cf44209c406ec501d6c733cc807309323c401e5d6984e2d630971c078058e947"
+        },
+        {
+          "id": "care-circle-corpus-v2-negation-test-01-11",
+          "caseId": "fictional-case-45f7377ac565d022",
+          "templateFamily": "negation-test-01",
+          "entityGroup": "36beefea3abfe27b708a6d6a29f917a3579efc6e837d4133e6e11ca5bb279a70",
+          "sha256": "a24d00301acd16615df76db06df90b16e7e5fca86646b1f72c45de2617fff860",
+          "inputSha256": "dbe54e32ff8e0b5bd2d2b7fa4fec492f821081a6e42b0029c6633a58ddfe1043",
+          "goldSha256": "0924da2fa9bb6b29895702bf80449cdbc34758dd0c983e6b2ce0bbd88afe8aef"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-08",
+          "caseId": "fictional-case-e3a47bd147836cf7",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "1df15df422ab9670f28b096d8f2a46972aaf3d6211859d3919237b4c858a3ddb",
+          "sha256": "f5cee0089886d67d3f0a3095e2345f8043808829b39783222ab4d49cf60e36e0",
+          "inputSha256": "03f0f5e12dddd37e9e182773d5894ea118303606e95bf1fd808d9cf6617ffcb5",
+          "goldSha256": "1871f9629677f454404098ce071324ebd8bdad4e8fc597ea5d559b6ab985cf69"
+        },
+        {
+          "id": "care-circle-corpus-v2-uncertain-test-01-11",
+          "caseId": "fictional-case-c741b5bc9dbeca3c",
+          "templateFamily": "uncertain-test-01",
+          "entityGroup": "cbb5d0ecf2f0dd44a4fc9ed28c257e559723feddd6bce0fbbe1448f8f1c2ddda",
+          "sha256": "87b5fcea16de56ca6a4b3dc4f6b6a02dbc9a72140fcd69d1f0a67a80ebc329ae",
+          "inputSha256": "8ce05813e67b2334601fe399fe6880c8e2fb338d4b5b90083403bcf743c1a4dc",
+          "goldSha256": "1525be9599d327cdf226a6f21e81d237ced312cc25b5dec3f07a208463b69893"
+        }
+      ]
+    }
+  }
+}

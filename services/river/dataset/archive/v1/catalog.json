@@ -1,0 +1,24 @@
+{
+  "synthetic": true,
+  "purpose": "Fictional Care Circle extraction vocabulary. Dose strings are synthetic source claims, not recommendations.",
+  "people": [
+    { "id": "people/ana-alvarez", "name": "Ana" },
+    { "id": "people/ben-alvarez", "name": "Ben" },
+    { "id": "people/celia-alvarez", "name": "Celia" }
+  ],
+  "doctors": [
+    { "id": "doctors/cardiologist", "specialty": "cardiology", "name": "Dr. Chen" },
+    { "id": "doctors/nephrologist", "specialty": "nephrology", "name": "Dr. Patel" },
+    { "id": "doctors/primary-care", "specialty": "primary care", "name": "Dr. Romero" },
+    { "id": "doctors/endocrinologist", "specialty": "endocrinology", "name": "Dr. Okafor" }
+  ],
+  "medications": [
+    { "id": "medications/lisinopril", "name": "Lisinopril", "doses": ["5 mg", "10 mg", "20 mg"], "frequencies": ["daily", "every morning"] },
+    { "id": "medications/amlodipine", "name": "Amlodipine", "doses": ["2.5 mg", "5 mg", "10 mg"], "frequencies": ["daily", "every morning"] },
+    { "id": "medications/atorvastatin", "name": "Atorvastatin", "doses": ["10 mg", "20 mg", "40 mg"], "frequencies": ["daily", "nightly"] },
+    { "id": "medications/metformin", "name": "Metformin", "doses": ["250 mg", "500 mg", "1000 mg"], "frequencies": ["daily", "twice daily"] },
+    { "id": "medications/levothyroxine", "name": "Levothyroxine", "doses": ["25 mcg", "50 mcg", "75 mcg"], "frequencies": ["daily", "every morning"] },
+    { "id": "medications/vitamin-d3", "name": "Vitamin D3", "doses": ["400 IU", "1000 IU", "2000 IU"], "frequencies": ["daily", "every morning"] },
+    { "id": "medications/acetaminophen", "name": "Acetaminophen", "doses": ["325 mg", "500 mg", "650 mg"], "frequencies": ["daily", "twice daily"] }
+  ]
+}
