@@ -50,3 +50,9 @@ Runtime loaded the reviewed build through `e171089` into owned brain PID 4515. E
 ## Runbook review, 15:42 Pacific
 
 World review findings WR-RB-01 and WR-RB-02 are addressed. The README now lists Node.js 22+, Bun 1.3.11+ and GBrain 0.59 as the verified prerequisites, links official GitHub installation guidance, and identifies the unrelated npm package. Initialization precedes managed startup through `scripts/start brain`; optional foreground startup explicitly requires a second terminal for checks. Verification used installed runtime-version source, the public upstream install section, and the repository runtime launcher. This was a documentation-only correction; no installation, initialization, shared-state mutation or process restart was performed.
+
+## M3, 15:55 Pacific
+
+The final independent Astra xhigh storage review confirmed the mixed-queue recovery fence, effective canonical path and host checks, and uncertain-enable restoration are closed. It found no remaining concrete high-impact storage defect. The isolated adapter suite passed 9 of 9 tests; the latest complete suite remains 38 of 38. Live read-only HTTP smoke passed revision 10, 32 pages, seven medications and 132 graph edges before QA's final two-cycle window.
+
+The macOS default Git launcher began returning an Xcode license error. Repository commands now use a per-invocation CommandLineTools PATH; no license or system settings changed. The service inherits PATH for its CLI children, and installed GBrain native import discovery and optional Git durability effects can invoke Git. A PATH-only process restart was requested from runtime, queued behind QA's exclusive window. Normal existing-snapshot writes use database-only mode; no live mutation failure is claimed. Implementation is held stable pending QA receipts and runtime's scheduling decision.
