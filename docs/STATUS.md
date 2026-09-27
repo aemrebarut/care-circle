@@ -6,6 +6,13 @@
 
 ## Log
 
+### 15:07 Pacific real River training started
+
+- River lane started the approved run at 15:07:02. Session `6f387123-0ec0-40e5-8e4e-0181dbd06580` was created at 15:07:06; Qwen/Qwen3.5-9B is loading.
+- Fixed experiment: 336 synthetic training rows, rank 8, one epoch, 21 steps, then the same prompt on 72 held-out examples for each of base and trained models. No measured model accuracy yet.
+- Payload manifest SHA256 `039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b`. Bounded run ends by 15:52 plus cleanup; actual progress is exposed at `http://127.0.0.1:4704/v1/status`.
+- Six service health endpoints now pass. Brain is finishing startup; web and brief owners have handed over their services and QA is preparing a real Chrome demo pass.
+
 ### 15:05 Pacific early integration
 
 - World delivery independently reviewed clean: 30 pages, 120 resolving links, 21 exact medication citations. `npm test --prefix packages/world` passes per owner and reviewer.
