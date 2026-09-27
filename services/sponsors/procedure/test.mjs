@@ -152,3 +152,24 @@ test('committed review artifacts match the current deterministic capture and exa
   assert.equal(manifest.remoteSubmitted, false);
   assert.equal(manifest.externalSubmissionAuthorized, false);
 });
+
+test('recorded official local recall proof is tied to the synthetic capture and labels manual seeding', () => {
+  reset();
+  const captured = capture();
+  const proof = JSON.parse(readFileSync(new URL('./assets/memorable-local-proof.json', import.meta.url), 'utf8'));
+  const fixture = JSON.parse(readFileSync(new URL('./assets/memorable-local-procedure.json', import.meta.url), 'utf8'));
+  assert.equal(proof.mode, 'official-local-recall-of-manual-fixture');
+  assert.equal(proof.procedureId, captured.procedureId);
+  assert.equal(proof.captureTraceId, captured.evidence.traceId);
+  assert.equal(proof.manualStoreSha256, createHash('sha256').update(JSON.stringify(fixture) + '\n').digest('hex'));
+  assert.equal(proof.package.version, '0.5.30');
+  assert.equal(proof.memorableExtractionExecuted, false);
+  assert.equal(proof.memorableTraceLearningExecuted, false);
+  assert.equal(proof.isolation.networkDenied, true);
+  assert.equal(proof.isolation.allWritesDenied, true);
+  assert.equal(proof.isolation.inheritedEnvironment, false);
+  assert.deepEqual(proof.commands.map(item => item.command), ['recall', 'show', 'list']);
+  assert.ok(proof.commands[0].stdout.includes('[lexical]'));
+  assert.ok(proof.commands.every(item => item.exitCode === 0));
+  assert.equal(getStatus().offlineRecallProof.runtimeReplayUsesOfficialCli, false);
+});

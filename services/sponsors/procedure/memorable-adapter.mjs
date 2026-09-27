@@ -16,7 +16,7 @@ export function memorableExportMetadata() {
     limitations: [
       'This is an unsent review artifact matching the public Extraction API example.',
       'Custom tool interpretation and remote response compatibility have not been verified.',
-      'Submission requires explicit authorization recorded by cc-lead and a separate reviewed implementation.'
+      'Submission requires explicit authorization recorded by cc-lead and the separate opt-in CLI.'
     ]
   };
 }

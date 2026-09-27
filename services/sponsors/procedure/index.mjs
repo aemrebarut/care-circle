@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import { readFileSync } from 'node:fs';
 import { toMemorablePayload, memorableExportMetadata } from './memorable-adapter.mjs';
+import { getSubmissionStatus } from './memorable-submit.mjs';
 
 const MODE = 'local-simulation';
 const FIXTURE = JSON.parse(readFileSync(new URL('./fixtures.json', import.meta.url), 'utf8'));
@@ -211,13 +212,21 @@ export function reset() {
 }
 
 export function getStatus() {
+  const submission = getSubmissionStatus();
   return {
     mode: MODE,
     status: captures.size ? 'captured-local-simulation' : 'ready-for-local-capture',
-    limitations: [...LIMITATIONS],
-    synthetic: true, simulation: true, externalSubmissionAuthorized: false,
+    limitations: LIMITATIONS.map(text => submission.remoteAttempted && text.includes('has not been remotely submitted')
+      ? 'The separate approved extraction attempt has its own receipt status; service capture and replay still use the local simulation.' : text),
+    synthetic: true, simulation: true, externalSubmissionAuthorized: submission.authorizationRecorded,
+    remoteSubmissionEnabledInService: false,
     memorableExecuted: false, procedureCount: captures.size, replayCount,
     latestProcedureId: latestId,
-    adapter: { status: 'local-export-only', documentationUrl: 'https://www.memorable.sh/doc', remoteSubmitted: false }
+    adapter: { status: submission.remoteValidated ? 'approved-extraction-receipt-verified' : submission.remoteAttempted ? 'remote-attempt-unvalidated' : 'local-export-only', documentationUrl: 'https://www.memorable.sh/doc', ...submission },
+    offlineRecallProof: {
+      status: 'recorded-test', package: 'memorable-cli', version: '0.5.30',
+      manuallySeeded: true, extractionPerformed: false, runtimeReplayUsesOfficialCli: false,
+      evidenceFile: 'services/sponsors/procedure/assets/memorable-local-proof.json'
+    }
   };
 }

@@ -1,0 +1,70 @@
+{
+  "slug": "procedures/prior-auth-ac05bd02d982ad07be10",
+  "title": "Synthetic prior authorization rehearsal",
+  "session_id": "trace-12aed992150dad245f3b8778",
+  "workflow_id": "trace-12aed992150dad245f3b8778",
+  "embedding_model": "",
+  "payload": {
+    "trigger_signature": {
+      "summary_text": "Synthetic prior authorization rehearsal",
+      "entities": {
+        "file_paths": [],
+        "commands": [],
+        "tool_names": [
+          "read_synthetic_member",
+          "read_synthetic_request",
+          "read_synthetic_requirements",
+          "assemble_synthetic_packet",
+          "simulate_prior_auth_submission",
+          "record_synthetic_followup"
+        ]
+      },
+      "search_text": "Synthetic prior authorization rehearsal"
+    },
+    "steps": [
+      {
+        "seq": 1,
+        "action": "read_synthetic_member",
+        "activity_class": "read",
+        "repeat_count": 1
+      },
+      {
+        "seq": 2,
+        "action": "read_synthetic_request",
+        "activity_class": "read",
+        "repeat_count": 1
+      },
+      {
+        "seq": 3,
+        "action": "read_synthetic_requirements",
+        "activity_class": "read",
+        "repeat_count": 1
+      },
+      {
+        "seq": 4,
+        "action": "assemble_synthetic_packet",
+        "activity_class": "execute",
+        "repeat_count": 1
+      },
+      {
+        "seq": 5,
+        "action": "simulate_prior_auth_submission",
+        "activity_class": "execute",
+        "repeat_count": 1
+      },
+      {
+        "seq": 6,
+        "action": "record_synthetic_followup",
+        "activity_class": "execute",
+        "repeat_count": 1
+      }
+    ],
+    "preconditions": [
+      "Synthetic data only. Local simulation only."
+    ],
+    "postconditions": [
+      "Local simulation complete. No insurer contacted. No coverage decision."
+    ],
+    "embedding": []
+  }
+}

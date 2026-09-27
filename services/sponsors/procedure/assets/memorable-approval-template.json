@@ -1,0 +1,12 @@
+{
+  "approved": false,
+  "approvedBy": "Emre",
+  "authorization": "single-synthetic-extraction",
+  "approvalReference": "REPLACE_WITH_ACTUAL_RECORDED_APPROVAL",
+  "approvedAt": null,
+  "payloadSha256": "994c84515254b5e26114a7249ef3bf56e106503ac1e21560fccd2ab620c0bf32",
+  "payloadBytes": 3189,
+  "endpoint": "https://memorable-extraction-api.memorable.workers.dev/v1/extract",
+  "credentialVariable": "MEMORABLE_API_KEY",
+  "maxRequests": 1
+}
