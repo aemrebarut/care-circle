@@ -33,7 +33,11 @@ async function api(path, { method = 'GET', body, timeout = 135000 } = {}) {
   catch (error) { throw new Error(error.name === 'TimeoutError' ? 'This is taking longer than expected. The family brain may still be working. Refresh to check before trying again.' : 'The local service is not reachable. Please try again when it is available.'); }
   let payload;
   try { payload = await response.json(); } catch { throw new Error('The service returned an unreadable response. Nothing has been confirmed.'); }
-  if (!response.ok || payload?.error) throw new Error(payload?.error?.message || `The service returned HTTP ${response.status}.`);
+  if (!response.ok || payload?.error) {
+    const detail = payload?.error || {};
+    const message = /recovering durable storage/i.test(detail.message || '') ? 'The family brain is still getting ready. Please try again in a moment.' : detail.outcome === 'unknown' ? 'The save could not be confirmed. The family brain may still have received it.' : detail.message || `The service returned HTTP ${response.status}.`;
+    const error = new Error(message); error.code = detail.code; error.outcome = detail.outcome; error.retryable = detail.retryable; error.idempotencyKey = detail.idempotencyKey; throw error;
+  }
   return payload;
 }
 function errorBlock(error, retry) { return el('div', { class: 'error-state', role: 'alert' }, el('p', {}, errorMessage(error)), retry && el('button', { class: 'button button-outline small', type: 'button', onClick: retry }, 'Try again')); }
@@ -58,11 +62,12 @@ async function loadFamily() {
     replace('#family-avatars', members.slice(0, 3).map(member => el('span', { class: 'avatar', title: member.title }, member.title?.split(' ').map(name => name[0]).slice(0, 2).join(''))));
     $('#family-summary').textContent = members.length ? `${members.map(member => member.title?.split(' ')[0]).join(', ')}. One circle of care.` : 'A shared place for the family record.';
     const status = $('#connection-status'); status.textContent = 'Connected to the family brain'; status.className = 'connection-status online';
-    const author = $('#note-author'); const previous = author.value;
+    const author = $('#note-author'); const previous = state.pendingAuthorId || author.value;
     replace(author, members.length ? members.map(member => el('option', { value: member.id }, member.title)) : [el('option', { value: '' }, 'No family members available')]);
     if (members.some(member => member.id === previous)) author.value = previous;
     else if (members.some(member => member.id === 'people/ana-alvarez')) author.value = 'people/ana-alvarez';
     author.disabled = !members.length;
+    if (members.some(member => member.id === state.pendingAuthorId)) state.pendingAuthorId = null;
     const nephrologist = pageById('doctors/nephrologist');
     $('#next-visit-detail').textContent = nephrologist ? `${nephrologist.fields?.nextVisitDate ? dateLabel(nephrologist.fields.nextVisitDate, true) : 'Next nephrology visit'} with ${nephrologist.title}. Gather what changed since the last visit.` : 'Gather the recorded changes and open questions for the next nephrology appointment.';
     renderGraph();
@@ -71,16 +76,17 @@ async function loadFamily() {
     replace('#graph', errorBlock(error, refreshData));
     $('#graph-count').textContent = 'Record unavailable'; $('#graph-summary').textContent = '';
     $('#connection-status').textContent = 'Family brain unavailable'; $('#connection-status').className = 'connection-status offline';
-    if (!state.pages.length) { $('#family-summary').textContent = 'Waiting for the family record.'; $('#next-visit-detail').textContent = 'Appointment details will appear when the family brain is connected.'; }
+    if (!state.pages.length) { replace('#note-author',el('option',{value:''},'Family record unavailable')); $('#family-summary').textContent = 'Waiting for the family record.'; $('#next-visit-detail').textContent = 'Appointment details will appear when the family brain is connected.'; }
     return false;
   }
 }
 async function loadMedications() {
-  try { const data = await api('brain/medications'); if (!Array.isArray(data.medications)) throw new Error('Medication records are not available yet.'); state.medications = data.medications; renderMedications(); return true; }
+  state.medicationsFresh = false;
+  try { const data = await api('brain/medications'); if (!Array.isArray(data.medications)) throw new Error('Medication records are not available yet.'); state.medications = data.medications; state.medicationsFresh = true; renderMedications(); return true; }
   catch (error) { replace('#medication-list', errorBlock(error, loadMedications)); return false; }
 }
 async function loadAlerts() {
-  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; renderAlerts(); if (state.medications.length) renderMedications(); return true; }
+  try { const data = await api('brief/contradictions'); if (!Array.isArray(data.contradictions)) throw new Error('Source comparison is not available yet.'); state.contradictions = data.contradictions; renderAlerts(); if (state.medicationsFresh) renderMedications(); return true; }
   catch (error) { replace('#alerts', errorBlock(error, loadAlerts)); return false; }
 }
 async function refreshData() { if (state.refreshing) return false; state.refreshing = true; const results = await Promise.allSettled([loadFamily(), loadMedications(), loadAlerts()]); state.refreshing = false; return results.every(result => result.status === 'fulfilled' && result.value); }
@@ -135,7 +141,11 @@ function renderMedications() {
   table.append(el('tbody',{},state.medications.map(medication=>{
     const conflict = state.contradictions.find(item=>item.medicationId === medication.id);
     const citations = medication.citations || [];
-    return el('tr',{},el('td',{},el('span',{class:'medication-name'},medication.name),el('span',{class:'medication-meta'},medication.status === 'active' ? 'Recorded as active' : medication.status || 'Recorded medication'),conflict && el('span',{class:'conflict-tag'},conflict.temporalStatus === 'past-discrepancy-unreconciled' ? 'Earlier discrepancy unresolved' : 'Sources disagree')),el('td',{},el('span',{class:'dose'},medication.dose || 'Not recorded'),el('span',{class:'medication-meta'},medication.frequency || 'Frequency not recorded')),el('td',{},citations.length ? citationChips(citations) : el('span',{class:'quiet'},'Citation not returned')));
+    const matchingClaims = (medication.claims || []).filter(claim=>claim.dose === medication.dose && claim.frequency === medication.frequency && claim.kind === 'visit').sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+    const primary = citations.find(citation=>citation.pageId === matchingClaims[0]?.sourceId);
+    const otherCitations = citations.filter(citation=>citation !== primary);
+    const source = primary ? [sourceButton(primary),el('span',{class:'medication-meta'},`Recorded ${dateLabel(primary.date) || 'date unavailable'}`),otherCitations.length && el('details',{class:'medication-source-history'},el('summary',{},`${otherCitations.length} other source records`),citationChips(otherCitations))] : citations.length ? citationChips(citations) : el('span',{class:'quiet'},'Citation not returned');
+    return el('tr',{class:conflict ? 'medication-conflict' : ''},el('td',{},el('span',{class:'medication-name'},medication.name),el('span',{class:'medication-meta'},medication.status === 'active' ? 'Recorded as active' : medication.status || 'Recorded medication'),conflict && el('span',{class:'conflict-tag'},conflict.temporalStatus === 'past-discrepancy-unreconciled' ? 'Earlier discrepancy unresolved' : 'Sources disagree')),el('td',{},el('span',{class:'dose'},medication.dose || 'Not recorded'),el('span',{class:'medication-meta'},medication.frequency || 'Frequency not recorded')),el('td',{},source));
   })));
   replace('#medication-list', table);
 }
@@ -160,8 +170,8 @@ async function openSource(id, citation) {
     replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},String(value))])),el('h3',{},'Original source'),el('div',{class:'source-body'},page.body || 'This source has no narrative text.'),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
   } catch(error) { if (request === sourceRequest) replace('#source-content',el('h2',{id:'source-title'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
 }
-function invalidateNote() { try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
-function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').value || undefined,date:'2026-09-27'}; }
+function invalidateNote() { state.pendingAuthorId = null; try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
+function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').disabled ? state.pendingAuthorId || undefined : $('#note-author').value || undefined,date:'2026-09-27'}; }
 function renderPreview(result) {
   const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. Nothing has been saved.');
   const warnings = Array.isArray(result.warnings) ? result.warnings : [];
@@ -190,7 +200,7 @@ async function saveNote() {
     replace('#note-status', el('span',{},refreshed ? `Saved to the family brain. ${result.applied.changedPageIds?.length || 'Connected'} records updated. ` : 'The note was saved, but some views could not refresh. '),sourceButton(result.applied.visitId,'Open saved visit'));
     $('#note-status').className = `inline-status ${refreshed ? 'success' : 'error'}`;
     $('#medication-answer').hidden = true;
-  } catch(error) { setStatus('#note-status',`${errorMessage(error)} Your note is still here. Retrying the same reviewed note uses the same save key.`,'error'); busy(button,false); }
+  } catch(error) { setStatus('#note-status',`${errorMessage(error)} Your note is still here. You can safely retry the same reviewed note.`,'error'); busy(button,false); }
   finally { $('#review-note').disabled = false; $('#note-input').disabled = false; $('#note-author').disabled = !state.pages.some(page=>page.type === 'person'); $('#sample-note').disabled = false; }
 }
 
@@ -220,22 +230,38 @@ function renderBrief(brief) {
 function modeLabel(mode) { return ({'local-simulation':'Local simulation','local-http-fetch':'Local HTTP lookup','deterministic':'Deterministic fallback','river':'River connected','not-connected':'Not connected','unavailable':'Unavailable'})[mode] || String(mode || 'Not connected').replaceAll('-',' '); }
 function setMode(selector, mode) { $(selector).textContent = modeLabel(mode); $(selector).className = `pill ${['river','live','connected'].includes(mode) ? '' : 'warning'}`; }
 function limitationsText(value) { return Array.isArray(value) ? value.map(textValue).join(' ') : textValue(value); }
-async function loadSponsorStatus() {
-  const results = await Promise.allSettled([api('river/status',{timeout:20000}),api('sponsors/status',{timeout:20000})]);
-  const river = results[0];
-  if (river.status === 'fulfilled') {
-    const result = river.value; setMode('#river-mode',result.mode);
-    replace('#river-details',el('p',{},result.trainingStatus ? `Training: ${textValue(result.trainingStatus)}` : 'Training status not reported.'),el('p',{},limitationsText(result.limitations)),result.metrics ? evidenceDetails(result.metrics,'View measured evaluation results') : el('p',{},'No measured model comparison has been reported.'));
-  } else { setMode('#river-mode','unavailable'); replace('#river-details',errorBlock(river.reason,loadSponsorStatus)); }
-  const sponsors = results[1];
-  if (sponsors.status === 'fulfilled') {
-    const result = sponsors.value;
-    setMode('#procedure-mode',result.memorable?.mode); setMode('#clinic-mode',result.ufo?.mode);
-    replace('#procedure-details',el('p',{},result.memorable?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.memorable?.limitations)));
-    replace('#clinic-details',el('p',{},result.ufo?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.ufo?.limitations)));
-  } else { setMode('#procedure-mode','unavailable'); setMode('#clinic-mode','unavailable'); replace('#procedure-details',errorBlock(sponsors.reason,loadSponsorStatus)); replace('#clinic-details',errorBlock(sponsors.reason,loadSponsorStatus)); }
+function renderRiverStatus(result) {
+  setMode('#river-mode',result.mode);
+  const experiment = result.experiment || {};
+  const trainingLabels = {training:'Training in progress',creating_model:'Creating the training model',evaluating:'Evaluating the trained model',completed:'Training run completed',failed:'Training run needs attention',not_started:'Training has not started'};
+  const training = trainingLabels[result.trainingStatus] || textValue(result.trainingStatus).replaceAll('_',' ') || 'Training status not reported';
+  const counts = result.corpus?.splits;
+  replace('#river-details',el('p',{},el('strong',{},training)),Number.isFinite(experiment.completedSteps) && Number.isFinite(experiment.plannedSteps) && el('p',{},`${experiment.completedSteps} of ${experiment.plannedSteps} training steps reported.`),result.corpus?.total && el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},result.corpus.total),el('span',{},'synthetic notes')),counts?.test?.count && el('div',{class:'metric'},el('strong',{},counts.test.count),el('span',{},'held-out examples'))),el('p',{},result.extractionAvailable === true ? 'The service reports live model extraction available.' : 'Live model extraction is not available. Notes use the deterministic demo parser.'),result.metrics ? evidenceDetails(result.metrics,'View measured evaluation results') : el('p',{},'No verified base and trained model comparison yet.'),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.limitations)),experiment.model && el('p',{},`Model: ${experiment.model}`)));
 }
+async function loadRiverStatus() {
+  try { renderRiverStatus(await api('river/status',{timeout:20000})); }
+  catch(error) { setMode('#river-mode','unavailable'); replace('#river-details',errorBlock(error,loadRiverStatus)); }
+}
+async function loadHelpersStatus() {
+  const procedureVersion = state.procedureVersion || 0, clinicVersion = state.clinicVersion || 0;
+  try {
+    const result = await api('sponsors/status',{timeout:20000});
+    if ((state.procedureVersion || 0) === procedureVersion) {
+    setMode('#procedure-mode',result.memorable?.mode);
+    replace('#procedure-details',el('p',{},result.memorable?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.memorable?.limitations)));
+    }
+    if ((state.clinicVersion || 0) === clinicVersion) {
+    setMode('#clinic-mode',result.ufo?.mode);
+    replace('#clinic-details',el('p',{},result.ufo?.status || 'Integration status not reported.'),el('p',{},limitationsText(result.ufo?.limitations)));
+    }
+  } catch(error) {
+    if ((state.procedureVersion || 0) === procedureVersion) { setMode('#procedure-mode','unavailable'); replace('#procedure-details',errorBlock(error,loadHelpersStatus)); }
+    if ((state.clinicVersion || 0) === clinicVersion) { setMode('#clinic-mode','unavailable'); replace('#clinic-details',errorBlock(error,loadHelpersStatus)); }
+  }
+}
+async function loadSponsorStatus() { await Promise.allSettled([loadRiverStatus(),loadHelpersStatus()]); }
 async function procedureAction(action) {
+  state.procedureVersion = (state.procedureVersion || 0) + 1;
   const button = $(`#${action}-procedure`); busy(button,true,action === 'capture' ? 'Capturing local steps...' : 'Replaying local steps...'); $('#capture-procedure').disabled = true; $('#replay-procedure').disabled = true;
   replace('#procedure-details',el('p',{},'Working through the synthetic local procedure...'));
   try { const result = await api(`sponsors/procedure/${action}`,{method:'POST',body:action === 'capture' ? {actorId:'people/ana-alvarez'} : {actorId:'people/ben-alvarez',...(state.procedureId ? {procedureId:state.procedureId} : {})}}); if (!result.procedureId || !Array.isArray(result.steps)) throw new Error('No completed procedure evidence was returned.'); state.procedureId = result.procedureId; setMode('#procedure-mode',result.mode); replace('#procedure-details',el('p',{},el('strong',{},action === 'capture' ? 'Local procedure captured with Ana.' : 'Local procedure replay returned for Ben.')),el('p',{},'Synthetic workflow. This is not evidence of Memorable learning or external execution.'),el('ol',{},result.steps.map(step=>el('li',{},typeof step === 'string' ? step : `${step.tool || step.title || `Step ${step.index || ''}`}${step.status ? `: ${step.status}` : ''}`))),result.result && el('p',{},textValue(result.result)),evidenceDetails({procedureId:result.procedureId,actorId:result.actorId,mode:result.mode,steps:result.steps,evidence:result.evidence})); }
@@ -243,6 +269,7 @@ async function procedureAction(action) {
   finally { busy(button,false); $('#capture-procedure').disabled = false; $('#replay-procedure').disabled = false; }
 }
 async function fetchClinic() {
+  state.clinicVersion = (state.clinicVersion || 0) + 1;
   const button = $('#fetch-clinic'); busy(button,true,'Reading the local clinic site...'); replace('#clinic-details',el('p',{},'Fetching the fictional clinic source...'));
   try {
     const result = await api('sponsors/clinic/fetch',{method:'POST',body:{}}); if (!result.clinic?.name) throw new Error('No clinic details were returned.'); setMode('#clinic-mode',result.mode);
@@ -266,14 +293,17 @@ $('#print-brief').addEventListener('click',()=>window.print());
 $('#capture-procedure').addEventListener('click',()=>procedureAction('capture'));
 $('#replay-procedure').addEventListener('click',()=>procedureAction('replay'));
 $('#fetch-clinic').addEventListener('click',fetchClinic);
-await Promise.allSettled([refreshData(),loadSponsorStatus()]);
 
 try {
   const pending = JSON.parse(sessionStorage.getItem('care-circle-pending-note') || 'null');
   if (pending?.payload?.note && typeof pending.payload.note === 'string' && pending.payload.note.length <= 12000 && typeof pending.key === 'string' && pending.key.length <= 160) {
     $('#note-input').value = pending.payload.note;
     if ($$('#note-author option').some(option=>option.value === pending.payload.authorId)) $('#note-author').value = pending.payload.authorId;
-    state.noteKey = pending.key; state.noteSnapshot = pending.payload;
-    setStatus('#note-status','A previous save was not confirmed in this browser. Check the family record, or review this same note to retry with its original save key.');
+    state.noteKey = pending.key; state.noteSnapshot = pending.payload; state.pendingAuthorId = pending.payload.authorId;
+    setStatus('#note-status','A previous save was not confirmed in this browser. Check the family record, or review this same note to retry safely.');
   }
 } catch {}
+
+await Promise.allSettled([refreshData(),loadSponsorStatus()]);
+
+setInterval(()=>{if(document.visibilityState === 'visible') loadRiverStatus();},20000);

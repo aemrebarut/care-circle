@@ -16,7 +16,7 @@ Open `http://127.0.0.1:4700`. The service binds only to `127.0.0.1:4700`. Start 
 npm test --prefix services/web
 ```
 
-The smoke test uses isolated synthetic upstream replies, checks proxy routing and error handling, and never mutates the running family brain. It also checks a real HTTP round trip through a synthetic stub. Test servers bind only `127.0.0.1:4719` for web and `127.0.0.1:4712` for the stub, and close on completion. These ports are reserved for web smoke; run one instance at a time. Importing `createServer` does not start a listener.
+The suite includes browser-state regression tests in an in-memory DOM, including stale-response protection and reload-safe pending saves. The smoke test uses isolated synthetic upstream replies, checks proxy routing and error handling, and never mutates the running family brain. It also checks a real HTTP round trip through a synthetic stub. Test servers bind only `127.0.0.1:4719` for web and `127.0.0.1:4712` for the stub, and close on completion. These ports are reserved for web smoke; run one instance at a time. Importing `createServer` does not start a listener.
 
 ## Files
 
@@ -45,3 +45,11 @@ The proxy preserves valid upstream error codes and messages. Ingest commit error
 ## Sponsor reality
 
 The web service is a local presentation and transport layer. The brain service owns GBrain persistence. Ingest and River responses identify whether extraction used a deterministic parser or a River model. Metrics are displayed only when the River service reports measured results. Sponsor status, evidence, and limitations identify simulated or local procedures and clinic fetches. The web service performs no training, account creation, telemetry submission, or external sponsor requests.
+
+## Family room flow
+
+The circle and medication table read live HTTP data. A medication row highlights the source for its recorded visit dose and preserves other source records in a disclosure. Discrepancies remain visible until the source record explicitly reconciles them; v1 has no reconciliation workflow. Sources open in a keyboard-accessible dialog.
+
+Use Try the sample note, then Review note. Inspect the extracted claims and warnings before Save to the family brain. A pending save retains its payload and idempotency key in browser session storage across a reload. Confirmed saves clear that pending entry; editing the note starts a new review.
+
+Prepare a visit brief opens the cited structured result. Print brief includes record limitations and source references. Graph traversal JSON is available on screen and excluded from print. River status polls every 20 seconds while the page is visible; corpus counts and training progress are reported separately from verified model evaluation.
