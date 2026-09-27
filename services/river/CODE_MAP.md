@@ -37,3 +37,11 @@ Two later exact-demo samples failed: an invented due date, then invalid JSON und
 No new inference or training. All River paths are committed through a7ae036; the audited experiment and both rejected demo attempts are preserved. Runtime is applying the queued source refresh in its exclusive maintenance window. The River lane is read-only and will verify health, status, and safe extraction refusal after handoff.
 
 Refresh verified after runtime handoff: River PID 15568 served healthy status and safe 503 extraction. Live status shows completed training, audited 71/72 full-task success, extractionMode unavailable, replay null, and both rejected demo attempts. No further remote calls or shared-state mutations.
+
+### 15:55 milestone
+
+GET-only health/status verification passed at the M3 stabilization gate. Mode remains deterministic, replay null, trained full-task exactness 71/72, and both rejected demo attempts are explicit. Implementation is stable; no new capabilities, remote calls, model changes, or service edits are planned. Runtime retains ownership of the running app. QA owns the exclusive two-cycle shared-state window.
+
+### Paused wrap-up
+
+Emre paused the track before the scheduled freeze. All River implementation, testing, milestone work, model calls and service actions are stopped. Native dataset, runner and review workers were notified. The already-started code-map write settled as a committed no-op; no work remains in flight. Runtime-owned services remain running. Product extraction remains unavailable after both rejected samples; any future product work requires explicit resume and a fresh authorized plan. Lead owns docs/NEXT_STEPS.md.
