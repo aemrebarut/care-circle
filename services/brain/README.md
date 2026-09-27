@@ -4,19 +4,11 @@ The sole family GBrain owner. This Node service stores synthetic source pages, t
 
 Care Circle organizes information and cites source records. It never recommends doses or treatments. All people, providers, records, and events are fictional. Not medical advice.
 
-## Run and verify
+## Prerequisites and initialization
 
-```sh
-node services/brain/server.mjs
-npm test --prefix services/brain
-node services/brain/smoke.mjs
-```
+Use Node.js 22 or newer, Bun 1.3.11 or newer, and the real GBrain CLI on PATH. This service was verified with GBrain 0.59. Follow the [official GBrain installation guidance](https://github.com/garrytan/gbrain#install), which installs from `github:garrytan/gbrain`. The npm package named `gbrain` is unrelated. Installing the current GitHub revision does not pin version 0.59; recheck the recovery assumptions below before upgrading an existing setup.
 
-The HTTP listener is fixed at `127.0.0.1:4701`. Coordinate persistent startup and restart with cc-runtime. The service binds before opening storage so a second copy fails before touching GBrain. Startup can take tens of seconds while source pages and links are verified. `/health` returns 503 until recovery finishes. The HTTP smoke is read-only and uses the already running service.
-
-The existing family brain must be initialized separately through `scripts/brain` with embeddings disabled. Before opening a database, the service uses engine-free metadata to require local PGLite inside the dedicated family directory. It checks the exact `embedding_disabled` flag and normally sets `sync.write_through=false`. Native managed import temporarily enables write-through only after verifying that its effective canonical root is inside the dedicated family directory and its active owner is this host, then restores false in a finally block. The import copies source markdown into that existing GBrain content root; it does not alter the world package. It passes only PATH, HOME, and NO_COLOR to the wrapper, without provider credentials or remote storage overrides. It makes no external sponsor submissions or LLM calls.
-
-For a fresh checkout on a machine with GBrain 0.59, run this once from the repository root before starting any service. The wrapper selects `~/Workspace/care-circle-brain/home` as GBRAIN_HOME; GBrain stores its configuration below that directory, not the user's primary brain. These flags were verified against the installed CLI. The existing demo brain was not reinitialized to test this runbook.
+For a fresh checkout with those prerequisites installed, run this once from the repository root before starting any service. The wrapper selects `~/Workspace/care-circle-brain/home` as GBRAIN_HOME; GBrain stores its configuration below that directory, not the user's primary brain. These flags were verified against the installed CLI. The existing demo brain was not reinitialized to test this runbook.
 
 ```sh
 if [ -e "$HOME/Workspace/care-circle-brain" ] || [ -L "$HOME/Workspace/care-circle-brain" ]; then
@@ -28,6 +20,20 @@ fi
 ```
 
 No `--force`, `--db-only`, remote database URL, credentials, source registration, or ownership transfer is needed. The normal PGLite initializer creates a dedicated canonical content owner, which native managed import needs. Never run plain `gbrain` here. After startup, other components use the HTTP API only.
+
+## Run and verify
+
+After initialization, cc-runtime starts the persistent service through the runtime manager. From the repository root:
+
+```sh
+scripts/start brain
+npm test --prefix services/brain
+node services/brain/smoke.mjs
+```
+
+The HTTP listener is fixed at `127.0.0.1:4701`. Coordinate persistent startup and restart with cc-runtime. The service binds before opening storage so a second copy fails before touching GBrain. Startup can take tens of seconds while source pages and links are verified. `/health` returns 503 until recovery finishes. The HTTP smoke is read-only and uses the already running service. For an isolated developer session, `node services/brain/server.mjs` runs in the foreground; coordinate ownership first and run checks from a second terminal.
+
+Before opening a database, the service uses engine-free metadata to require local PGLite inside the dedicated family directory. It checks the exact `embedding_disabled` flag and normally sets `sync.write_through=false`. Native managed import temporarily enables write-through only after verifying that its effective canonical root is inside the dedicated family directory and its active owner is this host, then restores false in a finally block. The import copies source markdown into that existing GBrain content root; it does not alter the world package. It passes only PATH, HOME, and NO_COLOR to the wrapper, without provider credentials or remote storage overrides. It makes no external sponsor submissions or LLM calls.
 
 ## HTTP API
 

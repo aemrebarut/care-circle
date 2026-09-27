@@ -9,7 +9,7 @@ Own the synthetic family's real GBrain database and expose typed source pages, p
 
 # Run
 
-`node services/brain/server.mjs` binds `127.0.0.1:4701`. cc-runtime owns persistent startup, stop, and restart. `npm test --prefix services/brain` runs 38 tests, including an isolated HTTP fixture on port 4719. `node services/brain/smoke.mjs` checks a live service without mutation and waits up to 180 seconds for readiness.
+Follow `README.md` prerequisites and guarded initialization first: Node.js 22+, Bun 1.3.11+, and the real GBrain from its official GitHub project. The verified storage version is GBrain 0.59. cc-runtime owns persistent startup through `scripts/start brain`, stop, and restart. The listener binds `127.0.0.1:4701`. `npm test --prefix services/brain` runs 38 tests, including an isolated HTTP fixture on port 4719. `node services/brain/smoke.mjs` checks a live service without mutation and waits up to 180 seconds for readiness.
 
 # Files
 
