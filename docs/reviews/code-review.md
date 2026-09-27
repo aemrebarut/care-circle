@@ -17,6 +17,7 @@ Read docs/reviews/architecture-safety.md. Inspect relevant owner code and run on
 - docs/reviews/architecture-safety.md: review gates, evidence and verdict.
 - docs/reviews/findings.md: reproducible findings, owner disposition and direct fix verification.
 - docs/reviews/milestones.md: milestone receipts with direct versus owner-reported evidence.
+- docs/reviews/river-structural-repair.md: offline no-go decision and exact invariants for the second demo prediction.
 - docs/reviews/code-review.md: source for this code map page.
 
 ## API
