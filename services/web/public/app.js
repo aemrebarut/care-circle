@@ -48,6 +48,14 @@ function sourceButton(citation, label) {
   return el('button', { type: 'button', class: 'source-button', title: `Open source: ${source.title || titleFor(source.pageId)}`, onClick: () => openSource(source.pageId, source) }, label || source.title || titleFor(source.pageId));
 }
 function citationChips(citations = []) { return el('div', { class: 'source-chips' }, citations.map(citation => sourceButton(citation))); }
+function claimRecords(claims = [], cite = citationChips) {
+  return claims.map(claim => {
+    const citation = {...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId),date:claim.citation?.date || claim.date};
+    const kind = claim.kind || pageById(claim.sourceId)?.type;
+    const label = kind === 'visit' ? 'Visit claim' : kind === 'pharmacy' ? 'Pharmacy claim' : 'Source claim';
+    return el('div',{class:'claim-record'},el('p',{},el('strong',{},claim.dose || 'Dose not recorded'),' ',claim.frequency || '(frequency not recorded)',` · ${label} · ${dateLabel(claim.date || citation.date) || 'Date not recorded'}`),cite([citation]));
+  });
+}
 function evidenceDetails(evidence, title = 'View local evidence') { return el('details', {}, el('summary', {}, title), el('pre', {}, JSON.stringify(evidence, null, 2))); }
 
 async function loadFamily() {
@@ -157,7 +165,7 @@ function renderMedications() {
 }
 function renderAlerts() {
   if (!state.contradictions.length) { replace('#alerts', el('div',{class:'status-good'},el('span',{'aria-hidden':'true'},'✓'),el('p',{},'No unresolved medication source differences were returned. Every new note is checked against the record.'))); return; }
-  replace('#alerts', state.contradictions.map(item=>el('article',{class:'alert-item'},el('h3',{},item.title || 'Medication sources disagree'),el('p',{},item.description || 'These source records show different doses. The difference remains unresolved.'),el('p',{class:'tiny'},'A newer visit does not resolve a different pharmacy record.'),citationChips((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))));
+  replace('#alerts', state.contradictions.map(item=>el('article',{class:'alert-item'},el('h3',{},item.title || 'Medication sources disagree'),el('p',{},item.description || 'These source records show different doses. The difference remains unresolved.'),claimRecords(item.claims),el('p',{class:'tiny'},'A newer visit does not resolve a different pharmacy record.'))));
 }
 
 function sourceInline(text) {
@@ -198,7 +206,7 @@ async function openSource(id, citation) {
 function invalidateNote() { state.pendingSave = false; state.pendingAuthorId = null; try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
 function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').disabled ? state.pendingAuthorId || undefined : $('#note-author').value || undefined,date:'2026-09-27'}; }
 function renderPreview(result) {
-  const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. Nothing has been saved.');
+  const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. This review did not save a note.');
   const warnings = Array.isArray(result.warnings) ? result.warnings : [];
   const preview = $('#note-preview'); preview.hidden = false;
   const list = (items) => el('ul',{},items.map(item=>el('li',{},item)));
@@ -247,7 +255,7 @@ function renderBrief(brief) {
   const citations = new Map();
   const remember = items => { for (const citation of items || []) if (citation?.pageId) citations.set(citation.pageId,citation); return citationChips(items); };
   function section(title, items, emptyText) { return el('section',{class:'brief-section'},el('h3',{},title),items?.length ? items.map(item=>el('div',{class:'brief-item'},el('p',{},item.text),remember(item.citations || []))) : empty(emptyText)); }
-  const content = [el('div',{class:'brief-heading'},el('div',{},el('p',{class:'eyebrow'},'CARE CIRCLE · SYNTHETIC FAMILY RECORD'),el('h2',{id:'brief-title'},brief.title),el('p',{class:'brief-subtitle'},`For ${titleFor(brief.doctorId)} · Changes since ${dateLabel(brief.since) || 'the last recorded visit'}`),el('p',{class:'brief-subtitle'},`Generated ${dateLabel(brief.generatedAt, true)} from the family source graph.`)),el('span',{class:'brand-mark','aria-hidden':'true'},el('i'),el('i'),el('i'))),section('Medication changes in the record',brief.medicationChanges,'No medication changes were returned for this period.'),section('Other visits since the last appointment',brief.otherVisits,'No other visits were returned for this period.'),section('Questions to bring',brief.openQuestions,'No open questions were returned.'),el('section',{class:'brief-section'},el('h3',{},'Unresolved differences between sources'),brief.contradictions?.length ? brief.contradictions.map(item=>el('div',{class:'brief-item brief-conflict'},el('p',{},el('strong',{},item.title),'. ',item.description || 'Different source claims remain unresolved.'),remember((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))) : empty('No unresolved source differences were returned.'))];
+  const content = [el('div',{class:'brief-heading'},el('div',{},el('p',{class:'eyebrow'},'CARE CIRCLE · SYNTHETIC FAMILY RECORD'),el('h2',{id:'brief-title'},brief.title),el('p',{class:'brief-subtitle'},`For ${titleFor(brief.doctorId)} · Changes since ${dateLabel(brief.since) || 'the last recorded visit'}`),el('p',{class:'brief-subtitle'},`Generated ${dateLabel(brief.generatedAt, true)} from the family source graph.`)),el('span',{class:'brand-mark','aria-hidden':'true'},el('i'),el('i'),el('i'))),section('Medication changes in the record',brief.medicationChanges,'No medication changes were returned for this period.'),section('Other visits since the last appointment',brief.otherVisits,'No other visits were returned for this period.'),section('Questions to bring',brief.openQuestions,'No open questions were returned.'),el('section',{class:'brief-section'},el('h3',{},'Unresolved differences between sources'),brief.contradictions?.length ? brief.contradictions.map(item=>el('div',{class:'brief-item brief-conflict'},el('p',{},el('strong',{},item.title),'. ',item.description || 'Different source claims remain unresolved.'),claimRecords(item.claims,remember))) : empty('No unresolved source differences were returned.'))];
   if (brief.warnings?.length) content.push(el('section',{class:'brief-section'},el('h3',{},'Record limitations'),el('div',{class:'warning-box'},brief.warnings.map(warning=>el('p',{},textValue(warning))))));
   content.push(el('div',{class:'print-sources'},el('strong',{},'Source references'),[...citations.values()].map(citation=>el('p',{},`${citation.title || titleFor(citation.pageId)}${citation.date ? ` (${dateLabel(citation.date)})` : ''} [${citation.pageId}]`))),el('p',{class:'brief-footer'},'All data is synthetic. This brief organizes recorded information and questions. A newer visit does not reconcile a different pharmacy claim. Confirm the record with the care team. Not medical advice.'));
   if (brief.traversal) content.push(el('details',{class:'brief-traversal'},el('summary',{},'How the source graph was followed'),el('pre',{},JSON.stringify(brief.traversal,null,2))));

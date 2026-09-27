@@ -167,6 +167,47 @@ test('an unknown save is restored before initial requests settle and retains its
   assert.equal(harness.storage.get(storageKey), JSON.stringify(pending));
 });
 
+test('a malformed review does not deny an earlier unknown save', async () => {
+  const pending = { payload: { note: 'Synthetic pending note.', authorId: 'people/ana-alvarez', date: '2026-09-27' }, key: 'pending-malformed-review' };
+  const harness = createHarness(pending);
+  finishInitial(harness);
+  await harness.boot;
+  const review = harness.document.querySelector('#note-form').dispatch('submit');
+  harness.reply('ingest/extract', { extraction: {}, method: 'deterministic' });
+  await review;
+  const status = harness.document.querySelector('#note-status').textContent;
+  assert.match(status, /This review did not save a note/);
+  assert.match(status, /earlier save is still unconfirmed/);
+  assert.doesNotMatch(status, /Nothing has been saved|family record is unchanged/);
+  assert.equal(harness.storage.get(storageKey), JSON.stringify(pending));
+});
+
+test('the brief preserves each discrepant dose, frequency, date and source for print', async () => {
+  const harness = createHarness();
+  finishInitial(harness);
+  await harness.boot;
+  const preparing = harness.document.querySelector('#generate-brief').dispatch('click');
+  const claims = [
+    { sourceId: 'visits/synthetic-sep27', kind: 'visit', dose: '20 mg', frequency: 'daily', date: '2026-09-27', citation: { pageId: 'visits/synthetic-sep27', title: 'Synthetic cardiology visit', date: '2026-09-27' } },
+    { sourceId: 'pharmacy/synthetic-sep24', kind: 'pharmacy', dose: '10 mg', frequency: 'daily', date: '2026-09-24', citation: { pageId: 'pharmacy/synthetic-sep24', title: 'Synthetic pharmacy fill', date: '2026-09-24' } },
+  ];
+  harness.reply('brief/previsit', { title: 'Synthetic previsit', generatedAt: '2026-09-27', since: '2026-09-15', medicationChanges: [], otherVisits: [], openQuestions: [], contradictions: [{ title: 'Unresolved lisinopril discrepancy', temporalStatus: 'past-discrepancy-unreconciled', description: 'Latest records now agree, but the earlier discrepancy has no source-cited reconciliation.', claims }], warnings: ['Synthetic record limitation.'] });
+  await preparing;
+  const content = harness.document.querySelector('#brief-content');
+  const rows = content.descendants().filter(node => node.className === 'claim-record');
+  assert.equal(rows.length, 2);
+  assert.match(rows[0].textContent, /20 mg daily · Visit claim · Sep 27.*Synthetic cardiology visit/);
+  assert.match(rows[1].textContent, /10 mg daily · Pharmacy claim · Sep 24.*Synthetic pharmacy fill/);
+  assert.match(content.textContent, /Latest records now agree, but the earlier discrepancy has no source-cited reconciliation/);
+  assert.match(content.textContent, /Synthetic record limitation/);
+  const index = content.descendants().find(node => node.className === 'print-sources');
+  for (const claim of claims) assert.ok(index.textContent.includes(`[${claim.sourceId}]`));
+  const opening = rows[1].querySelector('button').dispatch('click');
+  harness.reply(`brain/pages/${encodeURIComponent(claims[1].sourceId)}`, { page: { id: claims[1].sourceId, title: claims[1].citation.title, type: 'pharmacy', fields: {}, body: 'Synthetic pharmacy claim.' } });
+  await opening;
+  assert.match(harness.document.querySelector('#source-content').textContent, /Synthetic pharmacy fill/);
+});
+
 for (const sponsorFailure of [false, true]) {
   test(`late initial sponsor status ${sponsorFailure ? 'failure' : 'success'} preserves newer action evidence`, async () => {
     const harness = createHarness();
