@@ -57,6 +57,8 @@ The v1 demo as-of date is 2026-09-27 in every service. Reject ingest/extract vis
 - `POST /v1/ingest` with `{note,authorId?,date?,idempotencyKey?}` -> extraction response plus `{applied:{ok,visitId,changedPageIds,revision}}`. Calls brain. Default author Ana, default date 2026-09-27. Return upstream errors honestly.
 - River is optional via 4704 `/v1/extract`; fallback must say deterministic and explain limitations.
 
+When a verified actual trained prediction is served from an exact synthetic input cache, response `method` may be `river` only with the explicit warning that this is a cached replay and no live inference occurred. Preserve additive `provenance:{mode:"cached-replay",liveInference:false,model,checkpoint,requestId,sampledAt,inputSha256,promptSha256,outputSha256}` through ingest and web unchanged after validation. Never silently discard that distinction. River status exposes `extractionMode:"cached-replay"` only when such an artifact is verified and available. Unknown inputs fall back or fail explicitly; no arbitrary pasted note is sent remotely. A model response containing unsupported source facts is rejected, including an inferred follow-up date.
+
 Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.`
 
 ## Brief API, 4703
