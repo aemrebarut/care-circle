@@ -1,0 +1,118 @@
+{
+  "mode": "official-sdk-local-tool-proof",
+  "observedAt": "2026-09-27T22:36:13.633025+00:00",
+  "pythonVersion": "3.14.7",
+  "sdk": {
+    "distribution": "ufo",
+    "version": "0.1.0",
+    "commit": "63ba388ed449ff46c9d70744119dffc85df0fbf8",
+    "sourceUrl": "https://github.com/ufo-ai/ufo-core/archive/63ba388ed449ff46c9d70744119dffc85df0fbf8.tar.gz"
+  },
+  "officialSdkRegistration": true,
+  "registrationMethod": "Installed Python entry-point discovery, official Manifest/ToolDef construction and official tool schema generation",
+  "officialSdkToolInvocation": true,
+  "invocationMethod": "Direct SDK ToolDef handler call; no runtime dispatcher or model",
+  "transportMode": "real-loopback-http",
+  "context": "None; handler does not inspect runtime context or credentials",
+  "officialUfoExecution": false,
+  "hostedExecution": false,
+  "fullRuntimeExecution": false,
+  "modelCalls": 0,
+  "accountsCreated": 0,
+  "telemetrySubmitted": false,
+  "networkPolicy": "Only literal 127.0.0.1:4705 allowed",
+  "inheritedEnvironment": false,
+  "deniedOperationAttempts": 1,
+  "blockedCapabilityProbes": [
+    {
+      "library": "urllib3",
+      "probe": "IPv6 availability",
+      "target": "[::1]:0",
+      "bindPrevented": true
+    }
+  ],
+  "allowedNetworkOperations": [
+    {
+      "event": "socket.getaddrinfo",
+      "host": "127.0.0.1",
+      "port": 4705
+    },
+    {
+      "event": "socket.connect",
+      "host": "127.0.0.1",
+      "port": 4705
+    }
+  ],
+  "unexpectedProhibitedOperations": 0,
+  "checks": [
+    "entry-point",
+    "pinned-sdk",
+    "manifest",
+    "tool-schema",
+    "empty-input",
+    "typed-result",
+    "typed-failure"
+  ],
+  "result": {
+    "clinic": {
+      "name": "Maple Harbor Family Clinic (fictional)",
+      "hours": "Monday-Friday 8:00 AM-5:00 PM; Saturday-Sunday closed",
+      "phone": "+1 (415) 555-0142",
+      "address": "100 Example Lane, Demo City, CA 00000"
+    },
+    "sourceUrl": "http://127.0.0.1:4706/",
+    "fetchedAt": "2026-09-27T22:36:13.629Z",
+    "mode": "local-http-fetch",
+    "evidence": {
+      "synthetic": true,
+      "officialUfoExecution": false,
+      "browserExecuted": false,
+      "request": {
+        "method": "GET",
+        "url": "http://127.0.0.1:4706/",
+        "startedAt": "2026-09-27T22:36:13.628Z",
+        "redirectsAllowed": false,
+        "timeoutMs": 3000
+      },
+      "response": {
+        "status": 200,
+        "bytes": 3135,
+        "sha256": "acd6313c7a88fd9d84d8b710817786a3771b8134a81eac774a1aef969c5ef710",
+        "fixtureMatched": true,
+        "fixtureId": "care-circle-clinic-v1"
+      },
+      "extraction": {
+        "method": "embedded-json",
+        "selector": "#care-circle-directory",
+        "fields": [
+          {
+            "field": "name",
+            "selector": "#clinic-name",
+            "value": "Maple Harbor Family Clinic (fictional)"
+          },
+          {
+            "field": "hours",
+            "selector": "#clinic-hours",
+            "value": "Monday-Friday 8:00 AM-5:00 PM; Saturday-Sunday closed"
+          },
+          {
+            "field": "phone",
+            "selector": "#clinic-phone",
+            "value": "+1 (415) 555-0142"
+          },
+          {
+            "field": "address",
+            "selector": "#clinic-address",
+            "value": "100 Example Lane, Demo City, CA 00000"
+          }
+        ]
+      },
+      "pharmacy": {
+        "name": "Demo Circle Pharmacy (fictional)",
+        "hours": "Monday-Friday 9:00 AM-6:00 PM; Saturday 10:00 AM-2:00 PM; Sunday closed",
+        "phone": "+1 (415) 555-0189",
+        "address": "102 Example Lane, Demo City, CA 00000"
+      }
+    }
+  }
+}

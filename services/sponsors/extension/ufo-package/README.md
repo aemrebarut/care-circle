@@ -21,7 +21,13 @@ Run `python3 smoke_transport.py` for dependency-free transport tests. Run `pytho
 
 The proof distinguishes `officialSdkRegistration` and `officialSdkToolInvocation` from `officialUfoExecution`, which stays false. Direct handler testing does not execute UFO's full runtime dispatcher, grant system or model loop. The context is `None` because this tool never accesses it.
 
-After the parent explicitly releases the shared QA window, `python3 smoke_sdk.py --live` can verify that same SDK handler against the real local sponsor endpoint. This opt-in proof permits only `127.0.0.1:4705`, and writes `evidence/sdk-live.json`. Do not run it during a reserved QA window. It still creates no account, model call or full UFO runtime session.
+## Verified local SDK invocation
+
+The parent ran `python3 smoke_sdk.py --live` once at 2026-09-27 22:36:13 UTC during runtime window `cc-runtime-local-proofs-20260927-1535`. The committed [live receipt](evidence/sdk-live.json) records installed SDK registration and a direct SDK handler invocation using real loopback HTTP. It made one fixed `POST /v1/clinic/fetch` to 127.0.0.1:4705; the sponsor service fetched its synthetic page at 127.0.0.1:4706. The observed clinic fields, 3135 response bytes and SHA256 match the authored page. The returned source remains labeled `local-http-fetch`.
+
+This is actual SDK type/schema/handler execution with a real local source. `officialUfoExecution`, `fullRuntimeExecution` and `hostedExecution` remain false. No model, account, remote telemetry, browser action or full runtime dispatcher was used. The audit receipt records one allowed loopback connection and the prevented urllib3 IPv6 capability probe.
+
+Any repeat of `python3 smoke_sdk.py --live` requires another explicitly released runtime/QA window. The opt-in command permits only `127.0.0.1:4705` and replaces the live receipt. Do not rerun it during a reserved QA window.
 
 ## Runtime behavior
 
