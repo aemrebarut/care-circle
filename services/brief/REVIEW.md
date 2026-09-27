@@ -31,3 +31,7 @@ The independent QA lane reports its first full HTTP acceptance cycle passed 32/3
 ## M2 print review
 
 QA reports actual Chromium print output of one A4 page, visually inspected with no overflow. The first UI renderer omitted the conflicting dose values despite their presence in backend JSON and Markdown. Web owns and fixed that issue in 45a2295, including dose, frequency, source, date and past-discrepancy wording. A read-only reprint after runtime maintenance remains pending. No backend compaction or service change was needed.
+
+## M3 corrected print receipt
+
+QA root inspected the corrected print receipt, PDF page count and rendered page, reporting a pass: one A4 page, both dose/frequency/date/source rows, eight rendered source references and the footer, with no clipping. This is an independent reported visual receipt; the brief lane did not control the shared browser. The backend Markdown retains its nine-entry source list, including its doctor-baseline citation. No brief code change or process restart was needed. Final consecutive acceptance cycles remain with runtime and QA.
