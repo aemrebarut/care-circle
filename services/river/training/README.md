@@ -55,3 +55,21 @@ Sampling text is evidence, not trusted structured data. The parent service's eva
 Bounds: 300 seconds per operation, 2700 seconds for the run, at most 6000 SDK result polls, and zero submission retries. SDK polling and heartbeats are transport calls in addition to the manifest's semantic submission counts. A Unix process alarm covers SDK cleanup as well as training. It records a failure at the deadline and permits 60 seconds of cleanup before exiting that process. The runner binds no network port. Startup of a local service cannot trigger training.
 
 Prepared token files, tokenizer caches, raw run files, and credentials are excluded from git. Curated synthetic manifests, aggregate results, and safe receipts may be copied by the owning River lane into its result artifacts after review.
+
+## Fixed demo checkpoint sample
+
+`demo.py` is a separate opt-in tool for the exact synthetic cardiology note in the shared contract, with Ana and date 2026-09-27. It has no arbitrary note, author, date, model, checkpoint, or generation-setting option. It requires the frozen paired experiment to be completed, verifies its prediction hashes, and reuses its prompt template and settings. It performs no training, test tuning, or deployment.
+
+```sh
+services/river/.venv/bin/python services/river/training/demo.py prepare \
+  --paired-run services/river/training/runs/experiment-1 \
+  --output services/river/training/demo-prepared
+services/river/.venv/bin/python services/river/training/demo.py run \
+  --plan-directory services/river/training/demo-prepared \
+  --plan-sha256 REVIEWED_DEMO_PLAN_DIGEST \
+  --paired-run services/river/training/runs/experiment-1 \
+  --output services/river/training/demo-runs/first \
+  --submit --load-authorized-key
+```
+
+Preparation is local only and writes `payload.json`, `plan.json`, and `plan.sha256`. Execution creates one session and submits exactly one checkpoint sample, with bounded result polling and no submission retry. It writes `prediction.json` containing the raw output, fixed input, provenance hashes, model/checkpoint, generation settings, seed, request/session IDs, sample time, and `validationStatus: "unvalidated-raw"`. The parent validates the output before publishing an exact-input cache. A cache hit must be described as a replay of the recorded River sample, never as a fresh request or general live inference. Other input receives an unavailable response so the existing fallback can take over. Demo progress stays separate from completed training status.

@@ -4,3 +4,5 @@ artifacts/
 capabilities.json
 tokenizer-cache/
 .tmp/
+demo-prepared/
+demo-runs/
