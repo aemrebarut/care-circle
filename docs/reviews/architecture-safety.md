@@ -4,6 +4,8 @@ Owner: cc-review. Scope: docs/reviews/ only. Date: 2026-09-27.
 
 ## Current verdict
 
+Paused by Emre on September 27 at 15:56 Pacific. Reviewers are stopped and services are left running. Resume requires explicit instruction. The unfinished acceptance gate below must not be treated as passed.
+
 All R1 through R16 findings are closed. R1 through R13, R15 and R16 are fixed and verified; R14 is closed by removal of the unshipped River cache path. Lead rejected structural repair and content normalization. Product extraction remains deterministic and the benchmark is unchanged. Runtime maintenance equality, local sponsor receipts and the corrected one-page print have passed review. The first full QA cycle passed 32 checks. Two consecutive final reset-to-demo cycles remain the release gate, so this is not final release sign-off.
 
 The root README accurately describes the reviewed River comparison: 72/72 structured extractions and 71/72 full tasks for the trained checkpoint, versus 0/72 strict base outputs with 54/72 reaching the token cap. Raw completion mode, the fixed synthetic benchmark, and lack of clinical or general capability evidence are disclosed. The two failed demo predictions are not part of that score. Official Memorable local recall selected a Care Circle serialized capture for simulated replay; official trace learning did not run. The official UFO SDK direct handler ran against fixed loopback HTTP, without full runtime or hosted execution.
