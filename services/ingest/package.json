@@ -8,7 +8,8 @@
     "start": "node server.mjs",
     "test": "node --test test/*.test.mjs",
     "smoke": "node smoke.mjs",
-    "verify:commit": "node verify-commit.mjs"
+    "verify:commit": "node verify-commit.mjs",
+    "verify:retry": "node verify-retry.mjs"
   },
   "engines": { "node": ">=22" }
 }

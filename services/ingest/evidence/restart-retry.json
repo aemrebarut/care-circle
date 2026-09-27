@@ -1,0 +1,60 @@
+{
+  "ok": true,
+  "check": "same key and payload after runtime brain restart",
+  "unchangedState": true,
+  "originalVisitId": "visits/ingest-70c7a8a9face7c4158c7be49",
+  "originalRevision": 2,
+  "input": {
+    "note": "Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.",
+    "authorId": "people/ana-alvarez",
+    "date": "2026-09-27"
+  },
+  "retry": {
+    "extraction": {
+      "visit": {
+        "date": "2026-09-27",
+        "doctorId": "doctors/cardiologist",
+        "attendeeIds": [
+          "people/ana-alvarez"
+        ],
+        "summary": "Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck."
+      },
+      "medicationChanges": [
+        {
+          "medicationId": "medications/lisinopril",
+          "name": "lisinopril",
+          "dose": "20 mg",
+          "frequency": "daily"
+        }
+      ],
+      "questions": [
+        {
+          "doctorId": "doctors/nephrologist",
+          "text": "Ask the nephrologist about the potassium recheck."
+        }
+      ],
+      "followUps": [
+        {
+          "text": "Wants potassium rechecked before nephrology Tuesday."
+        }
+      ]
+    },
+    "method": "deterministic",
+    "warnings": [
+      "Deterministic extraction recognizes a limited set of explicit synthetic note patterns. It does not interpret clinical meaning or recommend treatment.",
+      "Relative follow-up wording is preserved verbatim; no due date was inferred."
+    ],
+    "applied": {
+      "changedPageIds": [
+        "visits/ingest-70c7a8a9face7c4158c7be49",
+        "doctors/cardiologist",
+        "medications/lisinopril",
+        "questions/ingest-70c7a8a9face7c4158c7be49-1"
+      ],
+      "ok": true,
+      "revision": 2,
+      "visitId": "visits/ingest-70c7a8a9face7c4158c7be49"
+    },
+    "idempotencyKey": "ingest-v1:a6b6df1bab141278f3212cf34ef88d3a3727ee389d2cf9ac3b8a27b2fdf040da"
+  }
+}

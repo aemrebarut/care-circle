@@ -28,6 +28,8 @@ Track review independently reported all then-current extractor cases passing, in
 
 The persistent service is owned by cc-runtime. Its read-only health/extraction smoke passed. The first coordinated live mutation passed after runtime proved baseline persistence across a brain restart. `npm --prefix services/ingest run verify:commit` submitted the canonical note twice, received the same revision 2 and visit ID `visits/ingest-70c7a8a9face7c4158c7be49`, and verified exactly one visit and one new claim. The full note, author, attendance, potassium wording, nephrology question and source citation survived. The earlier 10 mg claim remained. Receipt: `evidence/first-commit.json`. No reset was performed. The mutation window was released to runtime and QA, with source state intact for an independent read-only audit.
 
+After runtime verified the committed revision 2 state survived another brain restart, `npm --prefix services/ingest run verify:retry` passed with the original visit ID, revision, exact canonical request key and Extraction. Full HTTP state before and after that retry was deeply equal. `evidence/canonical-request.json` preserves the input and key; `evidence/restart-retry.json` preserves the returned response. The first script checked full applied receipt equality within the original process; the saved original receipt was a summary, so the restart check claims original identifiers/revision and unchanged state rather than full original applied-object equality. Runtime and QA received the final RELEASE.
+
 Full repeated reset-to-demo evidence belongs to runtime and QA; this lane does not claim it from the narrower write-and-retry check.
 
 ## Limits

@@ -15,7 +15,7 @@ Turn supported synthetic visit notes into exact contract Extraction objects and 
 
 ## Files
 
-`services/ingest/extract.mjs`, `server.mjs`, `smoke.mjs`, `verify-commit.mjs`, `REVIEW.md`, `evidence/first-commit.json`, `test/extract.test.mjs`, `test/http.test.mjs`, `package.json`, `README.md`, and `CODEMAP.md`.
+`services/ingest/extract.mjs`, `server.mjs`, `smoke.mjs`, `verify-commit.mjs`, `verify-retry.mjs`, `REVIEW.md`, `evidence/`, `test/extract.test.mjs`, `test/http.test.mjs`, `package.json`, `README.md`, and `CODEMAP.md`.
 
 ## API
 
@@ -37,3 +37,6 @@ M1: 53 unit and HTTP tests pass. Exact demo extraction, scoped attendees, contex
 
 
 M1 live integration: runtime baseline survived a real GBrain restart, then the reserved canonical ingest and identical retry passed at revision 2 with visit visits/ingest-70c7a8a9face7c4158c7be49. Exactly one source visit and one new 20 mg claim; original 10 mg retained. Original note, author, attendance, pending potassium wording, question and citation all verified over HTTP. No reset performed. Mutation window released to runtime and QA with source intact for independent audit. Latest implementation commits: ab0b640, 48fa839, 291d739; verification script a6fbaeb.
+
+
+M1 durability follow-up: runtime proved revision 2, 32 pages and 132 edges survived a second brain restart. `npm --prefix services/ingest run verify:retry` then returned the original canonical visit ID and revision with the same key/payload; exact before/after HTTP state remained equal. The canonical request and full retry response are retained under services/ingest/evidence/. The original full applied object was compared within the first run but only a summary was initially saved; the restart proof asserts identifiers, revision and unchanged state honestly. Final RELEASE sent to runtime/QA.

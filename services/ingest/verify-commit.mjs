@@ -1,6 +1,7 @@
 // Explicit integration check. This writes the canonical synthetic demo note to
 // the shared brain through ingest. Coordinate the mutation window with runtime.
 import assert from 'node:assert/strict';
+import { writeFile } from 'node:fs/promises';
 import { DEMO_NOTE, DEMO_DATE, IDS, HOST, PORTS } from '../../contract/index.mjs';
 
 async function request(port, path, body) {
@@ -48,6 +49,7 @@ assert.ok(medication);
 assert.equal(medication.claims.filter(claim => claim.sourceId === visit.id && claim.dose === '20 mg' && claim.frequency === 'daily').length, 1);
 assert.ok(medication.claims.some(claim => claim.dose === '10 mg'), 'older source claim must survive');
 assert.ok(medication.citations.some(citation => citation.pageId === visit.id), 'new claim must resolve to a source citation');
+await writeFile(new URL('./evidence/latest-commit.json', import.meta.url), `${JSON.stringify({ input, first, retry }, null, 2)}\n`);
 console.log(JSON.stringify({
   ok: true,
   check: 'canonical committed ingest plus exact retry',

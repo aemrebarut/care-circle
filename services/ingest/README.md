@@ -14,7 +14,7 @@ node services/ingest/smoke.mjs
 
 The server binds only `127.0.0.1:4702`. Runtime owns the persistent process. No packages or credentials are required. `npm test` starts short-lived test servers only on reserved port 4713 and mocks upstream responses in memory. The smoke script checks live health and extraction without writing to brain.
 
-For a coordinated live write check, run `npm --prefix services/ingest run verify:commit`. It submits the exact synthetic demo note and an identical retry, then checks the durable source, author, attendance, question, source citation and preserved 10 mg claim over HTTP. It performs no reset. Coordinate the shared mutation window with runtime and QA before running it.
+For a coordinated live write check, run `npm --prefix services/ingest run verify:commit`. It submits the exact synthetic demo note and an identical retry, then checks the durable source, author, attendance, question, source citation and preserved 10 mg claim over HTTP. It performs no reset. Coordinate the shared mutation window with runtime and QA before running it. It saves full responses in `evidence/latest-commit.json`. The dedicated `npm --prefix services/ingest run verify:retry` replays the preserved first-demo key after a coordinated brain restart, checks original visit/revision and exact unchanged state, and writes `evidence/restart-retry.json`.
 
 ## API
 
