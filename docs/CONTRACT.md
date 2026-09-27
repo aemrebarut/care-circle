@@ -76,7 +76,7 @@ Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg da
 - `POST /v1/procedure/replay` with `{procedureId?,actorId?}` -> `{procedureId,actorId,steps,result,mode,evidence}`. Distinct sibling replay.
 - `POST /v1/clinic/fetch` with `{}` -> `{clinic:{name,hours,phone,address?},sourceUrl,fetchedAt,mode,evidence}`. Fetch only allowlisted 127.0.0.1:4706 site. Actual browser trace if feasible. No real clinic scraping. UFO extension assets may be prepared; do not claim official extension execution unless verified.
 - `POST /v1/reset` with `{}` -> `{ok:true}` clears ephemeral local procedure captures and replay state for repeatable demos.
-- 4706 `GET /` synthetic clinic website and `/health`. Clinic and pharmacy details visibly fictional. External sponsor SDK interactions remain gated on approval.
+- 4706 `GET /` synthetic clinic website and `/health` returning `{ok:true,service:"sponsors-clinic"}`. The 4705 health identity is `sponsors`. Clinic and pharmacy details are visibly fictional. External sponsor SDK interactions remain gated on approval.
 
 ## Web, runtime, and acceptance
 
