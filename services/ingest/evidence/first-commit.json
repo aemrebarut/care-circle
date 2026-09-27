@@ -1,0 +1,17 @@
+{
+  "date": "2026-09-27",
+  "command": "npm --prefix services/ingest run verify:commit",
+  "codeCommit": "a6fbaeb",
+  "ok": true,
+  "check": "canonical committed ingest plus exact retry",
+  "visitId": "visits/ingest-70c7a8a9face7c4158c7be49",
+  "revision": 2,
+  "method": "deterministic",
+  "sourcePreserved": true,
+  "duplicateVisits": 0,
+  "duplicateClaims": 0,
+  "earlierDosePreserved": true,
+  "questionSourcePreserved": true,
+  "noResetPerformed": true,
+  "mutationWindowReleased": true
+}
