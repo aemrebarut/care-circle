@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "synthetic": true,
+  "referenceDate": "2026-09-27",
+  "sources": [
+    {
+      "id": "procedure-fixtures/member",
+      "title": "Fictional family coverage card",
+      "date": "2026-09-27",
+      "text": "Synthetic Rose Alvarez has demo member ID SYNTHETIC-ROSE-001 on the Demo Family Health Plan. Ana, Ben and Celia are authorized representatives in this fictional scenario only.",
+      "data": {
+        "patientId": "people/rose-alvarez",
+        "memberId": "SYNTHETIC-ROSE-001",
+        "planId": "SYNTHETIC-FAMILY-PLAN",
+        "planName": "Demo Family Health Plan",
+        "representativeIds": ["people/ana-alvarez", "people/ben-alvarez", "people/celia-alvarez"]
+      }
+    },
+    {
+      "id": "procedure-fixtures/request",
+      "title": "Fictional prior-authorization request",
+      "date": "2026-09-27",
+      "text": "This local September 27 rehearsal concerns fictional case DEMO-PA-2026-0918 for nephrology follow-up referral authorization. It uses document stubs DEMO-REFERRAL and DEMO-COVER-SHEET with no clinical recommendation. It does not update the earlier September 18 or September 22 insurer call records, submit a new request, or imply approval or guaranteed coverage.",
+      "data": {
+        "requestId": "DEMO-PA-2026-0918",
+        "serviceCode": "DEMO-NEPHROLOGY-FOLLOWUP",
+        "serviceDescription": "Nephrology follow-up referral authorization administrative rehearsal",
+        "documentIds": ["DEMO-REFERRAL", "DEMO-COVER-SHEET"]
+      }
+    },
+    {
+      "id": "procedure-fixtures/requirements",
+      "title": "Fictional insurer procedure card",
+      "date": "2026-09-27",
+      "text": "For this synthetic exercise, gather the member ID, request ID, referral and cover sheet. Rehearse a submission locally and record a follow-up question after two demo business days. No insurer receives the packet and no coverage decision is made.",
+      "data": {
+        "requiredFields": ["memberId", "requestId", "documentIds"],
+        "requiredDocumentIds": ["DEMO-REFERRAL", "DEMO-COVER-SHEET"],
+        "followUpAfterDemoBusinessDays": 2,
+        "followUpQuestion": "Ask the fictional insurer whether any administrative documents are missing."
+      }
+    }
+  ]
+}

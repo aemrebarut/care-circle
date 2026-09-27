@@ -1,0 +1,40 @@
+# Synthetic procedure capture and replay
+
+This component records a deterministic local administrative prior-authorization rehearsal. Ana captures a six-step tool trace and Ben reuses the recorded procedure. Each run includes tool inputs, outputs, preconditions, postconditions, fixture excerpts and SHA-256 evidence. All people, documents, insurer details and results are synthetic. Execution is a simulation: no insurer is contacted and no coverage decision is made. Not medical advice.
+
+The working path is implemented by Care Circle. It has not been learned, extracted or replayed by Memorable. Captures live only in the sponsor process memory and are cleared on reset or restart. The parent sponsor service owns HTTP, health checks and port 4705. This package opens no sockets and requires no dependency install.
+
+The September 27 local rehearsal uses the synthetic world's Demo Family Health Plan case `DEMO-PA-2026-0918`, a nephrology follow-up referral authorization. It does not change the September 18 or September 22 insurer call pages, their historical statuses, or any family brain record. The simulated pending-review status describes only this new local rehearsal, not a claim about the insurer's current state.
+
+## Run
+
+```sh
+npm --prefix services/sponsors/procedure test
+node services/sponsors/procedure/export.mjs
+```
+
+The export command prints a synthetic, unsent review artifact to standard output. It does not read a credential or perform a network operation.
+
+## API
+
+- `capture({actorId?}={})` returns `{procedureId,steps,mode,evidence}`. Default actor is `people/ana-alvarez`.
+- `replay({procedureId?,actorId?}={})` returns `{procedureId,actorId,steps,result,mode,evidence}`. Defaults to the latest capture and `people/ben-alvarez`. Capture is required first; replay must use a different sibling.
+- `getMemorablePayload({procedureId?}={})` returns the documented extraction body under `payload`, together with explicit unsent review metadata. Defaults to the latest capture.
+- `reset()` returns `{ok:true}` and clears only this process's procedure state.
+- `getStatus()` returns local mode, limitations, capture/replay counts and sponsor truth labels.
+
+Allowed actors are Ana, Ben and Celia's stable `people/<name>-alvarez` IDs. Unknown fields, invalid actors and invalid procedure IDs are rejected. Errors have integer `status` and string `code` for the parent HTTP service. The mode is always `local-simulation`; export mode is `local-export-only`.
+
+Each step is `{index,tool,input,output,sourceIds,precondition,postcondition,status}`. The plan reads a fictional member record, reads a request, reads requirements, assembles a synthetic packet, simulates submission and records an administrative follow-up question. Only fixed internal tools can run. Input cannot supply tools, commands, source URLs or documents.
+
+`evidence.sourceGrounding` resolves every step's fixture source ID to an exact excerpt and hash. These are local component fixtures, not claims read from GBrain. Identical inputs and reset state produce identical IDs and outputs. Replay evidence links back to the capture trace while replacing actor-dependent inputs. Returning cloned data prevents callers from mutating stored procedures.
+
+## Memorable adapter reality
+
+The [official Memorable documentation](https://www.memorable.sh/doc), checked on 2026-09-27, describes `POST /v1/extract` at `https://memorable-extraction-api.memorable.workers.dev`. Its example sends `session_id`, `task_description`, `harness`, and `tool_calls` containing `name`, `input`, and `result`. It uses the variable name `MEMORABLE_API_KEY` for authorization and returns a `draft` plus `request_id`.
+
+`memorable-adapter.mjs` maps the synthetic capture to that example format. Custom tool interpretation and response compatibility are unverified because no request has been sent. `submitMemorable()` always throws `EXTERNAL_SUBMISSION_NOT_AUTHORIZED`, including if arguments claim consent. The artifact identifies the intended endpoint but contains no executable upload path. No account, login, hook installation, credential access, telemetry, remote extraction or Memorable storage has run.
+
+The exact proposed request is committed at `assets/memorable-request.json`. `assets/manifest.json` records its SHA-256, byte count, endpoint and review status. `assets/capture-trace.json` and `assets/replay-trace.json` show the complete local evidence. Tests verify these assets against the current deterministic implementation. Run `npm --prefix services/sponsors/procedure run build:assets` after intentionally changing the local fixtures or procedure. This regeneration writes only these local assets and never submits them.
+
+Before a future real integration, cc-lead must record explicit Emre approval for the exact synthetic payload and credential use. The approved implementation would need to handle the real extraction response, validate its schema, preserve trace provenance and store it through the brain service's loopback API. This component never opens the family GBrain directly.

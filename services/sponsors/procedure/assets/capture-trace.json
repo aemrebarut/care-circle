@@ -1,0 +1,198 @@
+{
+  "procedureId": "procedures/prior-auth-ac05bd02d982ad07be10",
+  "steps": [
+    {
+      "index": 1,
+      "tool": "read_synthetic_member",
+      "precondition": "Known fictional family representative",
+      "postcondition": "Synthetic member ID and plan read",
+      "sourceIds": [
+        "procedure-fixtures/member"
+      ],
+      "input": {
+        "patientId": "people/rose-alvarez",
+        "actorId": "people/ana-alvarez"
+      },
+      "output": {
+        "patientId": "people/rose-alvarez",
+        "memberId": "SYNTHETIC-ROSE-001",
+        "planId": "SYNTHETIC-FAMILY-PLAN",
+        "planName": "Demo Family Health Plan",
+        "representativeIds": [
+          "people/ana-alvarez",
+          "people/ben-alvarez",
+          "people/celia-alvarez"
+        ],
+        "authorizedRepresentative": true,
+        "synthetic": true
+      },
+      "status": "completed-in-simulation"
+    },
+    {
+      "index": 2,
+      "tool": "read_synthetic_request",
+      "precondition": "Member read",
+      "postcondition": "Administrative request and supplied documents read",
+      "sourceIds": [
+        "procedure-fixtures/request"
+      ],
+      "input": {
+        "patientId": "people/rose-alvarez",
+        "requestId": "DEMO-PA-2026-0918"
+      },
+      "output": {
+        "requestId": "DEMO-PA-2026-0918",
+        "serviceCode": "DEMO-NEPHROLOGY-FOLLOWUP",
+        "serviceDescription": "Nephrology follow-up referral authorization administrative rehearsal",
+        "documentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ],
+        "synthetic": true
+      },
+      "status": "completed-in-simulation"
+    },
+    {
+      "index": 3,
+      "tool": "read_synthetic_requirements",
+      "precondition": "Request and plan read",
+      "postcondition": "Required fields and documents identified",
+      "sourceIds": [
+        "procedure-fixtures/requirements"
+      ],
+      "input": {
+        "planId": "SYNTHETIC-FAMILY-PLAN",
+        "serviceCode": "DEMO-NEPHROLOGY-FOLLOWUP"
+      },
+      "output": {
+        "requiredFields": [
+          "memberId",
+          "requestId",
+          "documentIds"
+        ],
+        "requiredDocumentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ],
+        "followUpAfterDemoBusinessDays": 2,
+        "followUpQuestion": "Ask the fictional insurer whether any administrative documents are missing.",
+        "synthetic": true
+      },
+      "status": "completed-in-simulation"
+    },
+    {
+      "index": 4,
+      "tool": "assemble_synthetic_packet",
+      "precondition": "Required fields and documents available",
+      "postcondition": "Packet complete for local rehearsal",
+      "sourceIds": [
+        "procedure-fixtures/member",
+        "procedure-fixtures/request",
+        "procedure-fixtures/requirements"
+      ],
+      "input": {
+        "memberId": "SYNTHETIC-ROSE-001",
+        "requestId": "DEMO-PA-2026-0918",
+        "documentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ]
+      },
+      "output": {
+        "packetId": "SYNTHETIC-PACKET-5ccd7ea03a6d",
+        "complete": true,
+        "synthetic": true,
+        "submittedToInsurer": false
+      },
+      "status": "completed-in-simulation"
+    },
+    {
+      "index": 5,
+      "tool": "simulate_prior_auth_submission",
+      "precondition": "Complete synthetic packet",
+      "postcondition": "Simulated pending-review reference created; no insurer contacted",
+      "sourceIds": [
+        "procedure-fixtures/requirements"
+      ],
+      "input": {
+        "packetId": "SYNTHETIC-PACKET-5ccd7ea03a6d",
+        "actorId": "people/ana-alvarez",
+        "simulation": true
+      },
+      "output": {
+        "reference": "SIM-PA-1aec9bacd0fc",
+        "status": "simulated-pending-review",
+        "simulation": true,
+        "submittedToInsurer": false,
+        "externalRequests": 0
+      },
+      "status": "completed-in-simulation"
+    },
+    {
+      "index": 6,
+      "tool": "record_synthetic_followup",
+      "precondition": "Simulated reference available",
+      "postcondition": "Administrative follow-up question recorded in replay result",
+      "sourceIds": [
+        "procedure-fixtures/requirements"
+      ],
+      "input": {
+        "reference": "SIM-PA-1aec9bacd0fc",
+        "actorId": "people/ana-alvarez"
+      },
+      "output": {
+        "afterDemoBusinessDays": 2,
+        "question": "Ask the fictional insurer whether any administrative documents are missing.",
+        "storage": "local-result-only",
+        "simulation": true
+      },
+      "status": "completed-in-simulation"
+    }
+  ],
+  "mode": "local-simulation",
+  "evidence": {
+    "traceId": "trace-12aed992150dad245f3b8778",
+    "traceSha256": "12aed992150dad245f3b8778d83056059399e221b4be71b1ce7c13de3583d1c7",
+    "capturedBy": "people/ana-alvarez",
+    "executedBy": "people/ana-alvarez",
+    "phase": "capture",
+    "execution": "deterministic-local-tool-simulation",
+    "synthetic": true,
+    "simulation": true,
+    "externalRequests": 0,
+    "memorableExecuted": false,
+    "insurerContacted": false,
+    "sourceGrounding": [
+      {
+        "sourceId": "procedure-fixtures/member",
+        "sourceType": "local-synthetic-fixture",
+        "title": "Fictional family coverage card",
+        "date": "2026-09-27",
+        "quote": "Synthetic Rose Alvarez has demo member ID SYNTHETIC-ROSE-001 on the Demo Family Health Plan. Ana, Ben and Celia are authorized representatives in this fictional scenario only.",
+        "sha256": "ecf290b80d775cf1d44fa46d987cf7125fd463f04acd620bf1af8634bb099e5d"
+      },
+      {
+        "sourceId": "procedure-fixtures/request",
+        "sourceType": "local-synthetic-fixture",
+        "title": "Fictional prior-authorization request",
+        "date": "2026-09-27",
+        "quote": "This local September 27 rehearsal concerns fictional case DEMO-PA-2026-0918 for nephrology follow-up referral authorization. It uses document stubs DEMO-REFERRAL and DEMO-COVER-SHEET with no clinical recommendation. It does not update the earlier September 18 or September 22 insurer call records, submit a new request, or imply approval or guaranteed coverage.",
+        "sha256": "f0585821e3e01fa6ff235db45cbec6a0c565011de0890960723fbabec1a3ee26"
+      },
+      {
+        "sourceId": "procedure-fixtures/requirements",
+        "sourceType": "local-synthetic-fixture",
+        "title": "Fictional insurer procedure card",
+        "date": "2026-09-27",
+        "quote": "For this synthetic exercise, gather the member ID, request ID, referral and cover sheet. Rehearse a submission locally and record a follow-up question after two demo business days. No insurer receives the packet and no coverage decision is made.",
+        "sha256": "83c06a443fb961bcdfdcc647ca7996d87e1208f5826f4178f4447175878c31da"
+      }
+    ],
+    "fixtureSha256": "e2d97c80285186eb7ae07f1859da1105de549f817cd9bafa6881f5285cd269cf",
+    "planSha256": "2210c1cb25d630a28c662a36fc008ca71fc6730117e350363a065e13bbae6eed",
+    "referenceDate": "2026-09-27",
+    "procedureReuse": false,
+    "recordedToolCount": 6,
+    "truthLabel": "Local simulation. No Memorable extraction or insurer submission has run."
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "name": "@care-circle/procedure",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic prior-authorization rehearsal and local Memorable trace export",
+  "exports": "./index.mjs",
+  "scripts": {
+    "test": "node --test test.mjs",
+    "export": "node export.mjs",
+    "build:assets": "node build-assets.mjs"
+  },
+  "engines": { "node": ">=22" }
+}

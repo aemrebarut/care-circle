@@ -1,0 +1,110 @@
+{
+  "session_id": "trace-12aed992150dad245f3b8778",
+  "task_description": "Rehearse a synthetic prior-authorization administrative workflow locally. No insurer is contacted and no treatment or coverage decision is made.",
+  "harness": "care-circle-synthetic-local",
+  "tool_calls": [
+    {
+      "name": "read_synthetic_member",
+      "input": {
+        "patientId": "people/rose-alvarez",
+        "actorId": "people/ana-alvarez"
+      },
+      "result": {
+        "patientId": "people/rose-alvarez",
+        "memberId": "SYNTHETIC-ROSE-001",
+        "planId": "SYNTHETIC-FAMILY-PLAN",
+        "planName": "Demo Family Health Plan",
+        "representativeIds": [
+          "people/ana-alvarez",
+          "people/ben-alvarez",
+          "people/celia-alvarez"
+        ],
+        "authorizedRepresentative": true,
+        "synthetic": true
+      }
+    },
+    {
+      "name": "read_synthetic_request",
+      "input": {
+        "patientId": "people/rose-alvarez",
+        "requestId": "DEMO-PA-2026-0918"
+      },
+      "result": {
+        "requestId": "DEMO-PA-2026-0918",
+        "serviceCode": "DEMO-NEPHROLOGY-FOLLOWUP",
+        "serviceDescription": "Nephrology follow-up referral authorization administrative rehearsal",
+        "documentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ],
+        "synthetic": true
+      }
+    },
+    {
+      "name": "read_synthetic_requirements",
+      "input": {
+        "planId": "SYNTHETIC-FAMILY-PLAN",
+        "serviceCode": "DEMO-NEPHROLOGY-FOLLOWUP"
+      },
+      "result": {
+        "requiredFields": [
+          "memberId",
+          "requestId",
+          "documentIds"
+        ],
+        "requiredDocumentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ],
+        "followUpAfterDemoBusinessDays": 2,
+        "followUpQuestion": "Ask the fictional insurer whether any administrative documents are missing.",
+        "synthetic": true
+      }
+    },
+    {
+      "name": "assemble_synthetic_packet",
+      "input": {
+        "memberId": "SYNTHETIC-ROSE-001",
+        "requestId": "DEMO-PA-2026-0918",
+        "documentIds": [
+          "DEMO-REFERRAL",
+          "DEMO-COVER-SHEET"
+        ]
+      },
+      "result": {
+        "packetId": "SYNTHETIC-PACKET-5ccd7ea03a6d",
+        "complete": true,
+        "synthetic": true,
+        "submittedToInsurer": false
+      }
+    },
+    {
+      "name": "simulate_prior_auth_submission",
+      "input": {
+        "packetId": "SYNTHETIC-PACKET-5ccd7ea03a6d",
+        "actorId": "people/ana-alvarez",
+        "simulation": true
+      },
+      "result": {
+        "reference": "SIM-PA-1aec9bacd0fc",
+        "status": "simulated-pending-review",
+        "simulation": true,
+        "submittedToInsurer": false,
+        "externalRequests": 0
+      }
+    },
+    {
+      "name": "record_synthetic_followup",
+      "input": {
+        "reference": "SIM-PA-1aec9bacd0fc",
+        "actorId": "people/ana-alvarez"
+      },
+      "result": {
+        "afterDemoBusinessDays": 2,
+        "question": "Ask the fictional insurer whether any administrative documents are missing.",
+        "storage": "local-result-only",
+        "simulation": true
+      }
+    }
+  ]
+}
