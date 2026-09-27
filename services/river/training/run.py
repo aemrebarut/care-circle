@@ -300,7 +300,8 @@ class Recorder:
                        "manifestSha256": digest, "errors": [], "receiptCount": 0}
         self.protocol = {**manifest, "testSha256": manifest["dataset"]["test"]["sha256"],
                          "promptSha256": manifest["promptTemplateSha256"], "trainedCheckpoint": None,
-                         "manifestSha256": digest}
+                         "manifestSha256": digest,
+                         "generationSha256": sha(canonical(manifest["generation"]))}
         write_json(self.output / "protocol.json", self.protocol)
         self.update("starting")
 

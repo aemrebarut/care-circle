@@ -163,6 +163,11 @@ class ProtocolTests(unittest.TestCase):
         proof = json.loads((self.root / "run/paired-proof.json").read_text())
         self.assertTrue(proof["verified"])
         self.assertEqual(proof["count"], 3)
+        protocol = json.loads((self.root / "run/protocol.json").read_text())
+        self.assertEqual(protocol["generationSha256"], run.sha(run.canonical(protocol["generation"])))
+        for arm in ("base", "trained"):
+            for prediction in run.read_jsonl(self.root / f"run/{arm}.jsonl"):
+                self.assertEqual(prediction["generationSha256"], protocol["generationSha256"])
         self.assertEqual(json.loads((self.root / "status.json").read_text())["status"], "completed")
 
 
