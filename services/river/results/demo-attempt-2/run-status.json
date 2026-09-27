@@ -1,0 +1,10 @@
+{
+  "checkpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+  "completedAt": "2026-09-27T22:23:01.646932+00:00",
+  "model": "Qwen/Qwen3.5-9B",
+  "prediction": "/Users/emre/Workspace/care-circle/services/river/training/demo-runs/product-relative-date-1/prediction.json",
+  "sessionId": "60dabec5-5479-43a5-a069-352135223b7a",
+  "startedAt": "2026-09-27T22:22:54.972446+00:00",
+  "status": "completed",
+  "updatedAt": "2026-09-27T22:23:01.646944+00:00"
+}

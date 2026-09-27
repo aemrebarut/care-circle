@@ -12,24 +12,37 @@ async function readArtifact(name) {
 }
 
 export async function getStatus() {
-  const [manifest, evaluation, local, run] = await Promise.all([
+  const [manifest, evaluation, local, run, archivedRun] = await Promise.all([
     readArtifact('dataset/manifest.json'),
     readArtifact('results/comparison.json'),
     readArtifact('results/local-baseline.json'),
     readArtifact('training/artifacts/run-status.json'),
+    readArtifact('results/experiment-1-status.json'),
   ]);
+  const verifiedMetrics = evaluation?.paired === true && evaluation?.audit?.verified === true
+    && evaluation.protocol?.testSha256 === manifest?.splits?.test?.sha256
+    && evaluation.protocol?.promptSha256 === manifest?.promptSha256
+    && evaluation.base?.counts?.examples === manifest?.splits?.test?.count
+    && evaluation.trained?.counts?.examples === manifest?.splits?.test?.count;
   return {
     mode: 'deterministic',
-    trainingStatus: run?.status || (manifest ? 'prepared' : 'preparing'),
+    trainingStatus: run?.status || archivedRun?.status || (manifest ? 'prepared' : 'preparing'),
     externalSubmissionAuthorized: true,
     extractionAvailable: false,
+    extractionMode: 'unavailable',
+    replay: null,
+    demoAttempts: [
+      {attempt: 1, accepted: false, reason: 'unsupported_inferred_due_date', requestId: 'f96c18f2-99a5-4905-9047-db8e9cdb5b6c'},
+      {attempt: 2, accepted: false, reason: 'invalid_json', requestId: '35902266-b768-4c65-9296-f199f6f86e28'},
+    ],
     corpus: manifest,
-    metrics: evaluation?.paired === true ? evaluation : null,
+    metrics: verifiedMetrics ? evaluation : null,
     localBaseline: local,
-    experiment: run,
+    experiment: run || archivedRun,
     limitations: [
       'The local HTTP service does not call external endpoints or load credentials.',
-      'Live River extraction is unavailable; ingest uses its conservative deterministic fallback.',
+      'River product extraction is unavailable; ingest uses its conservative deterministic fallback.',
+      'Two separate exact-demo checkpoint predictions were rejected: an inferred due date, then malformed JSON. Neither is served or repaired.',
       'Training and evaluation use synthetic examples only. These are not clinical accuracy measurements.',
       'Null model metrics mean no verified paired base and trained evaluation has completed.',
     ],
@@ -59,7 +72,7 @@ export function createServer() {
   const server = http.createServer(async (req, res) => {
     const pathname = (req.url || '').split('?')[0];
     try {
-      if (req.method === 'GET' && pathname === '/health') return json(res, 200, {ok: true, service: 'river', mode: 'deterministic'});
+      if (req.method === 'GET' && pathname === '/health') return json(res, 200, {ok: true, service: 'river'});
       if (req.method === 'GET' && pathname === '/v1/status') return json(res, 200, await getStatus());
       if (req.method === 'POST' && pathname === '/v1/extract') {
         if (!(req.headers['content-type'] || '').toLowerCase().startsWith('application/json')) return fail(res, 415, 'CONTENT_TYPE', 'Use application/json.');

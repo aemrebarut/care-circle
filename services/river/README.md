@@ -10,13 +10,15 @@ npm --prefix services/river test
 node services/river/smoke.mjs
 ```
 
-The service binds only `127.0.0.1:4704`. The runtime lane owns its persistent process. Startup does not read credentials, install packages, upload data or train a model. `GET /health` is independent of River availability. `GET /v1/status` reports corpus and experiment artifacts, with null paired metrics until both model runs have been verified. `POST /v1/extract` can replay a saved, source-checked trained prediction only for the exact known synthetic demo note and its date/author. It labels that response cached replay, never live inference. Other inputs receive an explicit 503 so ingest can use its deterministic fallback. Future visit dates receive 422.
+The service binds only `127.0.0.1:4704`. The runtime lane owns its persistent process. Startup does not read credentials, install packages, upload data or train a model. `GET /health` is independent of River availability. `GET /v1/status` reports corpus and experiment artifacts, with null paired metrics until both model runs have been verified. `POST /v1/extract` returns explicit 503 so ingest uses its conservative deterministic fallback. Future visit dates receive 422. No live or cached River extraction is served.
 
 ## Measured fixed experiment
 
 River completed a real 21-step SFT run on 336 synthetic examples using Qwen/Qwen3.5-9B, saved a checkpoint, and evaluated 72 held-out notes on each arm. The trained model achieved 71/72 full-task exact matches (98.61%) and 72/72 extraction exact matches. One response added a spurious unsupported-medication warning.
 
 The base achieved 0/72 strict full-response JSON matches under the same raw completion prompt and 1024-token budget. It generated extra text, and 54/72 responses hit the token cap. No chat template was applied. These numbers measure this output protocol and narrow synthetic task, not general model extraction ability or clinical accuracy. The test contains six held-out wording families with shared atomic vocabulary. No test-guided prompt or checkpoint selection occurred. An independent Python audit verified the paired provenance and arithmetic. See [full results and caveats](results/comparison.json), [raw receipts](results/experiment-1/receipts.jsonl), and [independent audit](review/result-audit.md).
+
+Two separate product-demo samples failed validation. The first invented an unstated due date; one authorized product-only prompt revision omitted that date but returned malformed JSON. Both unchanged raw predictions and receipts are retained in `results/demo-attempt-1/` and `results/demo-attempt-2/`. No repair or successful replay is claimed. The product prompt has its own hash and does not alter the frozen benchmark. No further sampling or training is planned.
 
 ## Corpus and evaluation
 

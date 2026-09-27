@@ -20,4 +20,6 @@ Full-task exact success was 71/72 for the trained checkpoint versus 0/72 strict 
 
 ## Separate demo sampling
 
-`demo-attempt-1/` preserves one actual post-benchmark checkpoint sample. It inferred `2026-09-30` from relative follow-up wording and was rejected by the source guard. The raw output is unchanged, no cached success was published, and the benchmark is unaffected. An additional product-only prompt attempt is authorized, with its own prompt hash and receipts; it must pass the same source guard before replay can be enabled.
+`demo-attempt-1/` preserves one actual post-benchmark checkpoint sample. It inferred `2026-09-30` from relative follow-up wording and was rejected by the source guard. `demo-attempt-2/` preserves the sole authorized product-only prompt revision; it omitted the date but produced invalid JSON and was also rejected. Neither raw output was repaired or served. Their raw artifact `mode` describes the intended replay use, not acceptance; `validation.json` records each actual rejection. The final service has no cache-serving branch and remains deterministic fallback only.
+
+The second attempt used product template SHA256 `f5e343b7fb5f71f3d18c9269e3a37aa9738f525f553c515f7ebce9ac0e38cf09` and full prompt SHA256 `4493f83602822e80225cd6a13a5df31b8577b0df3d4f027671faab407b50e458`. It did not change the weights, benchmark prompt, split, predictions or scores. No further sampling is authorized or planned. See [demo audit](../review/demo-audit.md).

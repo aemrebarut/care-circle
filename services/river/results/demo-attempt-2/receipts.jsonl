@@ -1,0 +1,5 @@
+{"at":"2026-09-27T22:22:55.151434+00:00","operation":"create_session_attempt"}
+{"at":"2026-09-27T22:22:56.852703+00:00","operation":"session_created","sessionId":"60dabec5-5479-43a5-a069-352135223b7a"}
+{"at":"2026-09-27T22:22:56.853424+00:00","checkpoint":"river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final","inputSha256":"53353c5fa30e8f7ee20526c8edcdac38822f38bc32bfdba59ebd8c0e164e52c4","model":"Qwen/Qwen3.5-9B","operation":"checkpoint_sample_attempt","promptProtocol":"product-relative-date-v1","promptSha256":"4493f83602822e80225cd6a13a5df31b8577b0df3d4f027671faab407b50e458","promptTemplateSha256":"f5e343b7fb5f71f3d18c9269e3a37aa9738f525f553c515f7ebce9ac0e38cf09"}
+{"at":"2026-09-27T22:23:01.646523+00:00","operation":"checkpoint_sample_completed","predictionSha256":"005274ec4c9f679836c47d134a7e0d490c75026bce69b10ad273498b3e203559","requestId":"35902266-b768-4c65-9296-f199f6f86e28"}
+{"at":"2026-09-27T22:23:01.646860+00:00","operation":"session_cleanup_completed"}

@@ -1,0 +1,39 @@
+{
+  "benchmarkPromptTemplateSha256": "010e5b6032951e699de04e8ca5d7e3ece7f35c7b5d78f83d4d33b4bd29602fd2",
+  "checkpoint": "river://ac60a978-376d-43b2-a03b-4e7b9d358337/sampler_weights/care-circle-final",
+  "generation": {
+    "max_tokens": 1024,
+    "num_samples": 1,
+    "stop": null,
+    "temperature": 0.0,
+    "top_k": -1,
+    "top_p": 1.0
+  },
+  "generationSha256": "5d9ca31e88e074b0ba3b26de41023dea591d76ed68dd7e8665910255d23d631e",
+  "input": {
+    "authorId": "people/ana-alvarez",
+    "date": "2026-09-27",
+    "note": "Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck."
+  },
+  "inputSha256": "53353c5fa30e8f7ee20526c8edcdac38822f38bc32bfdba59ebd8c0e164e52c4",
+  "method": "river",
+  "mode": "cached-replay",
+  "model": "Qwen/Qwen3.5-9B",
+  "originalManifestSha256": "039f2af01c6a1dc265dd5e6e1a3c0cc5c40a6e2e9406aad48ba9f7c4b74e884b",
+  "output": "{\"extraction\":{\"followUps\":[{\"text\":\"Wants potassium rechecked before nephrology Tuesday.\"}]},\"medicationChanges\":[{\"dose\":\"20 mg\",\"frequency\":\"daily\",\"medicationId\":\"medications/lisinopril\",\"name\":\"Lisinopril\"}],\"questions\":[{\"doctorId\":\"doctors/nephrologist\",\"text\":\"Ask the nephrologist about the potassium recheck.\"}],\"visit\":{\"attendeeIds\":[\"people/ana-alvarez\"],\"date\":\"2026-09-27\",\"doctorId\":\"doctors/cardiologist\",\"summary\":\"Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.\"}},\"warnings\":[]}",
+  "pairedProofSha256": "ea160c86753c845878910597d47be16d2cbb1747c80464dbf5a42e5112549025",
+  "planSha256": "3c1475d272a6d3cfd7bcfafab68df1b1a547dd0c703dbbc4b0e438699487509b",
+  "prompt": "You extract explicitly documented facts from fictional Care Circle family notes. Organize source information only. Do not recommend treatment or infer clinical facts. All patients, relatives, providers, visits, and source claims in this task are synthetic.\n\nRead the object after INPUT_JSON. Return exactly one JSON object with keys extraction and warnings. Do not add Markdown, commentary, confidence, or other fields.\n\nOutput shape:\n{\"extraction\":{\"visit\":{\"date\":\"YYYY-MM-DD\",\"doctorId\":\"doctors/...\",\"attendeeIds\":[\"people/...\"],\"summary\":\"the exact original note\"},\"medicationChanges\":[{\"medicationId\":\"medications/...\",\"name\":\"canonical medication name\",\"dose\":\"explicit number and unit\",\"frequency\":\"explicit frequency\"}],\"questions\":[{\"doctorId\":\"doctors/...\",\"text\":\"exact question text\"}],\"followUps\":[{\"text\":\"exact follow-up task text\"}]},\"warnings\":[]}\n\nOptional followUps.dueDate: copy a YYYY-MM-DD date only when that exact literal appears in the same follow-up task in input.note. Otherwise omit the dueDate key entirely. The example shape above omits this optional field.\n\nVisit rules:\n- Use the explicit visit date, or input.date if the note says today or has no explicit visit date.\n- visit.summary must equal input.note exactly, including punctuation and line breaks.\n- Use the visit specialty or named visit doctor to select doctorId. A specialty mentioned only as a question destination is not the visit doctor.\n- Include only attendees explicitly stated to be present. The note author is not automatically an attendee. Preserve the order of attendees in the note.\n- Never infer a doctor from the medication name. This supported task requires an explicit known visit doctor.\n\nKnown doctors:\n- cardiology, cardiologist, Dr. Chen: doctors/cardiologist\n- nephrology, nephrologist, Dr. Patel: doctors/nephrologist\n- primary care, Dr. Romero: doctors/primary-care\n- endocrinology, endocrinologist, Dr. Okafor: doctors/endocrinologist\n\nKnown attendees:\n- Ana: people/ana-alvarez\n- Ben: people/ben-alvarez\n- Celia: people/celia-alvarez\n\nKnown medication IDs and canonical names:\n- medications/lisinopril: Lisinopril\n- medications/amlodipine: Amlodipine\n- medications/atorvastatin: Atorvastatin\n- medications/metformin: Metformin\n- medications/levothyroxine: Levothyroxine\n- medications/vitamin-d3: Vitamin D3\n- medications/acetaminophen: Acetaminophen\n\nMedication rules:\n- Include only explicitly confirmed new or changed medication doses. Preserve the order of confirmed changes in the note.\n- Copy the stated dose, with one space between the number and unit. Keep mg, mcg, and IU as written. Do not calculate equivalent units.\n- Normalize qd to daily, BID to twice daily, qHS to nightly, and qAM to every morning. Otherwise preserve the explicit frequency.\n- Exclude an unchanged or existing dose, a rejected or negated change, and a possible future or unconfirmed change. Do not turn a medication-list review into a change.\n- A negation concerning one medicine must not hide a confirmed change to another medicine.\n- For an uncertain change to a known medication, leave that medication out and add exactly \"Uncertain medication change: NAME.\" to warnings, using its canonical name.\n- For an unidentified medicine, leave it out and add exactly \"Unsupported medication mention: SOURCE_PHRASE.\" to warnings, copying the phrase that identifies the unknown item, for example the blue tablet.\n- Do not warn merely because a note clearly says no change or clearly rejects a change. Do not invent missing medication names, doses, or frequencies.\n\nQuestions and follow-ups:\n- Extract explicit questions directed to a known specialty. Use that question's target doctorId and copy only the question text, excluding its routing label.\n- Extract explicit follow-up tasks or reminders, copying only the task text and excluding its label. Preserve the task's terminal punctuation and any explicit date in the text.\n- Include dueDate only when the same task explicitly states a literal ISO date in YYYY-MM-DD form, and copy that literal exactly.\n- Preserve relative weekday wording in followUps.text. Do not convert Tuesday, tomorrow, next week, or any relative expression to a calendar date.\n- If there is no literal ISO date in the follow-up task, omit dueDate entirely. input.date is visit metadata, not a follow-up date. Do not infer a due date from calendar arithmetic or medical knowledge.\n- Keep empty lists when no matching information is present. Warnings is an empty list when there is no uncertainty or unsupported medication mention.\n\nINPUT_JSON:\n{\"authorId\":\"people/ana-alvarez\",\"date\":\"2026-09-27\",\"note\":\"Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.\"}\n\nOUTPUT_JSON:\n",
+  "promptProtocol": "product-relative-date-v1",
+  "promptSha256": "4493f83602822e80225cd6a13a5df31b8577b0df3d4f027671faab407b50e458",
+  "promptTemplateSha256": "f5e343b7fb5f71f3d18c9269e3a37aa9738f525f553c515f7ebce9ac0e38cf09",
+  "promptTokenIdsSha256": "1b3bad142f4b3f0b04b942505babef7dd038d1913b7caff7a7ea731cc1af33d9",
+  "requestId": "35902266-b768-4c65-9296-f199f6f86e28",
+  "sampledAt": "2026-09-27T22:23:01.645853+00:00",
+  "schema": "care-circle-fixed-demo-v1",
+  "seed": 20260927,
+  "sessionId": "60dabec5-5479-43a5-a069-352135223b7a",
+  "stopReason": "stop",
+  "syntheticOnly": true,
+  "validationStatus": "unvalidated-raw"
+}
