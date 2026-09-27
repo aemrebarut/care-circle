@@ -6,6 +6,17 @@
 
 ## Log
 
+### 15:16 Pacific M1 passed, core M2 path already working
+
+- All seven service endpoints are healthy. Real GBrain native import succeeded for all 30 seed pages; native links extracted, world package unchanged, write-through restored false.
+- Runtime proved the complete baseline snapshot survived an owned brain restart: revision 1, 30 pages, 120 edges. Ingest then committed the canonical note and identical-key retry at revision 2 with no duplication.
+- Post-ingest restart also passed: exact revision 2, 32-page, 132-edge HTTP state survived PID 95456 to 19257. Ingest then retried the same key and received the original visit/revision with unchanged state. QA now gets its exclusive two-cycle reset acceptance window; browser save/print checks follow.
+- Independent live brief audit: seven medications, two actual changes, three other visits, three nephrology questions including potassium, one unresolved 20 mg visit versus 10 mg pharmacy conflict, literal source quotes, no record-gap warnings. Printable Markdown is 347 words with nine sources.
+- River completed actual SFT and 72 base plus 72 trained evaluations. Independent audit passed: full task 0/72 base versus 71/72 trained; structured extraction 72/72 trained. Base 54/72 hit the shared 1024-token cap, so these are strict output results, not general or clinical accuracy. Scores and receipts are published under services/river/results/.
+- Actual clinic Chrome rendering and app unavailable-state behavior are verified. Official Memorable offline recall is proven on a manually seeded procedure; remote extraction still awaits the concrete approval above. Official UFO execution remains unverified.
+- Test now: open http://127.0.0.1:4700 and inspect graph, sources, recorded medications and brief. Avoid save/reset during the coordinated acceptance window. `scripts/smoke` is read-only.
+- Next scheduled STATUS update by 15:35 Pacific. Freeze remains 16:40.
+
 ### 15:07 Pacific real River training started
 
 - River lane started the approved run at 15:07:02. Session `6f387123-0ec0-40e5-8e4e-0181dbd06580` was created at 15:07:06; Qwen/Qwen3.5-9B is loading.
