@@ -1,0 +1,16 @@
+{
+  "name": "Care Circle synthetic clinic lookup",
+  "format": "care-circle-browser-workflow-v1",
+  "officialUfoManifest": false,
+  "status": "prepared-not-executed",
+  "allowedUrls": ["http://127.0.0.1:4706/"],
+  "disallowedActions": ["external-navigation", "form-submission", "account-creation", "publication", "file-upload"],
+  "steps": [
+    { "action": "navigate", "url": "http://127.0.0.1:4706/" },
+    { "action": "assert-text", "selector": "#synthetic-notice", "contains": "Synthetic demo only." },
+    { "action": "read-text", "fields": { "name": "#clinic-name", "hours": "#clinic-hours", "phone": "#clinic-phone", "address": "#clinic-address" } },
+    { "action": "read-text", "fields": { "pharmacyName": "#pharmacy-name", "pharmacyPhone": "#pharmacy-phone" } },
+    { "action": "assert-text", "selector": "footer", "contains": "Not medical advice" },
+    { "action": "record-evidence", "required": ["driver", "sourceUrl", "fetchedAt", "observedFields", "screenshotOrSnapshot"], "officialUfoExecution": false }
+  ]
+}

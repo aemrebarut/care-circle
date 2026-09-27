@@ -1,0 +1,9 @@
+{
+  "name": "@care-circle/synthetic-clinic-extension",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic local clinic, allowlisted fetch, and read-only MCP adapter",
+  "scripts": { "start": "node server.mjs", "test": "node smoke.mjs" },
+  "engines": { "node": ">=22" }
+}
