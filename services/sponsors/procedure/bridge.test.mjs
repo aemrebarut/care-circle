@@ -110,3 +110,22 @@ test('committed offline bridge receipt proves actual official selection and trac
   assert.equal(report.liveServiceMutated, false);
   assert.equal(report.externalRequests, 0);
 });
+
+test('promoted parent live receipt preserves exact source bytes and the released local-only window', () => {
+  const body = readFileSync(new URL('./assets/memorable-live-bridge-proof.json', import.meta.url));
+  const manifest = JSON.parse(readFileSync(new URL('./assets/memorable-live-bridge-manifest.json', import.meta.url), 'utf8'));
+  const receipt = JSON.parse(body);
+  assert.equal(body.byteLength, manifest.sourceBytes);
+  assert.equal(sha256(body), manifest.sourceSha256);
+  assert.equal(manifest.promotedBytesIdentical, true);
+  assert.equal(manifest.promotionPerformedNoLiveRequests, true);
+  assert.equal(manifest.remoteMemorableAuthorization, 'denied');
+  assert.equal(receipt.runtimeWindowReference, 'cc-runtime-local-proofs-20260927-1535');
+  assert.equal(receipt.loopbackRequests, 2);
+  assert.equal(receipt.externalRequests, 0);
+  assert.equal(receipt.manualSerialization, true);
+  assert.equal(receipt.officialLearning, false);
+  assert.equal(receipt.capture.traceId, receipt.replay.captureTraceId);
+  assert.equal(receipt.selection.returnedProcedureId, parseRecalledProcedureId(receipt.commands[0].stdout));
+  assert.equal(receipt.selection.replayInput.procedureId, receipt.selection.returnedProcedureId);
+});

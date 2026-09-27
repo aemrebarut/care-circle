@@ -118,7 +118,8 @@ test('Memorable export maps the captured trace to the documented envelope withou
   assert.equal(exported.remoteSubmitted, false);
   assert.equal(exported.remoteValidated, false);
   assert.equal(exported.externalSubmissionAuthorized, false);
-  assert.equal(exported.requiredCredentialVariable, 'MEMORABLE_API_KEY');
+  assert.equal(exported.authorizationDecision, 'denied');
+  assert.equal(exported.submissionEnabled, false);
   assert.deepEqual(Object.keys(exported.payload).sort(), ['harness', 'session_id', 'task_description', 'tool_calls']);
   assert.equal(exported.payload.session_id, captured.evidence.traceId);
   assert.deepEqual(exported.payload.tool_calls, captured.steps.map(step => ({ name: step.tool, input: step.input, result: step.output })));

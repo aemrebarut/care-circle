@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "1.0.0",
+  "sourcePath": "services/sponsors/procedure/.runtime/live-bridge/receipt.json",
+  "promotedPath": "services/sponsors/procedure/assets/memorable-live-bridge-proof.json",
+  "sourceBytes": 7568,
+  "sourceSha256": "f5476befa70d48ffa2638f3a8aacf0f85c6a5091cb2a868cf5a3f5607fb85ef2",
+  "promotedBytesIdentical": true,
+  "sourceCheckedAt": "2026-09-27T22:36:09.277Z",
+  "runtimeWindowReference": "cc-runtime-local-proofs-20260927-1535",
+  "executedBy": "cc-sponsors",
+  "promotionPerformedNoLiveRequests": true,
+  "remoteMemorableAuthorization": "denied"
+}

@@ -2,14 +2,15 @@
   "schemaVersion": "1.0.0",
   "synthetic": true,
   "externalSubmissionAuthorized": false,
+  "authorizationDecision": "denied",
+  "artifactPurpose": "unsent-historical-review",
   "remoteSubmitted": false,
   "request": {
     "file": "memorable-request.json",
     "sha256": "994c84515254b5e26114a7249ef3bf56e106503ac1e21560fccd2ab620c0bf32",
     "bytes": 3189,
     "method": "POST",
-    "endpoint": "https://memorable-extraction-api.memorable.workers.dev/v1/extract",
-    "credentialVariable": "MEMORABLE_API_KEY"
+    "endpoint": "https://memorable-extraction-api.memorable.workers.dev/v1/extract"
   },
   "captureTraceId": "trace-12aed992150dad245f3b8778",
   "procedureId": "procedures/prior-auth-ac05bd02d982ad07be10",
@@ -18,6 +19,6 @@
   "limitations": [
     "This is an unsent review artifact matching the public Extraction API example.",
     "Custom tool interpretation and remote response compatibility have not been verified.",
-    "Submission requires explicit authorization recorded by cc-lead and the separate opt-in CLI."
+    "Emre declined remote Memorable submission. The production CLI is unconditionally disabled."
   ]
 }

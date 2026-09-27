@@ -9,14 +9,16 @@ export function memorableExportMetadata() {
     documentationCheckedOn: '2026-09-27',
     intendedEndpoint: ENDPOINT,
     intendedMethod: 'POST',
-    requiredCredentialVariable: 'MEMORABLE_API_KEY',
     externalSubmissionAuthorized: false,
+    authorizationDecision: 'denied',
+    artifactPurpose: 'unsent-historical-review',
+    submissionEnabled: false,
     remoteSubmitted: false,
     remoteValidated: false,
     limitations: [
       'This is an unsent review artifact matching the public Extraction API example.',
       'Custom tool interpretation and remote response compatibility have not been verified.',
-      'Submission requires explicit authorization recorded by cc-lead and the separate opt-in CLI.'
+      'Emre declined remote Memorable submission. The production CLI is unconditionally disabled.'
     ]
   };
 }
@@ -39,7 +41,7 @@ export function toMemorablePayload(trace = {}) {
 }
 
 export function submitMemorable() {
-  throw Object.assign(new Error('Remote Memorable submission is disabled. Review the synthetic export and obtain explicit authorization through cc-lead first.'), {
+  throw Object.assign(new Error('Emre declined remote Memorable submission. No remote submission is available.'), {
     status: 403, code: 'EXTERNAL_SUBMISSION_NOT_AUTHORIZED'
   });
 }

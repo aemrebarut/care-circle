@@ -12,6 +12,7 @@ const REQUIREMENTS = SOURCES.get('procedure-fixtures/requirements');
 const ACTORS = new Set(MEMBER.data.representativeIds);
 const TASK = 'Rehearse a synthetic prior-authorization administrative workflow locally. No insurer is contacted and no treatment or coverage decision is made.';
 const LIMITATIONS = Object.freeze([
+  'Emre declined remote Memorable submission; the production submission CLI is disabled.',
   'Procedure execution is a deterministic local simulation using synthetic fixtures.',
   'No insurer is contacted; no authorization, coverage decision or treatment recommendation is produced.',
   'The reusable procedure is assembled locally, not learned or extracted by Memorable.',
@@ -218,11 +219,12 @@ export function getStatus() {
     status: captures.size ? 'captured-local-simulation' : 'ready-for-local-capture',
     limitations: LIMITATIONS.map(text => submission.remoteAttempted && text.includes('has not been remotely submitted')
       ? 'The separate approved extraction attempt has its own receipt status; service capture and replay still use the local simulation.' : text),
-    synthetic: true, simulation: true, externalSubmissionAuthorized: submission.authorizationRecorded,
+    synthetic: true, simulation: true, externalSubmissionAuthorized: false,
+    authorizationDecision: 'denied',
     remoteSubmissionEnabledInService: false,
     memorableExecuted: false, procedureCount: captures.size, replayCount,
     latestProcedureId: latestId,
-    adapter: { status: submission.remoteValidated ? 'approved-extraction-receipt-verified' : submission.remoteAttempted ? 'remote-attempt-unvalidated' : 'local-export-only', documentationUrl: 'https://www.memorable.sh/doc', ...submission },
+    adapter: { status: 'remote-submission-denied', documentationUrl: 'https://www.memorable.sh/doc', ...submission },
     offlineRecallProof: {
       status: 'recorded-test', package: 'memorable-cli', version: '0.5.30',
       manuallySeeded: true, extractionPerformed: false, runtimeReplayUsesOfficialCli: false,

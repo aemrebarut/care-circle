@@ -1,7 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { SUBMISSION, submitWithApproval, validateMemorableResponse, getSubmissionStatus, evaluateSubmissionHistory } from './memorable-submit.mjs';
+import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
+import { submitWithApproval } from './offline-submission-test-support.mjs';
+import { SUBMISSION, validateMemorableResponse, getSubmissionStatus, evaluateSubmissionHistory, denyRemoteSubmission } from './memorable-submit.mjs';
 
 const payload = readFileSync(new URL('./assets/memorable-request.json', import.meta.url));
 const initialSubmissionStatus = getSubmissionStatus();
@@ -20,10 +23,42 @@ const accepted = {
 };
 const options = () => ({ send: true, approvedPayloadSha256: SUBMISSION.payloadSha256, approvalReference, approval: structuredClone(approval), payload });
 const jsonResponse = value => new Response(JSON.stringify(value), { status: 200, headers: { 'content-type': 'application/json' } });
+
+test('production submission denies without inspecting arguments or accessing dependencies', () => {
+  const unreadable = new Proxy({}, { get() { throw new Error('Production denial must not inspect options or credentials.'); } });
+  assert.throws(() => denyRemoteSubmission(unreadable, unreadable), { code: 'MEMORABLE_REMOTE_SUBMISSION_DENIED', status: 403 });
+  const status = getSubmissionStatus();
+  assert.equal(status.authorizationDecision, 'denied');
+  assert.equal(status.authorizationRecorded, false);
+  assert.equal(status.productionSubmissionEnabled, false);
+});
+
+test('production CLI refuses all flags under denied file/network access and a credential-read trap', () => {
+  const script = fileURLToPath(new URL('./memorable-submit.mjs', import.meta.url));
+  const packagePath = fileURLToPath(new URL('./package.json', import.meta.url));
+  for (const args of [[], ['--send', '--approved-payload-sha256', SUBMISSION.payloadSha256, '--approval-reference', 'ignored-after-denial']]) {
+    const source = `
+      process.env = new Proxy({}, { get(target, name) {
+        if (name === 'MEMORABLE_API_KEY') throw new Error('Credential access is forbidden.');
+        return undefined;
+      }});
+      globalThis.fetch = () => { throw new Error('Network access is forbidden.'); };
+      process.argv = [process.execPath, ${JSON.stringify(script)}, ...${JSON.stringify(args)}];
+      await import(${JSON.stringify(new URL('./memorable-submit.mjs', import.meta.url).href)});
+    `;
+    const result = spawnSync(process.execPath, ['--permission', `--allow-fs-read=${script}`, `--allow-fs-read=${packagePath}`, '--input-type=module', '--eval', source], {
+      env: {}, encoding: 'utf8', timeout: 5000, maxBuffer: 65536
+    });
+    assert.equal(result.status, 1);
+    assert.equal(result.stdout, '');
+    assert.equal(JSON.parse(result.stderr).error.code, 'MEMORABLE_REMOTE_SUBMISSION_DENIED');
+  }
+});
 function fixture(response = () => jsonResponse(accepted)) {
   const observed = { credentialsRead: 0, requests: [], outcomes: [], attempts: [] };
   const dependencies = {
-    readCredential: () => { observed.credentialsRead += 1; return 'demo-only'; },
+    offlineOnly: true,
+    readSyntheticCredential: () => { observed.credentialsRead += 1; return 'demo-only'; },
     claimAttempt: attempt => {
       if (observed.attempts.length) throw Object.assign(new Error('Attempt already claimed.'), { status: 409, code: 'SUBMISSION_ALREADY_ATTEMPTED' });
       observed.attempts.push(attempt);
@@ -34,7 +69,7 @@ function fixture(response = () => jsonResponse(accepted)) {
   return { observed, dependencies };
 }
 
-test('pending submission refuses before credential access or network by default', async () => {
+test('offline adapter fixture refuses before synthetic credential access by default', async () => {
   const { observed, dependencies } = fixture();
   await assert.rejects(submitWithApproval({ ...options(), send: false }, dependencies), { code: 'SEND_FLAG_REQUIRED' });
   await assert.rejects(submitWithApproval({ ...options(), approval: null }, dependencies), { code: 'EXTERNAL_SUBMISSION_NOT_AUTHORIZED' });
@@ -75,10 +110,10 @@ test('approved fake transport sends exactly once with fixed endpoint and redirec
   assert.equal(observed.requests.length, 1);
 });
 
-test('missing approved process credential prevents the attempt', async () => {
+test('missing synthetic test marker prevents the fake attempt', async () => {
   const { observed, dependencies } = fixture();
-  dependencies.readCredential = () => '';
-  await assert.rejects(submitWithApproval(options(), dependencies), { code: 'MEMORABLE_CREDENTIAL_REQUIRED' });
+  dependencies.readSyntheticCredential = () => '';
+  await assert.rejects(submitWithApproval(options(), dependencies), { code: 'SYNTHETIC_CREDENTIAL_REQUIRED' });
   assert.equal(observed.attempts.length, 0);
   assert.equal(observed.requests.length, 0);
 });

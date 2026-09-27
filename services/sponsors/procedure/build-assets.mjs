@@ -11,14 +11,15 @@ const manifest = {
   schemaVersion: '1.0.0',
   synthetic: true,
   externalSubmissionAuthorized: false,
+  authorizationDecision: 'denied',
+  artifactPurpose: 'unsent-historical-review',
   remoteSubmitted: false,
   request: {
     file: 'memorable-request.json',
     sha256: createHash('sha256').update(body).digest('hex'),
     bytes: Buffer.byteLength(body),
     method: exported.intendedMethod,
-    endpoint: exported.intendedEndpoint,
-    credentialVariable: exported.requiredCredentialVariable
+    endpoint: exported.intendedEndpoint
   },
   captureTraceId: captured.evidence.traceId,
   procedureId: captured.procedureId,
