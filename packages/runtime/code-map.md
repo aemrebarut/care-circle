@@ -31,4 +31,6 @@ Runtime owns only PIDs it starts. Receipts and logs live in `.runtime/managed/`,
 
 ## Milestone evidence
 
-Initial lifecycle and hook implementation: 55 passing synthetic tests, including exact-PID stop, idempotent startup, external listener survival, partial sponsor groups, bounded HTTP, dead-owner recovery, contention, cancellation, and secret-hook enforcement. Hook source matches the original protection byte for byte. Persistent River, ingest, sponsors, and brief services handed over by owners and started by runtime. Brain and web readiness pending. Static world smoke passed 30 pages, 120 links and 21 exact citations.
+M1: 55 passing synthetic tests, including exact-PID stop, idempotent startup, external listener survival, partial sponsor groups, bounded HTTP, dead-owner recovery, contention, cancellation, and secret-hook enforcement. Hook source matches the original protection byte for byte. Successful stop now archives its verified receipt, covered by the focused lifecycle assertion. Fresh-clone setup runs hook installation.
+
+All seven live endpoints passed runtime smoke. Static world smoke passed 30 pages, 120 links and 21 exact citations. After the brain owner repaired canonical import ownership, runtime proved exact HTTP state equality across a graceful owned brain restart: revision 1, 30 pages, 120 graph edges. The local proof receipt is `.runtime/managed/persistence-check.json`. Brain and brief live read-only smoke also passed. First canonical ingest window handed to ingest at 15:13 Pacific; QA full cycles follow its explicit release.
