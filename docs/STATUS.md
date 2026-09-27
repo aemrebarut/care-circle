@@ -2,9 +2,20 @@
 
 ## Needs Emre
 
-- Memorable approval requested: may the sponsors lane send one POST to `https://memorable-extraction-api.memorable.workers.dev/v1/extract` containing the exact synthetic six-step trace in `services/sponsors/procedure/assets/memorable-request.json`? The reviewed payload is 3189 bytes, SHA256 `994c84515254b5e26114a7249ef3bf56e106503ac1e21560fccd2ab620c0bf32`. It contains only fictional administrative inputs/results. No request has run. If approved, please supply `MEMORABLE_API_KEY` in the sponsors process environment; agents will not read credential files or print the key. Local capture/replay already works without this optional action.
+- None.
 
 ## Log
+
+### 15:35 Pacific M2 integration and browser evidence
+
+- Emre declined remote Memorable submission. The request is closed; no request ran, and no credential or account is needed. Local CLI recall and Care Circle simulation remain the supported path.
+- Independent HTTP acceptance passed 32/32 in the first full cycle. Baseline and post-ingest restart persistence, unchanged retry state, literal citations, contradictory claims, unsupported notes, and sponsor evidence passed. Two consecutive final cycles remain pending after maintenance.
+- Actual desktop and 390-pixel mobile browser flows passed: one canonical save, source drawers, graph, cited medication answer, sponsor capture/replay, and clinic fetch. QA released the shared state at revision 10, 32 pages, 132 edges without resetting it.
+- Chromium produced a one-page A4 brief without clipping. QA found missing dose/frequency values in the printed conflict; web fix 45a2295 is committed. Corrected PDF reprint is the remaining UI gate.
+- River paired results are independently recomputed and audited: base 0/72 versus trained 71/72 full task. Both canonical-note model attempts failed validation. A separate offline structural-repair assessment also failed the unchanged evidence gate, so the product remains deterministic with no model replay claim and no further model calls planned.
+- Official UFO SDK extension discovery and direct handler tests pass offline. Official Memorable recall of a serialized captured procedure also passes offline. Narrow live local proof commands are queued after maintenance; neither is a hosted run or automatic procedure learning.
+- Runtime is applying queued owner-approved service refreshes after QA release. Test the app at http://127.0.0.1:4700 after health returns, or run read-only `scripts/smoke`. Shared mutation windows remain coordinated.
+- Next STATUS update by 15:55 Pacific. Freeze remains 16:40.
 
 ### 15:16 Pacific M1 passed, core M2 path already working
 

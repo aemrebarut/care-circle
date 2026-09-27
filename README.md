@@ -52,12 +52,12 @@ The canonical note is:
 | **GBrain** | Real local storage, native Markdown import, native link extraction, an atomic GBrain snapshot page, and recoverable native source pages. Baseline and post-ingest restart persistence are verified. The UI graph and brief traverse typed links reconstructed from the durable snapshot. |
 | **Note ingest** | A conservative deterministic extractor with source evidence checks, explicit warnings, bounded HTTP, and restart-safe retry keys. Unsupported or uncertain changes are rejected. Future visits cannot change the current record. Optional trained output must pass the same evidence gate. |
 | **River** | Real Qwen/Qwen3.5-9B LoRA training, saved checkpoint, and independently audited paired evaluation. Scores and limitations are below. Two separate canonical-note predictions failed source or JSON validation, so the app uses its deterministic extractor. No live or cached model extraction is claimed. |
-| **Memorable** | Care Circle's six-step capture/replay is a deterministic local simulation. The official CLI has been exercised offline against a manually seeded procedure; this does not prove procedure learning. The exact synthetic remote extraction request is prepared but remains approval-gated. No insurer is contacted. |
+| **Memorable** | Care Circle's six-step capture/replay is a deterministic local simulation. The official CLI has been exercised offline against a locally serialized procedure; this does not prove procedure learning. Remote extraction was declined and has not run. No insurer is contacted. |
 | **UFO** | The synthetic clinic HTTP fetch, source hashes, local MCP adapter tests, and actual Chrome rendering are real. Browser/MCP integration assets are prepared. Official UFO execution has not occurred. |
 
 ## River experiment
 
-One fixed experiment used Qwen/Qwen3.5-9B, LoRA rank 8, one epoch over 336 synthetic training examples, and 21 optimizer steps. The corpus also has 72 development examples and 72 held-out test examples. Template families, case IDs, and checked entity groups do not overlap across splits. Both inference arms used the same prompt, test inputs, decoding settings, and 1,024-token output cap. Test gold was never sent to training or included in evaluation prompts.
+One fixed experiment used Qwen/Qwen3.5-9B, LoRA rank 8, one epoch over 336 synthetic training examples, and 21 optimizer steps. The corpus also has 72 development examples and 72 held-out test examples across six held-out wording families. Template families, case IDs, and checked entity groups do not overlap across splits. Both inference arms used the same prompt, test inputs, decoding settings, and 1,024-token output cap, with no chat template. Test gold was never sent to training or included in evaluation prompts.
 
 | Measured result on 72 held-out synthetic notes | Base | Trained |
 | --- | --- | --- |
