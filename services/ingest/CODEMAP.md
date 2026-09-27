@@ -49,3 +49,6 @@ Additive truth contract requires complete cached replay provenance for every met
 
 
 M2 checkpoint: 55 tests pass, including 9 HTTP tests. Canonical committed ingest and postrestart retry proofs are retained in evidence/. Live GET /health reported healthy deterministic mode with riverEnabled false before runtime's scheduled refresh. QA/UI released the shared state to runtime for an exact-state-preserving service refresh; ingest did not mutate or restart anything. Final lead decision: no structural repair or case normalization ships, no cached model success, no more model calls. Both rejected actual demo outputs and frozen benchmark remain untouched. Current guard stays strict and dormant with River off.
+
+
+M2 runtime refresh confirmation at 15:35 Pacific: current ingest PID 15708 loaded by runtime with River attempts disabled. Runtime reports all-service and owner smokes passed, preserving exact brain state revision 10 with 32 pages and 132 edges. Ingest remains read-only through sponsor and QA windows.
