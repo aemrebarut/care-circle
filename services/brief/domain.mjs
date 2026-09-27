@@ -4,6 +4,11 @@ const compact = (value) => String(value ?? '').replace(/\s+/g, ' ').trim();
 const normalized = (value) => compact(value).toLowerCase().replace(/(\d)\s*(mg|mcg|g|ml)\b/g, '$1 $2');
 const regimen = (claim) => `${normalized(claim.dose)}|${normalized(claim.frequency)}`;
 const array = (value) => Array.isArray(value) ? value : [];
+const hasHint = (text, hint) => {
+  if (!/^\d/.test(hint)) return text.includes(hint);
+  const escaped = hint.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\d.])${escaped}(?![a-z0-9.])`).test(text);
+};
 export const validDate = (value) => typeof value === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(value) && !Number.isNaN(Date.parse(`${value}T00:00:00Z`)) && new Date(`${value}T00:00:00Z`).toISOString().slice(0, 10) === value;
 
 export class BriefError extends Error {
@@ -47,9 +52,16 @@ export function citation(page, hints = []) {
   const prose = body.replace(/```[\s\S]*?```/g, '');
   const lines = prose.split('\n').map((line) => line.trim()).filter((line) => line && !/^#{1,6}\s|^---$|^<!--|^-->/u.test(line));
   const needles = hints.filter(Boolean).map(normalized);
-  const ranked = lines.map((line) => ({ line, score: needles.reduce((score, hint, i) => score + (normalized(line).includes(hint) ? 2 ** (needles.length - i) : 0), 0) })).sort((a, b) => b.score - a.score);
+  const score = (line) => needles.reduce((total, hint, i) => total + (hasHint(normalized(line), hint) ? 2 ** (needles.length - i) : 0), 0);
+  const ranked = lines.map((line) => ({ line, score: score(line) })).sort((a, b) => b.score - a.score);
   const line = ranked[0]?.line;
-  const quote = (line ?? body.trim()).slice(0, 500);
+  const selected = line ?? body.trim();
+  const starts = [0];
+  for (const hint of hints.filter(Boolean)) {
+    const anchor = selected.toLowerCase().indexOf(String(hint).toLowerCase());
+    if (anchor >= 0) starts.push(Math.max(0, anchor - 80), Math.max(0, anchor - 250));
+  }
+  const quote = starts.map((start) => selected.slice(start, start + 500)).sort((a, b) => score(b) - score(a))[0];
   const result = { pageId: page.id, title: page.title, quote };
   if (validDate(page.fields?.date)) result.date = page.fields.date;
   if (Array.isArray(page.fields?.attendeeIds)) result.attendeeIds = [...page.fields.attendeeIds];
@@ -57,7 +69,9 @@ export function citation(page, hints = []) {
 }
 
 function uniqueCitations(citations) {
-  return [...new Map(citations.filter(Boolean).map((item) => [item.pageId, item])).values()];
+  const sources = new Map();
+  for (const item of citations.filter(Boolean)) if (!sources.has(item.pageId)) sources.set(item.pageId, item);
+  return [...sources.values()];
 }
 
 function sourceClaims(medication, index, paths, warnings) {
@@ -211,7 +225,7 @@ export function buildPrevisit(state, doctorId, { now = new Date() } = {}) {
     const source = index.pages.get(page.fields.sourceId);
     if ((validDate(page.fields.date) && page.fields.date > DEMO_DATE) || (validDate(source?.fields?.date) && source.fields.date > DEMO_DATE)) return [];
     if (page.fields.sourceId && (!source || !paths.has(source.id))) warnings.push(`Question ${page.id} has a missing or graph-unreachable origin; only its own page is cited.`);
-    return [{ text: compact(page.fields.text || page.title), citations: uniqueCitations([citation(page, [page.fields.text]), source && paths.has(source.id) ? citation(source) : null]) }];
+    return [{ text: compact(page.fields.text || page.title), citations: uniqueCitations([citation(page, [page.fields.text]), source && paths.has(source.id) ? citation(source, [source.fields?.summary, page.fields.text, source.fields?.date]) : null]) }];
   });
   const contradictions = medications.map((med) => med.contradiction).filter(Boolean);
   const citations = uniqueCitations([citation(doctor, [since]), ...medicationChanges.flatMap((item) => item.citations), ...otherVisits.flatMap((item) => item.citations), ...openQuestions.flatMap((item) => item.citations), ...contradictions.flatMap((item) => item.claims.map((claim) => claim.citation))]);

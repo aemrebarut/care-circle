@@ -26,3 +26,7 @@ GET /health, /v1/answer/medications, /v1/contradictions. POST /v1/previsit with 
 # Gotchas
 
 No cross-lane imports except shared contract; no family database reads. Traversal uses both edge directions and excludes foreign patient IDs. Since cutoff is strictly after 2026-09-15 for nephrology, through demo date 2026-09-27. Unchanged dose claims never become medication changes. Every pharmacy claim is compared to the latest preceding visit and all later visits; unresolved unequal evidence survives later matching visits. No reconciliation exists in v1. Same-day incompatible visit claims remain ambiguous. Medication-specific quote selection prevents same-dose drugs from citing each other's lines. No sponsor calls, credentials or external submissions. Not medical advice.
+
+# Milestone evidence
+
+M1 service d9204b3 committed and pushed. Follow-up review fixes cover foreign patient traversal, future-only doses, unreachable/future question origins, historical discrepancy labels, long-line source excerpts, numeric dose boundaries and meaningful citation preservation. Focused tests pass. Runtime owns live 4703; real-brain read-only smoke awaits brain readiness. No external sponsor activity.

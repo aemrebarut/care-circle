@@ -76,6 +76,29 @@ test('a shared dose never selects a different medication quote', () => {
   assert.equal(citation(source, ['Acetaminophen', '500 mg', 'once daily as needed for pain']).quote, 'Acetaminophen: 500 mg once daily as needed for pain.');
 });
 
+test('long source lines retain the medication evidence in a contiguous quoted window', () => {
+  const source = { id: 'visits/long', title: 'Long note', body: `${'Synthetic background context. '.repeat(25)}Lisinopril 20 mg daily.`, fields: {} };
+  const quote = citation(source, ['Lisinopril', '20 mg', 'daily']).quote;
+  assert.ok(source.body.includes(quote));
+  assert.ok(quote.length <= 500);
+  assert.match(quote, /Lisinopril 20 mg daily/);
+});
+
+test('a numeric dose hint does not match a suffix inside a different dose', () => {
+  const source = { id: 'visits/decimal', title: 'Dose history', body: 'Amlodipine previously recorded as 2.5 mg daily.\nAmlodipine previously recorded as 15 mg daily.\nAmlodipine now recorded as 5 mg daily.', fields: {} };
+  assert.equal(citation(source, ['Amlodipine', '5 mg', 'daily']).quote, 'Amlodipine now recorded as 5 mg daily.');
+});
+
+test('question origins do not overwrite meaningful per-page visit quotes', () => {
+  const state = fixture();
+  const visit = state.pages.find((page) => page.id === 'visits/increased');
+  visit.body = `All records are synthetic.\n${visit.body}`;
+  state.pages.find((page) => page.id === 'questions/old-open').fields.sourceId = visit.id;
+  const brief = buildPrevisit(state, doctorId);
+  assert.match(brief.citations.find((item) => item.pageId === visit.id).quote, /lisinopril increased to 20 mg/);
+  assert.match(brief.openQuestions[0].citations.find((item) => item.pageId === visit.id).quote, /lisinopril increased to 20 mg/);
+});
+
 test('graph traversal follows reverse edges and cycles, excluding disconnected changes', () => {
   const state = fixture();
   state.graph.edges.push({ source: state.patientId, target: doctorId, type: 'mentions' });
