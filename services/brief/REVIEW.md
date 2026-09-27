@@ -17,3 +17,7 @@ The track reviewer separately reproduced and verified: acetaminophen 500 mg cite
 `npm test --prefix services/brief` runs the domain fixtures and bounded loopback HTTP checks. It does not prove the live GBrain path. `node services/brief/smoke.mjs` separately verifies live endpoints, source resolution and exact source-quote inclusion once runtime confirms brain readiness. Runtime owns all persistent service PIDs. Full demo mutation and reset windows belong to runtime and QA.
 
 No sponsor SDK is used in the brief service. No external submissions, credentials or actual patient data were used.
+
+## M1 live seed receipt
+
+`node services/brief/smoke.mjs` passed against the real GBrain-backed brain at revision 1: seven recorded active medications, one actual amlodipine change since 2026-09-15, two other visits, two open nephrology questions, zero discrepancies and zero record-gap warnings. Every source lookup resolved and every quoted excerpt was present in its source body. The seed Markdown is 256 words with six numbered source citations. An initial request during runtime's brain restart returned 502; the repeat after readiness passed. No records were mutated by this check.

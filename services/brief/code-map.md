@@ -29,4 +29,4 @@ No cross-lane imports except shared contract; no family database reads. Traversa
 
 # Milestone evidence
 
-M1 service d9204b3 committed and pushed. Follow-up review fixes cover foreign patient traversal, future-only doses, unreachable/future question origins, historical discrepancy labels, long-line source excerpts, numeric dose boundaries and meaningful citation preservation. Focused tests pass. Runtime owns live 4703; real-brain read-only smoke awaits brain readiness. No external sponsor activity.
+M1 service d9204b3 and reviewed fixes bb3cda8 committed and pushed. All 21 focused tests pass; Astra xhigh reviewer cleared targeted semantics and citations. Real-brain read-only smoke passed at revision 1 after runtime restart: seven recorded meds, one actual amlodipine change, two other visits, two open nephrology questions, zero discrepancies or warnings; all quotes resolve and match. Seed Markdown is 256 words with six source citations. Runtime owns live 4703. First smoke attempt overlapped restart and failed honestly with 502; repeat after healthy state passed. No external sponsor activity.
