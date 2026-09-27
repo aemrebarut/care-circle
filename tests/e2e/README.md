@@ -44,3 +44,5 @@ The temporal regression visits run before the second clean reset in each cycle. 
 HTTP acceptance does not prove a rendered browser interaction, database durability after restart, or that an external training run occurred. The UI reviewer, brain owner, runtime owner, and River reviewer supply that separate evidence. QA does not run external sponsor SDKs. A syntactically valid citation proves source resolution; manual review still assesses whether its wording fairly represents the source.
 
 Milestone receipts and remaining gates are summarized in `ACCEPTANCE.md`. `RIVER_AUDIT.md` records the independent offline paired-artifact audit and its limits.
+
+Selected synthetic browser evidence is committed for public review: [one-page brief PDF](evidence/ui-nephrology-brief-final.pdf), [rendered PDF page](evidence/ui-nephrology-brief-final-page-1.png), [desktop screenshot](evidence/ui-final-desktop.png), and [observation receipt with hashes](evidence/ui-acceptance-receipt.md). Temporary tooling and detailed working receipts remain ignored.

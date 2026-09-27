@@ -16,6 +16,8 @@ Independent contract and demo acceptance for the synthetic Care Circle family. O
 
 `tests/e2e/RIVER_AUDIT.md`: independent offline paired-artifact audit, reproduced scores and interpretation limits.
 
+`tests/e2e/evidence/`: selected public synthetic browser PDF, rendered page, desktop screenshot and hashed observation receipt. Temporary browser tooling stays under ignored results.
+
 ## API
 
 Consumes health on 4700 through 4706 and the public contract endpoints through the web proxy, or direct service HTTP with `--direct`. Exposes no listener or service API. Calls only 127.0.0.1.

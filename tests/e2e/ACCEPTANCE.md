@@ -12,10 +12,10 @@ Additional tests in progress cover preserved historical pharmacy discrepancies, 
 
 | ID | Finding | Resolution evidence |
 | --- | --- | --- |
-| H1 | A later agreeing visit dropped an earlier pharmacy discrepancy. | Brief owner added persistent unresolved evidence and focused tests. Independent live regression pending. |
-| H2 | Unchanged visit claims appeared as medication changes. | Brief owner now uses explicit visit medicationChanges. Independent exact changed-set check pending. |
-| H3 | Missing River predictions counted as valid JSON. | Owner reports 13 tests passing, including 8 independent regression checks. Source now marks missing/null transport output unavailable. Live metric provenance check pending. |
-| H4 | Durable ownership regex rejected the real pharmacy/ seed slug on restart. | Brain owner fixed prefix and reports actual 30-page seed roundtrip plus recovery tests, 25 passing. Native GBrain restart pending. |
+| H1 | A later agreeing visit dropped an earlier pharmacy discrepancy. | Fixed by brief owner. Independent live temporal regression passed in the 15:18 full cycle. |
+| H2 | Unchanged visit claims appeared as medication changes. | Fixed by brief owner. Exact baseline and post-ingest changed-medication sets passed in the full cycle. |
+| H3 | Missing River predictions counted as valid JSON. | Fixed with 13 owner tests. Independent status arithmetic and offline paired-output rescoring passed; see RIVER_AUDIT.md. |
+| H4 | Durable ownership regex rejected the real pharmacy/ seed slug on restart. | Fixed with actual seed encode/decode regression. Runtime proved exact baseline and post-ingest state across native restarts; ingest proved unchanged retry after restart. |
 
 ## Independent live observations
 
@@ -58,3 +58,9 @@ The real Print action produced one A4 PDF page, rendered and visually inspected.
 QA explicitly released the browser window at 15:33 with revision 10, 32 pages and 132 edges preserved; captured/replayed procedure counts were each one. Runtime is refreshing brain, ingest and River with exact state preservation. Read-only corrected print and a separate sponsor proof window precede two consecutive full HTTP cycles.
 
 The independent River artifact audit passed and is documented in `RIVER_AUDIT.md`, with a detailed ignored receipt under `results/qa-http/`. Actual demo model samples both failed validation, so the final release decision is deterministic extraction and River 503, with no cached or live inference. The runner now asserts that final reality. Memorable remote submission was declined; local simulation and offline proof stay explicitly labeled.
+
+## Corrected print verification, 15:39 Pacific
+
+`UI-P2-PRINT-DOSES` is closed. The isolated Chromium reprint after `45a2295` is exactly one A4 page according to `pdfinfo`. The reviewer, QA root and lead visually inspected its rendered page: 20 mg daily from the September 27 visit and 10 mg daily from the September 24 pharmacy record each have an explicit source citation. All eight unique source references, the synthetic notice and the non-advice footer fit without clipping. This is actual browser PDF output, not an HTML modal claim.
+
+Receipt: `tests/e2e/results/ui/ui-final-reprint-receipt.json`. Corrected PDF: `tests/e2e/results/ui/ui-nephrology-brief-final.pdf`. Render: `tests/e2e/results/ui/ui-nephrology-brief-final-page-1.png`. The original failed print is preserved separately. Reprint performed no family or sponsor mutation and kept revision 10.
