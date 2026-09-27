@@ -1,0 +1,15 @@
+{
+  "name": "@care-circle/river",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Synthetic note extraction corpus and honest River experiment reporting",
+  "scripts": {
+    "start": "node server.mjs",
+    "test": "node --test test/*.test.mjs review/*.test.mjs",
+    "smoke": "node smoke.mjs",
+    "dataset": "node generate-dataset.mjs",
+    "eval:local": "node eval-local.mjs"
+  },
+  "engines": {"node": ">=22"}
+}
