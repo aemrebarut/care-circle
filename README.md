@@ -51,7 +51,7 @@ The canonical note is:
 | --- | --- |
 | **GBrain** | Real local storage, native Markdown import, native link extraction, an atomic GBrain snapshot page, and recoverable native source pages. Baseline and post-ingest restart persistence are verified. The UI graph and brief traverse typed links reconstructed from the durable snapshot. |
 | **Note ingest** | A conservative deterministic extractor with source evidence checks, explicit warnings, bounded HTTP, and restart-safe retry keys. Unsupported or uncertain changes are rejected. Future visits cannot change the current record. Optional trained output must pass the same evidence gate. |
-| **River** | Real Qwen/Qwen3.5-9B LoRA training, saved checkpoint, and independently audited paired evaluation. Scores and limitations are below. Live arbitrary-note model inference is not enabled; an exact synthetic demo replay is being integrated and will be labeled as such. |
+| **River** | Real Qwen/Qwen3.5-9B LoRA training, saved checkpoint, and independently audited paired evaluation. Scores and limitations are below. Two separate canonical-note predictions failed source or JSON validation, so the app uses its deterministic extractor. No live or cached model extraction is claimed. |
 | **Memorable** | Care Circle's six-step capture/replay is a deterministic local simulation. The official CLI has been exercised offline against a manually seeded procedure; this does not prove procedure learning. The exact synthetic remote extraction request is prepared but remains approval-gated. No insurer is contacted. |
 | **UFO** | The synthetic clinic HTTP fetch, source hashes, local MCP adapter tests, and actual Chrome rendering are real. Browser/MCP integration assets are prepared. Official UFO execution has not occurred. |
 
@@ -68,6 +68,8 @@ One fixed experiment used Qwen/Qwen3.5-9B, LoRA rank 8, one epoch over 336 synth
 **This measures strict output success under a particular prompt and token budget.** The base model reached the token cap in 54 of 72 outputs; raw completion mode did not produce the required JSON. These numbers do not show that the base lacks medical knowledge, and they do not establish general or clinical accuracy. The trained model's one full-task miss was a warning mismatch. Its 48 predicted medication claims matched the synthetic gold.
 
 An independent audit checked all 144 prediction rows, matching prompt and generation provenance, training batch hashes, sample receipt membership, and score arithmetic. The run recorded no request failures. Training loss is not presented as accuracy. [Measured comparison](services/river/results/comparison.json), [experiment receipts](services/river/results/README.md), and [River review](services/river/review/REVIEW.md) provide the evidence and limits.
+
+The canonical demo note is separate from that frozen test set. Its first trained prediction invented a follow-up date; a second prediction under a stricter product-only prompt had malformed JSON. Both were rejected and preserved as failure evidence. The benchmark was not changed, and the application's source guard was not relaxed to make the demo pass.
 
 ## Architecture
 
