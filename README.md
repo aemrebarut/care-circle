@@ -52,8 +52,10 @@ The canonical note is:
 | **GBrain** | Real local storage, native Markdown import, native link extraction, an atomic GBrain snapshot page, and recoverable native source pages. Baseline and post-ingest restart persistence are verified. The UI graph and brief traverse typed links reconstructed from the durable snapshot. |
 | **Note ingest** | A conservative deterministic extractor with source evidence checks, explicit warnings, bounded HTTP, and restart-safe retry keys. Unsupported or uncertain changes are rejected. Future visits cannot change the current record. Optional trained output must pass the same evidence gate. |
 | **River** | Real Qwen/Qwen3.5-9B LoRA training, saved checkpoint, and independently audited paired evaluation. Scores and limitations are below. Two separate canonical-note predictions failed source or JSON validation, so the app uses its deterministic extractor. No live or cached model extraction is claimed. |
-| **Memorable** | Care Circle's six-step capture/replay is a deterministic local simulation. The official CLI has been exercised offline against a locally serialized procedure; this does not prove procedure learning. Remote extraction was declined and has not run. No insurer is contacted. |
-| **UFO** | The synthetic clinic HTTP fetch, source hashes, local MCP adapter tests, and actual Chrome rendering are real. Browser/MCP integration assets are prepared. Official UFO execution has not occurred. |
+| **Memorable** | A real local proof captures Ana's trace, serializes it into a local store, uses official CLI 0.5.30 lexical recall to select its ID, and passes that ID to Ben's simulated replay. Serialization is authored by Care Circle; Memorable did not learn or extract the procedure. The app buttons remain local simulation. Remote extraction was declined. No insurer is contacted. |
+| **UFO** | A Python extension using the pinned official SDK passed entry-point discovery, schema construction, and a direct tool-handler call through the real local clinic HTTP adapter. Source hashes, local MCP tests, and separate Chrome rendering are verified. No full UFO runtime, hosted model, or UFO browser automation was executed. |
+
+The [Memorable local bridge receipt](services/sponsors/procedure/assets/memorable-live-bridge-proof.json) and [UFO SDK local tool receipt](services/sponsors/extension/ufo-package/evidence/sdk-live.json) preserve the exact scope of those proofs. They do not turn the app's simulation or HTTP fetch into a hosted sponsor run.
 
 ## River experiment
 
