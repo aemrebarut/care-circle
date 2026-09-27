@@ -246,8 +246,45 @@ async function statusChecks() {
     const data = await request('river', '/v1/status');
     assert(['deterministic', 'river'].includes(data.mode), 'River mode must be deterministic or river');
     assert(data.trainingStatus !== undefined && data.trainingStatus !== null, 'River trainingStatus missing');
-    assert.equal(typeof data.externalSubmissionAuthorized, 'boolean');
-    assert(data.limitations !== undefined, 'River limitations missing');
+    assert.equal(data.externalSubmissionAuthorized, true);
+    assert(Array.isArray(data.limitations) && data.limitations.length && data.limitations.every((item) => typeof item === 'string' && item), 'River limitations missing');
+    assert.equal(data.corpus?.synthetic, true);
+    const familySets = [];
+    let count = 0;
+    for (const split of ['train', 'dev', 'test']) {
+      const manifest = data.corpus.splits[split];
+      assert(Number.isSafeInteger(manifest.count) && manifest.count > 0, `${split} example count must be positive`);
+      assert.match(manifest.sha256, /^[a-f0-9]{64}$/);
+      array(manifest.templateFamilies, `${split} template families`);
+      familySets.push(new Set(manifest.templateFamilies)); count += manifest.count;
+    }
+    assert.equal(count, data.corpus.total);
+    assert.equal(familySets.reduce((sum, set) => sum + set.size, 0), new Set(familySets.flatMap((set) => [...set])).size, 'Template families must be disjoint across splits');
+    for (const key of ['familyOverlap', 'caseOverlap', 'entityGroupOverlap']) assert.equal(data.corpus.validation[key], 0, `Corpus ${key} must be zero`);
+    if (data.extractionAvailable === false) {
+      assert.equal(data.mode, 'deterministic');
+      const extraction = await post('river', '/v1/extract', { note: DEMO_NOTE }, { raw: true });
+      assert.equal(extraction.status, 503, 'Unavailable River extractor must report failure honestly');
+      nonempty(extraction.data.error?.code, 'River unavailable error code');
+    }
+    const validateScore = (score, label) => {
+      const counts = score?.counts;
+      assert.equal(counts?.examples, data.corpus.splits.test.count, `${label} must cover held-out count`);
+      assert.equal(counts.predictions, counts.examples, `${label} must record one result per held-out example`);
+      for (const key of ['jsonValid', 'schemaValid', 'extractionExact', 'structuredExact', 'warningsExact', 'taskExact', 'medicationExact']) {
+        assert(Number.isSafeInteger(counts[key]) && counts[key] >= 0 && counts[key] <= counts.examples, `${label}/${key} invalid count`);
+        assert.equal(score.rates?.[key], counts[key] / counts.examples, `${label}/${key} denominator mismatch`);
+      }
+      assert(counts.schemaValid <= counts.jsonValid, 'Schema validity cannot exceed JSON validity');
+      assert(counts.taskExact <= counts.extractionExact && counts.extractionExact <= counts.structuredExact, 'Exactness metrics must be nested');
+      assert(counts.unsupportedMedicationClaims <= counts.predictedMedicationClaims, 'Unsupported claim count exceeds predictions');
+      assert.equal(score.failures.length, counts.examples - counts.taskExact, 'Failure count must cover every failed example');
+    };
+    if (data.localBaseline !== null && data.localBaseline !== undefined) {
+      assert.equal(data.localBaseline.kind, 'local-deterministic');
+      assert.equal(data.localBaseline.testSha256, data.corpus.splits.test.sha256);
+      validateScore(data.localBaseline, 'Local deterministic baseline');
+    }
     if (data.metrics !== null && data.metrics !== undefined) {
       const metrics = data.metrics;
       assert.equal(metrics.paired, true, 'Model comparison must be paired');
@@ -257,13 +294,7 @@ async function statusChecks() {
       assert.equal(metrics.protocol.testSha256, data.corpus?.splits?.test?.sha256, 'Comparison must use frozen held-out test');
       assert.equal(metrics.protocol.promptSha256, data.corpus?.promptSha256, 'Comparison must use frozen prompt');
       for (const model of ['base', 'trained']) {
-        const counts = metrics[model]?.counts;
-        assert.equal(counts?.examples, data.corpus.splits.test.count, `${model} must cover held-out count`);
-        assert.equal(counts.predictions, counts.examples, `${model} must have one result per held-out example`);
-        for (const [key, rate] of Object.entries(metrics[model].rates ?? {})) {
-          assert(typeof rate === 'number' && rate >= 0 && rate <= 1, `${model}/${key} invalid rate`);
-          assert.equal(rate, counts[key] / counts.examples, `${model}/${key} denominator mismatch`);
-        }
+        validateScore(metrics[model], model);
       }
     }
     return { mode: data.mode, trainingStatus: data.trainingStatus, metrics: data.metrics ?? null, limitations: data.limitations };
@@ -298,12 +329,54 @@ async function readOnly() {
 async function fullCycle(cycle) {
   stage = `cycle ${cycle}`;
   let baseline;
+  let latestTemporalVisit;
   const resetReady = await check('Runtime startup and first reset', async () => { await reset(); baseline = await state(); return validateState(baseline); });
   if (resetReady) await health();
+  await check('Later agreeing visit cannot erase an earlier pharmacy discrepancy', async () => {
+    const addVisit = async (date, recordedDose) => {
+      const note = `Synthetic cardiology visit with Ana on ${date}. Dr. Chen recorded lisinopril ${recordedDose} daily.`;
+      const response = await post('brain', '/v1/ingest', {
+        note, authorId: IDS.ana, idempotencyKey: `qa-history-${runId}-${cycle}-${date}`,
+        extraction: {
+          visit: { date, doctorId: IDS.cardiologist, attendeeIds: [IDS.ana], summary: note },
+          medicationChanges: [{ medicationId: IDS.lisinopril, name: 'Lisinopril', dose: recordedDose, frequency: 'daily' }],
+          questions: [], followUps: []
+        }
+      });
+      assert.equal(response.ok, true); sourceCache.clear(); return response.visitId;
+    };
+    const changedVisit = await addVisit('2026-09-25', '20 mg');
+    await validateContradictions(changedVisit);
+    latestTemporalVisit = await addVisit('2026-09-27', '10 mg');
+    regimen(medication(await request('brain', '/v1/medications')), '10 mg');
+    const result = await validateContradictions(changedVisit);
+    const conflict = result.contradictions.find((c) => c.medicationId === IDS.lisinopril);
+    if (conflict.temporalStatus !== undefined) assert.equal(conflict.temporalStatus, 'past-discrepancy-unreconciled');
+    return { preservedVisitId: changedVisit, recordedDose: '10 mg', conflictStatus: conflict.status };
+  }, resetReady);
+  await check('Doctor latest-visit field, displayed body and source agree', async () => {
+    sourceCache.clear();
+    const doctor = await page(IDS.cardiologist);
+    assert.equal(doctor.fields.lastVisitDate, '2026-09-27');
+    assert(doctor.body.includes('2026-09-27'), 'Doctor body must display its updated last visit date');
+    assert(doctor.body.includes(latestTemporalVisit) || doctor.body.includes(encodeURIComponent(latestTemporalVisit)), 'Doctor displayed body must cite the visit that updated its last visit date');
+  }, Boolean(latestTemporalVisit));
+  await check('Current visit accepts a future follow-up due date', async () => {
+    const note = 'Cardiology today with Ana. Wants potassium rechecked by 2026-10-01.';
+    const result = await post('ingest', '/v1/ingest', { note, authorId: IDS.ana, date: '2026-09-27', idempotencyKey: `qa-followup-${runId}-${cycle}` });
+    assert.equal(result.applied?.ok, true);
+    assert.equal(result.extraction.visit.date, '2026-09-27');
+    assert(result.extraction.followUps.some((item) => item.dueDate === '2026-10-01'));
+    sourceCache.clear();
+    const visit = await page(result.applied.visitId);
+    assert(visit.fields.followUps.some((item) => item.dueDate === '2026-10-01'), 'Future follow-up must persist as a request');
+    assert.equal(visit.fields.medicationChanges.length, 0, 'Follow-up request must not become a medication change');
+  }, resetReady);
   let second;
   const resetAgain = await check('Second reset preserves baseline', async () => {
     await reset(); second = await state();
     assert.deepEqual(second.pages.map((p) => p.id).sort(), baseline.pages.map((p) => p.id).sort(), 'Reset must restore the same page IDs');
+    assert.equal(fingerprint(second), fingerprint(baseline), 'Reset must restore source content, claims, links and graph');
     const meds = await validateMedications();
     regimen(medication(meds), '10 mg');
     const conflicts = await validateContradictions();
@@ -324,6 +397,51 @@ async function fullCycle(cycle) {
     assert.equal(change.medicationId, IDS.lisinopril); assert.equal(change.name.toLowerCase(), 'lisinopril'); regimen(change, '20 mg');
     unchanged(before, await state(), 'Extraction');
     return { method: result.method, warnings: result.warnings };
+  }, resetAgain);
+  await check('Uploader is not invented as a visit attendee', async () => {
+    const before = await state();
+    const result = await post('ingest', '/v1/extract', { note: DEMO_NOTE, authorId: IDS.ben });
+    assert.deepEqual(result.extraction.visit.attendeeIds, [IDS.ana]);
+    regimen(result.extraction.medicationChanges[0], '20 mg');
+    unchanged(before, await state(), 'Extraction by different uploader');
+  }, resetAgain);
+  await check('Future visit dates cannot change records beyond demo as-of date', async () => {
+    const before = await state();
+    for (const route of ['/v1/extract', '/v1/ingest']) {
+      const result = await post('ingest', route, { note: DEMO_NOTE, date: '2026-10-01', authorId: IDS.ana }, { raw: true });
+      assert.equal(result.status, 422, `${route} must reject future visit date`);
+      nonempty(result.data.error?.code, 'future-date error code');
+    }
+    const result = await post('brain', '/v1/ingest', {
+      note: DEMO_NOTE, authorId: IDS.ana, idempotencyKey: `qa-future-${runId}-${cycle}`,
+      extraction: { visit: { date: '2026-10-01', doctorId: IDS.cardiologist, attendeeIds: [IDS.ana], summary: DEMO_NOTE }, medicationChanges: [{ medicationId: IDS.lisinopril, name: 'Lisinopril', dose: '20 mg', frequency: 'daily' }], questions: [], followUps: [] }
+    }, { raw: true });
+    assert.equal(result.status, 422, 'Brain must reject future visit date');
+    unchanged(before, await state(), 'Future visit rejection');
+  }, resetAgain);
+  for (const frequency of ['daily as needed', 'daily for three days', 'daily or every other day']) {
+    await check(`Frequency qualifier is preserved or rejected: ${frequency}`, async () => {
+      const before = await state();
+      const result = await post('ingest', '/v1/extract', { note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg ${frequency}.` }, { raw: true });
+      if (result.status >= 400) assert([400, 422].includes(result.status), '5xx cannot satisfy safe rejection');
+      else {
+        const change = result.data.extraction?.medicationChanges?.find((m) => m.medicationId === IDS.lisinopril);
+        if (change) assert.equal(compact(change.frequency).toLowerCase(), frequency, 'A qualified frequency must not truncate to daily');
+        else assert(result.data.warnings?.length, 'Omitted qualified regimen needs a warning');
+      }
+      unchanged(before, await state(), 'Qualified frequency extraction');
+    }, resetAgain);
+  }
+  await check('Historical medication sentence is not relabeled as today', async () => {
+    const before = await state();
+    const result = await post('ingest', '/v1/extract', { note: 'Cardiology today with Ana. On 2026-09-01 Dr. Chen increased lisinopril to 20 mg daily.' }, { raw: true });
+    if (result.status >= 400) assert([400, 422].includes(result.status), '5xx cannot satisfy safe rejection');
+    else {
+      const changes = result.data.extraction?.medicationChanges ?? [];
+      assert(!changes.length || result.data.extraction.visit.date === '2026-09-01', 'September 1 claim was relabeled as September 27');
+      assert(result.data.warnings?.length, 'Mixed event dates require explicit limitations');
+    }
+    unchanged(before, await state(), 'Historical extraction');
   }, resetAgain);
   for (const [name, note] of [
     ['unsupported', 'The picnic is at the park. Bring the blue blanket.'],
@@ -402,6 +520,20 @@ async function fullCycle(cycle) {
     nonempty(replay.mode, 'replay mode'); assert(replay.evidence, 'Replay needs evidence'); assert(replay.result, 'Replay needs result');
     assert.equal(captured.mode, 'local-simulation');
     assert.equal(replay.mode, 'local-simulation');
+    assert.equal(replay.evidence.captureTraceId, captured.evidence.traceId);
+    assert.equal(replay.evidence.planSha256, captured.evidence.planSha256);
+    assert.equal(replay.evidence.capturedBy, IDS.ana);
+    assert.equal(replay.evidence.executedBy, IDS.ben);
+    assert.equal(replay.evidence.procedureReuse, true);
+    for (const execution of [captured, replay]) {
+      assert.equal(execution.evidence.externalRequests, 0);
+      assert.equal(execution.evidence.memorableExecuted, false);
+      assert.equal(execution.evidence.insurerContacted, false);
+      assert.equal(execution.evidence.synthetic, true);
+      assert.equal(execution.evidence.recordedToolCount, execution.steps.length);
+    }
+    assert.deepEqual(replay.steps.map((step) => step.tool), captured.steps.map((step) => step.tool), 'Replay must reuse captured procedure steps');
+    assert.equal(replay.result.submittedToInsurer, false);
     return { procedureId: captured.procedureId, captureMode: captured.mode, replayMode: replay.mode, actorId: replay.actorId };
   }, resetAgain);
   await check('Clinic fetch names local synthetic source and evidence', async () => {

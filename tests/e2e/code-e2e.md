@@ -12,7 +12,7 @@ Independent contract and demo acceptance for the synthetic Care Circle family. O
 
 ## Files
 
-`tests/e2e/acceptance.mjs`: independent live HTTP assertions and JSON receipts. `tests/e2e/package.json`: commands. `tests/e2e/README.md`: coverage and limits. `tests/e2e/results/`: ignored run receipts. `tests/e2e/code-e2e.md`: source for this code map.
+`tests/e2e/acceptance.mjs`: independent live HTTP assertions and JSON receipts. `tests/e2e/package.json`: commands. `tests/e2e/README.md`: coverage and limits. `tests/e2e/ACCEPTANCE.md`: milestone evidence and findings. `tests/e2e/results/`: ignored run and browser receipts. `tests/e2e/code-e2e.md`: source for code/qa.
 
 ## API
 
@@ -25,3 +25,7 @@ Consumes health on 4700 through 4706 and the public contract endpoints through t
 ## Gotchas
 
 All lanes share main and live state. Only one lane may reset or ingest at a time. Tests do not own any PID or port. Allow GBrain CLI latency. Citation resolution does not itself prove source interpretation. Sponsor mode labels cannot substitute for actual execution evidence. No external submissions, secrets, cross-service imports, or plain gbrain commands. Freeze code at 16:40 Pacific.
+
+## Milestone evidence
+
+Initial runner commit 778b1a0, syntax passes. Temporal controls and stricter evidence checks added after independent Astra xhigh review. Every service dependency code page has now been read. Independent GET/extract probes and real clinic browser rendering pass. Full reset-to-demo and family UI remain pending brain initialization plus runtime-granted mutation access.

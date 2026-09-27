@@ -24,12 +24,17 @@ Each run prints named checks and writes a concise JSON receipt under ignored `te
 - Source page lookup for every medication, answer, brief, and contradiction citation.
 - Graph endpoints resolve to pages, and graph/page IDs are unique.
 - Reset twice preserves the synthetic baseline with seven medications and lisinopril recorded at 10 mg.
+- A later visit agreeing with the pharmacy does not erase an earlier unresolved discrepancy. Historical visit-only amlodipine changes do not create false alarms.
 - Extraction is nonmutating; unsupported notes cannot create unsupported clinical facts.
+- Negation, uncertainty, qualified schedules and historical sentences cannot become confirmed current changes. Future visits are rejected; future follow-up requests remain valid.
 - Demo ingest records 20 mg, keeps the 10 mg pharmacy claim, and remains idempotent on duplicate submission.
+- Concurrent first submissions with a fresh key create one visit and claim. Reused keys with different notes never partially apply.
 - The unresolved 10 vs 20 mg contradiction cites both source records.
 - Nephrology brief starts at the September 15 visit, includes every subsequent visit to other doctors, the demo medication change and potassium question, and source citations.
 - Procedure replay uses a different sibling, and clinic fetch identifies the local synthetic source.
 - River and sponsor status expose actual modes and limitations; measured score provenance is also independently reviewed.
+
+The temporal regression visits run before the second clean reset in each cycle. The canonical demo follows that reset, so regression fixtures do not contaminate the final demo state. Doctor last-visit fields and displayed source text must agree after the temporal checks.
 
 ## Limits
 
