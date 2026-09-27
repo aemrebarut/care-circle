@@ -28,7 +28,7 @@ Page: `{id,type,title,body,fields,links,updatedAt}`. `id` is a slash-separated G
 
 Citation: `{pageId,title,quote,date?,attendeeIds?}`. Graph: `{nodes:[{id,type,title}],edges:[{source,target,type}]}`. All citations resolve through page lookup.
 
-Seed package exports JSON at `packages/world/seed.json` with `{patientId,pages}`. Also ship one markdown file per page under `packages/world/pages/`. Brain imports those markdown pages with --no-embed and extracts links; structured metadata must survive GBrain persistence, e.g. JSON inside clearly delimited markdown. Brain may maintain a derived in-memory index but reset/restart must prove persistence.
+Seed package exports JSON at `packages/world/seed.json` with `{patientId,pages}`. Also ship one markdown file per page under `packages/world/pages/`. Brain seeds the original markdown through trusted GBrain page writes with embeddings disabled, then runs native link extraction. GBrain 0.59 native import rejects this noncanonical managed root, so per-page writes are the approved import path. Structured metadata must survive GBrain persistence, e.g. JSON inside clearly delimited markdown. Brain may maintain a derived in-memory index but reset/restart must prove persistence.
 
 Stable IDs: `people/rose-alvarez`, `people/ana-alvarez`, `people/ben-alvarez`, `people/celia-alvarez`; `doctors/nephrologist`, `doctors/cardiologist`, `doctors/primary-care`, `doctors/endocrinologist`; `medications/lisinopril` plus six others owned by world. Nephrologist last visit is 2026-09-15. Initial recorded lisinopril dose 10 mg daily, pharmacy record 10 mg daily. Demo cardiology visit on 2026-09-27 records 20 mg daily and potassium recheck. This is a fictional source claim, never a treatment instruction.
 
