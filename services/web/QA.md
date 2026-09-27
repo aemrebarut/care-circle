@@ -19,8 +19,14 @@ All checks use synthetic data and loopback services. Persistent service processe
 - Pending-save identity and uncertainty have independent in-memory verification. Actual browser reload evidence remains pending.
 - River extraction stays deterministic. The displayed measured comparison is 0/72 base versus 71/72 trained strict task match under the same prompt and token limit, with synthetic-only and truncation caveats. Neither rejected demo model prediction is shown as cached or live success.
 
+## 15:55 milestone
+
+- Corrected PDF passed QA and web owner visual inspection: `tests/e2e/results/ui/ui-nephrology-brief-final.pdf` is one A4 page with no clipping. The unresolved section explicitly includes the Sep 27 visit claim of 20 mg daily and Sep 24 pharmacy claim of 10 mg daily, their citations, all eight unique source IDs, and the safety footer. `ui-final-reprint-receipt.json` records revision 10 and zero mutating actions.
+- Bounded accessibility commit `002da86` passed the isolated suite: 67 proxy checks and 12 UI regressions. Medication answer has a polite live region; nested source navigation preserves heading focus; closing a drawer prevents late focus theft; River polling preserves expanded evidence and focused summaries.
+- `tests/e2e/results/ui/ui-final-focus-receipt.json` confirms the loaded `002da86` asset, successful cited medication answer, source-title focus after nested navigation, and both River evidence disclosures staying open and focused across repeated successful HTTP polls. Zero mutating actions. This verifies DOM live-region behavior, not screen-reader audio. One automation wait timed out, but later completed polls and DOM inspection passed.
+- Implementation is held stable for final two-cycle acceptance. Runtime owns every persistent process. No web restart is needed for these static asset fixes.
+
 ## Remaining verification
 
-- Corrected live PDF with explicit 20 mg daily visit claim and 10 mg daily pharmacy claim, both dates and citations, on one A4 page.
 - Two final reset-to-demo runs, coordinated with runtime and QA.
-- Browser reload while a save outcome is uncertain, if QA can isolate the transport failure without interfering with shared state.
+- Browser reload while a save outcome is uncertain remains covered by in-memory tests, not a live browser transport-failure receipt.
