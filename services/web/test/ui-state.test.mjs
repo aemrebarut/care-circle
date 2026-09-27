@@ -46,7 +46,8 @@ class Element {
   descendants() { return this.children.flatMap(child => [child, ...child.descendants()]); }
   querySelectorAll(selector) { return this.descendants().filter(node => node.tagName === selector); }
   querySelector(selector) { return this.querySelectorAll(selector)[0] || null; }
-  focus() {}
+  contains(node) { return node === this || this.descendants().includes(node); }
+  focus() { if (this.ownerDocument) this.ownerDocument.activeElement = this; }
   showModal() { this.open = true; }
   close() { this.open = false; }
 }
@@ -67,12 +68,14 @@ function createHarness(pendingNote) {
       return [];
     },
     getElementById(id) { return this.querySelector(`#${id}`); },
-    createElement: tag => new Element(tag),
-    createElementNS: (_, tag) => new Element(tag),
-    createTextNode: text => new Element('#text', text),
+    createElement: tag => Object.assign(new Element(tag), { ownerDocument: document }),
+    createElementNS: (_, tag) => Object.assign(new Element(tag), { ownerDocument: document }),
+    createTextNode: text => Object.assign(new Element('#text', text), { ownerDocument: document }),
   };
+  for (const element of elements.values()) element.ownerDocument = document;
   const storage = new Map(pendingNote ? [[storageKey, JSON.stringify(pendingNote)]] : []);
   const requests = [];
+  const intervals = [];
   const context = vm.createContext({
     document,
     Node: Element,
@@ -80,7 +83,7 @@ function createHarness(pendingNote) {
     URL,
     crypto: webcrypto,
     window: { print() {} },
-    setInterval() {},
+    setInterval(callback) { intervals.push(callback); },
     sessionStorage: {
       getItem: key => storage.get(key) ?? null,
       setItem: (key, value) => storage.set(key, value),
@@ -96,7 +99,7 @@ function createHarness(pendingNote) {
     request.resolve({ ok: status >= 200 && status < 300, status, json: async () => value });
     return request;
   }
-  return { boot, document, storage, requests, reply };
+  return { boot, document, storage, requests, reply, intervals };
 }
 
 const family = {
@@ -327,4 +330,55 @@ test('source narrative keeps source HTML inert and preserves the original Markdo
   assert.ok(drawer.querySelectorAll('pre').some(node => node.textContent === body));
   assert.ok(drawer.querySelectorAll('button').some(node => node.textContent === 'Ana Alvarez'));
   assert.match(drawer.textContent, /\[\[javascript:unsafe\]\]/);
+});
+
+test('source navigation preserves heading focus without stealing it after the drawer closes', async () => {
+  const harness = createHarness();
+  harness.reply('brain/state', family);
+  harness.reply('brain/medications', { medications: [{ ...medications.medications[0], citations: [{ pageId: 'visits/source-one', title: 'First source' }] }] });
+  harness.reply('brief/contradictions', { contradictions: [] });
+  harness.reply('river/status', { mode: 'deterministic', limitations: [] });
+  harness.reply('sponsors/status', { memorable: { mode: 'local-simulation' }, ufo: { mode: 'local-http-fetch' } });
+  await harness.boot;
+  const opening = harness.document.querySelector('#medication-list').querySelector('button').dispatch('click');
+  harness.reply('brain/pages/visits%2Fsource-one', { page: { id: 'visits/source-one', type: 'visit', title: 'First source', fields: {}, body: 'Synthetic source one.', links: [{ target: 'people/ben-alvarez', type: 'attended' }] } });
+  await opening;
+  assert.equal(harness.document.activeElement, harness.document.querySelector('#source-title'));
+  const link = harness.document.querySelector('#source-content').querySelector('button');
+  link.focus();
+  const following = link.dispatch('click');
+  assert.equal(harness.document.activeElement, harness.document.querySelector('#source-title'));
+  harness.reply('brain/pages/people%2Fben-alvarez', { page: { id: 'people/ben-alvarez', type: 'person', title: 'Ben Alvarez', fields: {}, body: 'Synthetic family member.', links: [{ target: 'people/ana-alvarez', type: 'mentions' }] } });
+  await following;
+  assert.equal(harness.document.activeElement, harness.document.querySelector('#source-title'));
+  assert.equal(harness.document.activeElement.textContent, 'Ben Alvarez');
+  const nextSource = harness.document.querySelector('#source-content').querySelector('button').dispatch('click');
+  harness.document.querySelector('#source-drawer').close();
+  const outside = harness.document.querySelector('#review-note');
+  outside.focus();
+  harness.reply('brain/pages/people%2Fana-alvarez', { page: { id: 'people/ana-alvarez', type: 'person', title: 'Ana Alvarez', fields: {}, body: 'Synthetic family member.' } });
+  await nextSource;
+  assert.equal(harness.document.activeElement, outside);
+  assert.equal(harness.document.querySelector('#source-drawer').open, false);
+});
+
+test('River polling preserves expanded evidence and keyboard focus', async () => {
+  const harness = createHarness();
+  finishInitial(harness);
+  await harness.boot;
+  const container = harness.document.querySelector('#river-details');
+  const original = container.querySelector('details');
+  original.open = true;
+  original.querySelector('summary').focus();
+  harness.intervals[0]();
+  harness.reply('river/status', { mode: 'deterministic', trainingStatus: 'not_started', limitations: [] });
+  await nextTurn();
+  assert.equal(container.querySelector('details'), original, 'Unchanged status must not rebuild the evidence');
+  harness.intervals[0]();
+  harness.reply('river/status', { mode: 'deterministic', trainingStatus: 'completed', limitations: ['Synthetic updated limitation.'] });
+  await nextTurn();
+  const updated = container.querySelector('details');
+  assert.equal(updated.open, true);
+  assert.equal(harness.document.activeElement, updated.querySelector('summary'));
+  assert.match(updated.textContent, /Synthetic updated limitation/);
 });

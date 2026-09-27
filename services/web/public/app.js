@@ -187,12 +187,18 @@ function sourceField(key,value) {
   if (/Id$/.test(key)) return sourceButton(String(value),titleFor(String(value)));
   return String(value);
 }
+function replaceSourceContent(...children) {
+  const readingSource = $('#source-drawer').open && $('#source-content').contains(document.activeElement);
+  replace('#source-content',...children);
+  if (readingSource) $('#source-title').focus({preventScroll:true});
+}
 let sourceRequest = 0;
 async function openSource(id, citation) {
   const request = ++sourceRequest;
   const dialog = $('#source-drawer');
-  replace('#source-content', el('h2',{id:'source-title'},citation?.title || titleFor(id)),el('div',{class:'loading-state'},'Opening the original record...'));
+  replaceSourceContent(el('h2',{id:'source-title',tabindex:'-1'},citation?.title || titleFor(id)),el('div',{class:'loading-state'},'Opening the original record...'));
   if (!dialog.open) dialog.showModal();
+  $('#source-title').focus({preventScroll:true});
   try {
     const data = await api(`brain/pages/${encodeURIComponent(id)}`);
     if (request !== sourceRequest) return;
@@ -200,8 +206,8 @@ async function openSource(id, citation) {
     const sourceDate = citation?.date || page.fields?.date;
     const attendees = citation?.attendeeIds || page.fields?.attendeeIds || [];
     const fields = Object.entries(page.fields || {}).filter(([key,value])=>!['claims','summary','medicationChanges','followUps','synthetic'].includes(key) && ['string','number','boolean'].includes(typeof value));
-    replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/Id$/,'').replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},sourceField(key,value))])),el('h3',{},'Source record'),page.body ? sourceNarrative(page.body) : el('p',{class:'source-body'},'This source has no narrative text.'),page.body && el('details',{},el('summary',{},'View original source Markdown'),el('pre',{},page.body)),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
-  } catch(error) { if (request === sourceRequest) replace('#source-content',el('h2',{id:'source-title'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
+    replaceSourceContent(el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title',tabindex:'-1'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/Id$/,'').replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},sourceField(key,value))])),el('h3',{},'Source record'),page.body ? sourceNarrative(page.body) : el('p',{class:'source-body'},'This source has no narrative text.'),page.body && el('details',{},el('summary',{},'View original source Markdown'),el('pre',{},page.body)),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
+  } catch(error) { if (request === sourceRequest) replaceSourceContent(el('h2',{id:'source-title',tabindex:'-1'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
 }
 function invalidateNote() { state.pendingSave = false; state.pendingAuthorId = null; try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
 function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').disabled ? state.pendingAuthorId || undefined : $('#note-author').value || undefined,date:'2026-09-27'}; }
@@ -275,6 +281,11 @@ function renderRiverMetrics(metrics) {
   return el('div',{class:'evaluation-summary'},el('p',{class:'sponsor-line'},'Strict JSON task match'),el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},`${base.taskExact}/${base.examples}`),el('span',{},'base model')),el('div',{class:'metric'},el('strong',{},`${trained.taskExact}/${trained.examples}`),el('span',{},'River trained'))),el('p',{},`Identical prompt${budget ? ` and ${Number(budget).toLocaleString()}-token completion limit` : ''}. ${Number.isInteger(baseCapped) ? `${baseCapped} base responses reached the token cap. ` : ''}Synthetic test only, not clinical accuracy.`),evidenceDetails({measurement:metrics.measurement,interpretation:metrics.interpretation,base:metrics.base?.counts,trained:metrics.trained?.counts,evaluatedAt:metrics.evaluatedAt},'Evaluation method and limitations'));
 }
 function renderRiverStatus(result) {
+  const signature = JSON.stringify(result);
+  if (state.riverStatusSignature === signature) return;
+  const previousDetails = $$('details',$('#river-details'));
+  const expanded = new Set(previousDetails.filter(item=>item.open).map(item=>$('summary',item)?.textContent));
+  const focusedSummary = previousDetails.map(item=>$('summary',item)).find(item=>item === document.activeElement)?.textContent;
   const cached = result.extractionMode === 'cached-replay' || result.replay?.mode === 'cached-replay';
   setMode('#river-mode',cached ? 'cached-replay' : result.mode);
   const experiment = result.experiment || {};
@@ -282,10 +293,16 @@ function renderRiverStatus(result) {
   const training = trainingLabels[result.trainingStatus] || textValue(result.trainingStatus).replaceAll('_',' ') || 'Training status not reported';
   const counts = result.corpus?.splits;
   replace('#river-details',el('p',{},el('strong',{},training)),Number.isFinite(experiment.completedSteps) && Number.isFinite(experiment.plannedSteps) && el('p',{},`${experiment.completedSteps} of ${experiment.plannedSteps} training steps reported.`),result.corpus?.total && el('div',{class:'metrics'},el('div',{class:'metric'},el('strong',{},result.corpus.total),el('span',{},'synthetic notes')),counts?.test?.count && el('div',{class:'metric'},el('strong',{},counts.test.count),el('span',{},'held-out examples'))),el('p',{},cached ? 'The exact sample note can replay a saved River prediction. No live inference occurs; other notes use the demo parser.' : result.extractionAvailable === true ? 'Model output is available. See the reported execution mode and limitations.' : 'Live model extraction is not available. Notes use the deterministic demo parser.'),renderRiverMetrics(result.metrics),el('details',{},el('summary',{},'Integration details and limitations'),el('p',{},limitationsText(result.limitations)),experiment.model && el('p',{},`Model: ${experiment.model}`)));
+  for (const item of $$('details',$('#river-details'))) {
+    const summary = $('summary',item);
+    item.open = expanded.has(summary?.textContent);
+    if (summary?.textContent === focusedSummary) summary.focus({preventScroll:true});
+  }
+  state.riverStatusSignature = signature;
 }
 async function loadRiverStatus() {
   try { renderRiverStatus(await api('river/status',{timeout:20000})); }
-  catch(error) { setMode('#river-mode','unavailable'); replace('#river-details',errorBlock(error,loadRiverStatus)); }
+  catch(error) { state.riverStatusSignature = null; setMode('#river-mode','unavailable'); replace('#river-details',errorBlock(error,loadRiverStatus)); }
 }
 async function loadHelpersStatus() {
   const procedureVersion = state.procedureVersion || 0, clinicVersion = state.clinicVersion || 0;
