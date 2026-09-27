@@ -38,3 +38,11 @@ All seven live endpoints passed runtime smoke. Static world smoke passed 30 page
 Post-ingest persistence also passed: exact HTTP state revision 2, 32 pages and 132 graph edges survived another graceful owned restart. Local receipt: `.runtime/managed/post-ingest-persistence-check.json`. Ingest then replayed the same canonical key/payload and verified the original visit/revision and unchanged complete state. Independent review inspected citations, retained 10 mg source conflict, and 20 mg recorded claim without mutation. Exclusive QA acceptance window began at 15:17 Pacific after all releases.
 
 R8 follow-up: lock recovery now requires PID absence at both checks. Any live PID preserves the lock, including malformed identity, changed command, or PID reuse. All 17 lifecycle tests pass; the original 39 hook checks are unchanged.
+
+## M2, 15:35 Pacific
+
+Full runtime regression suite passes 56/56. Independent HTTP acceptance passed its first complete cycle 32/32, then demo-reset restored the clean seed. Browser QA made one save and preserved revision 10; desktop, mobile, sources and sponsor checks passed. Its one-page print claim fix is awaiting a read-only reprint.
+
+After explicit UI release, runtime refreshed the brain storage guards, ingest provenance validation, and River status/no-cache source. Exact state equality passed across those owned restarts: revision 10, 32 pages, 132 edges. Receipt: `.runtime/managed/post-ui-maintenance-check.json`. All-service smoke plus brain, ingest and River owner smoke passed. Optional River attempts remain disabled; River is deterministic fallback with extraction unavailable. Sponsor capture/replay counts survived unchanged.
+
+QA has read-only reprint access. Sponsors has a separate explicit grant for exactly three local proof POSTs, with no brain writes, reset, restart or remote submission. Two consecutive full QA cycles follow both releases. Remote Memorable submission was explicitly declined. Runtime has made no external sponsor submissions.
