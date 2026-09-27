@@ -21,3 +21,9 @@ No sponsor SDK is used in the brief service. No external submissions, credential
 ## M1 live seed receipt
 
 `node services/brief/smoke.mjs` passed against the real GBrain-backed brain at revision 1: seven recorded active medications, one actual amlodipine change since 2026-09-15, two other visits, two open nephrology questions, zero discrepancies and zero record-gap warnings. Every source lookup resolved and every quoted excerpt was present in its source body. The seed Markdown is 256 words with six numbered source citations. An initial request during runtime's brain restart returned 502; the repeat after readiness passed. No records were mutated by this check.
+
+## Post-ingest live receipt
+
+The same read-only smoke passed at revision 2 after runtime's post-ingest persistence restart. Targeted assertions verified seven recorded medications; exactly two actual changes, amlodipine on September 23 and lisinopril on September 27; three other visits; three open questions including potassium; one unresolved discrepancy; and zero record-gap warnings. The discrepancy retains the original 10 mg pharmacy source and the new 20 mg visit source with exact medication-specific quotes. The recorded answer labels the visit's 20 mg dose as a source claim. Demo Markdown is 347 words with nine numbered source citations.
+
+The independent QA lane reports its first full HTTP acceptance cycle passed 32/32, including persistent discrepancy history, exact medication change sets and source quotes. This is a reported independent receipt. Actual browser print pagination and two final consecutive full cycles remain separate acceptance gates.
