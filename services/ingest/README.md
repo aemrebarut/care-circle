@@ -20,7 +20,7 @@ The server binds only `127.0.0.1:4702`. Runtime owns the persistent process. No 
 - `POST /v1/extract`: `{note,authorId?,date?}` returns `{extraction,method,warnings}` without mutation.
 - `POST /v1/ingest`: `{note,authorId?,date?,idempotencyKey?}` returns the same extraction plus a verified brain `applied` receipt and `idempotencyKey`.
 
-Use `Content-Type: application/json`. Event dates must be valid `YYYY-MM-DD`. Default note author is Ana; default date is the fixed synthetic demo date `2026-09-27`, both disclosed in warnings. These defaults do not invent visit attendance. All original source text, including whitespace, is preserved in `visit.summary` and the brain `note` payload. Explicit attendees come only from the completed visit opening.
+Use `Content-Type: application/json`. Event dates must be valid `YYYY-MM-DD`. Default note author is Ana; default date is the fixed synthetic demo date `2026-09-27`, both disclosed in warnings. Visit dates after this fixed as-of date return 422 before any upstream call; future follow-up due dates are allowed. These defaults do not invent visit attendance. All original source text, including whitespace, is preserved in `visit.summary` and the brain `note` payload. Explicit attendees come only from the completed visit opening.
 
 The supported demo note is:
 

@@ -91,3 +91,12 @@ test('attendance stays within encounter and followups require request evidence',
   }
   assert.deepEqual(extractDeterministic({ note: 'Cardiology today with Ana and Ben.' }).extraction.visit.attendeeIds, [IDS.ana, IDS.ben]);
 });
+
+
+test('fixed as-of date rejects future visits but preserves future followups', () => {
+  assert.throws(() => extractDeterministic({ note: DEMO_NOTE, date: '2026-10-01' }), { status: 422 });
+  assert.throws(() => extractDeterministic({ note: 'Cardiology 2026-10-01 with Ana. Lisinopril up to 20 mg daily.' }), { status: 422 });
+  const result = extractDeterministic({ note: 'Cardiology today with Ana. Wants potassium rechecked by 2026-10-01.' });
+  assert.equal(result.extraction.visit.date, '2026-09-27');
+  assert.equal(result.extraction.followUps[0].dueDate, '2026-10-01');
+});

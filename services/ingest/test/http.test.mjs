@@ -48,6 +48,10 @@ test('invalid, unsupported and oversized requests never call brain', async () =>
   await withServer({ fetchImpl: () => assert.fail('No upstream call allowed') }, async () => {
     assert.equal((await post('/v1/ingest', { note: 'invent a medication change' })).status, 422);
     assert.equal((await post('/v1/ingest', { note: DEMO_NOTE, date: '2026-02-30' })).status, 400);
+    for (const path of ['/v1/extract', '/v1/ingest']) {
+      assert.equal((await post(path, { note: DEMO_NOTE, date: '2026-10-01' })).status, 422);
+      assert.equal((await post(path, { note: 'Cardiology 2026-10-01 with Ana.' })).status, 422);
+    }
     assert.equal((await post('/v1/extract', { note: DEMO_NOTE, idempotencyKey: 'not-for-preview' })).status, 400);
     assert.equal((await post('/v1/ingest', { note: 'x'.repeat(70000) })).status, 413);
     assert.equal((await post('/v1/ingest', {}, { body: '{' })).status, 400);

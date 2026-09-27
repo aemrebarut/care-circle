@@ -42,6 +42,7 @@ export function normalizeInput(input, { commit = false } = {}) {
   if (/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/.test(input.note)) invalid('note contains unsupported control characters.');
   if (input.authorId !== undefined && !AUTHORS.has(input.authorId)) invalid('authorId must identify Ana, Ben, or Celia in the synthetic circle.');
   if (input.date !== undefined && !validDate(input.date)) invalid('date must be a real calendar date in YYYY-MM-DD format.');
+  if (input.date !== undefined && input.date > DEMO_DATE) unsupported(`Visit date cannot be later than the synthetic demo as-of date ${DEMO_DATE}.`);
   if (input.idempotencyKey !== undefined && (typeof input.idempotencyKey !== 'string' || !/^[A-Za-z0-9._:-]{1,128}$/.test(input.idempotencyKey))) invalid('idempotencyKey must be 1 to 128 letters, digits, dots, underscores, colons, or hyphens.');
   return { note: input.note, authorId: input.authorId ?? IDS.ana, date: input.date, idempotencyKey: input.idempotencyKey };
 }
@@ -61,6 +62,7 @@ function encounter(note, parts, requestedDate, warnings) {
   }
   const dates = opening.match(/\b\d{4}-\d{2}-\d{2}\b/g) ?? [];
   if (dates.some(date => !validDate(date)) || new Set(dates).size > 1) unsupported('The visit date is invalid or ambiguous.');
+  if (dates[0] && dates[0] > DEMO_DATE) unsupported(`Visit date cannot be later than the synthetic demo as-of date ${DEMO_DATE}.`);
   if (dates[0] && requestedDate && dates[0] !== requestedDate) unsupported('The note visit date conflicts with the supplied date.');
   if (/\b(?:yesterday|last\s+(?:monday|tuesday|wednesday|thursday|friday|saturday|sunday|week|month|year))\b/i.test(opening) && !requestedDate && !dates[0]) {
     unsupported('Supply the visit date explicitly for a past relative date.');
