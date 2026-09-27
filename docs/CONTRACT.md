@@ -51,6 +51,8 @@ Temporal comparison rule: for each pharmacy claim, compare the latest visit clai
 
 Extraction: `{visit:{date,doctorId,attendeeIds,summary},medicationChanges:[{medicationId,name,dose,frequency}],questions:[{doctorId,text}],followUps:[{text,dueDate?}]}`. Preserve source phrasing and explicit uncertainty; reject or return warnings for unsupported notes instead of inventing facts.
 
+The v1 demo as-of date is 2026-09-27 in every service. Reject ingest/extract visit dates after that date with 422; a future appointment or planned change cannot alter the current medication record. Future follow-up due dates are allowed. When a doctor's lastVisitDate changes, keep its displayed source text consistent with the updated field and cite the visit causing the update.
+
 - `POST /v1/extract` with `{note,authorId?,date?}` -> `{extraction,method:"deterministic"|"river",warnings:[]}`. No mutation.
 - `POST /v1/ingest` with `{note,authorId?,date?,idempotencyKey?}` -> extraction response plus `{applied:{ok,visitId,changedPageIds,revision}}`. Calls brain. Default author Ana, default date 2026-09-27. Return upstream errors honestly.
 - River is optional via 4704 `/v1/extract`; fallback must say deterministic and explain limitations.
