@@ -8,7 +8,7 @@ Care Circle gives that family a source-cited record in GBrain: who was there, wh
 
 All people, providers, records, calls, and websites are synthetic. Care Circle organizes information and cites sources. It never recommends doses or treatments. **Not medical advice.**
 
-Built from scratch during the Own Your Intelligence Hackathon on September 27, 2026. Public history begins that afternoon. Build status and outstanding approvals are in [STATUS](docs/STATUS.md); code freeze is 16:40 Pacific.
+Built from scratch during the Own Your Intelligence Hackathon on September 27, 2026. Public history begins that afternoon. **The track is paused by Emre.** See [remaining work and resume steps](docs/NEXT_STEPS.md) and [STATUS](docs/STATUS.md). The planned 16:40 freeze is suspended.
 
 ## Run the local demo
 
