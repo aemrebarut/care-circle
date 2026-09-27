@@ -48,3 +48,5 @@ At M3, 15:55 Pacific, the final storage review closed all prior findings and pas
 # Paused handoff
 
 Emre paused this track at 15:57 Pacific and requested immediate wrap-up. All three native brain subagents were notified. Leave runtime-owned PID 4515 running; no further work resumes automatically at freeze. The last minimal health observation showed an already accepted mutation at revision 12 with 31 pages and status `committing`; let it drain without interruption or retry. QA/runtime own its final receipt. Final two-cycle acceptance is not yet claimed complete. On explicit resume, inspect that receipt and readiness before coordinating any PATH-only restart or QA mutation window. Lead owns `docs/NEXT_STEPS.md`.
+
+Final settlement observation: health returned HTTP 200 and `ready` at revision 12 with 31 pages. The accepted mutation finished without interruption, retry, reset or restart. No brain-owned operation remains in flight; the lane is paused until explicit resume.
