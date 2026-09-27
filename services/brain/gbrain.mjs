@@ -108,7 +108,7 @@ export class GBrain {
     const engine = json(await this.run(['engine', 'status', '--json']));
     const familyRoot = await this.resolvePath(resolve(homedir(), 'Workspace/care-circle-brain'));
     const databasePath = engine.database_path ? await this.resolvePath(engine.database_path) : null;
-    if (engine.effective_engine !== 'pglite' || engine.thin_client || !databasePath?.startsWith(`${familyRoot}${sep}`)) {
+    if (engine.effective_engine !== 'pglite' || engine.thin_client !== false || !databasePath?.startsWith(`${familyRoot}${sep}`)) {
       throw new BrainCommandError('unsafe_brain_storage', 'The family brain must use local PGLite storage inside its dedicated Care Circle directory.');
     }
     const embedding = await this.run(['config', 'get', 'embedding_disabled']);
@@ -153,8 +153,9 @@ export class GBrain {
     status ??= await this.writerStatus();
     const binding = status.bindings?.find(item => item.source_id === 'default');
     const worktree = status.worktrees?.find(item => item.id === binding?.worktree_id);
-    if (!binding || !worktree || ['queued', 'running', 'recovering', 'recovering_effects', 'recovery_bytes']
-      .some(key => !Number.isFinite(Number(worktree[key])) || Number(worktree[key]) !== 0)) {
+    if (!binding || !worktree || typeof binding.worktree_id !== 'string' || !binding.worktree_id.trim() ||
+      ['queued', 'running', 'recovering', 'recovering_effects', 'recovery_bytes']
+        .some(key => worktree[key] !== 0 && worktree[key] !== '0')) {
       // Managed imports use a worktree queue, distinct from database-only
       // writes. Never assume our DB barrier fenced an unfinished file import.
       throw new BrainCommandError('gbrain_import_pending', 'Native source import recovery is still pending.');
@@ -178,7 +179,10 @@ export class GBrain {
     const binding = status.bindings?.find(item => item.source_id === 'default');
     const familyRoot = await this.resolvePath(resolve(homedir(), 'Workspace/care-circle-brain'));
     const canonicalRoot = binding?.local_path ? await this.resolvePath(resolve(binding.local_path, binding.relative_path || '')) : null;
-    if (!canonicalRoot?.startsWith(`${familyRoot}${sep}`) || binding?.state !== 'active' || binding.owner_host_id !== status.host_id) {
+    const localHost = typeof status.host_id === 'string' && status.host_id.trim().length > 0;
+    const ownerHost = typeof binding?.owner_host_id === 'string' && binding.owner_host_id.trim().length > 0;
+    if (!canonicalRoot?.startsWith(`${familyRoot}${sep}`) || binding?.state !== 'active' ||
+        !localHost || !ownerHost || binding.owner_host_id !== status.host_id) {
       throw new BrainCommandError('unsafe_import_owner', 'Native import requires an active canonical owner inside the dedicated Care Circle family brain.');
     }
     try {

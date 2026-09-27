@@ -16,6 +16,8 @@ test('preflight rejects remote or misplaced storage before opening a database', 
   for (const engine of [
     { effective_engine: 'postgres', thin_client: false, database_path: null },
     { effective_engine: 'pglite', thin_client: true, database_path: `${familyRoot}/data` },
+    { effective_engine: 'pglite', database_path: `${familyRoot}/data` },
+    { effective_engine: 'pglite', thin_client: null, database_path: `${familyRoot}/data` },
     { effective_engine: 'pglite', thin_client: false, database_path: '/unrelated/synthetic/data' },
   ]) {
     const calls = [];
@@ -83,6 +85,37 @@ test('native import validates effective relative root and local host ownership',
     } });
     await assert.rejects(db.importWorld('/synthetic/world'), error => error.code === 'unsafe_import_owner');
     assert.equal(calls.length, 1, 'must reject before changing configuration');
+  }
+});
+
+test('missing or malformed worktree counters never establish quiescence', async () => {
+  for (const value of [undefined, null, false, '', ' ', '00', '0.0', NaN, Infinity, [], {}]) {
+    for (const key of ['queued', 'running', 'recovering', 'recovering_effects', 'recovery_bytes']) {
+      const status = writer();
+      status.worktrees[0][key] = value;
+      const db = new GBrain({ run: async () => JSON.stringify(status) });
+      await assert.rejects(db.requireImportQuiescence(), error => error.code === 'gbrain_import_pending');
+    }
+  }
+  const missingIdentity = writer();
+  delete missingIdentity.bindings[0].worktree_id;
+  delete missingIdentity.worktrees[0].id;
+  const db = new GBrain({ run: async () => JSON.stringify(missingIdentity) });
+  await assert.rejects(db.requireImportQuiescence(), error => error.code === 'gbrain_import_pending');
+});
+
+test('missing or malformed matching host identities reject import before configuration', async () => {
+  for (const value of [undefined, null, false, '', ' ', 0]) {
+    const status = writer();
+    status.host_id = value;
+    status.bindings[0].owner_host_id = value;
+    let writes = 0;
+    const db = new GBrain({ resolvePath: pathOnly, run: async args => {
+      if (args[0] !== 'sources') writes++;
+      return JSON.stringify(status);
+    } });
+    await assert.rejects(db.importWorld('/synthetic/world'), error => error.code === 'unsafe_import_owner');
+    assert.equal(writes, 0);
   }
 });
 
