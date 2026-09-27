@@ -59,6 +59,8 @@ The v1 demo as-of date is 2026-09-27 in every service. Reject ingest/extract vis
 
 When a verified actual trained prediction is served from an exact synthetic input cache, response `method` may be `river` only with the explicit warning that this is a cached replay and no live inference occurred. Preserve additive `provenance:{mode:"cached-replay",liveInference:false,model,checkpoint,requestId,sampledAt,inputSha256,promptSha256,outputSha256}` through ingest and web unchanged after validation. Never silently discard that distinction. River status exposes `extractionMode:"cached-replay"` only when such an artifact is verified and available. Unknown inputs fall back or fail explicitly; no arbitrary pasted note is sent remotely. A model response containing unsupported source facts is rejected, including an inferred follow-up date.
 
+Final product disposition at 15:35: both actual canonical-note samples failed validation. No cache artifact or structural repair is served. The provenance contract above is a dormant guard, not an implemented replay claim; the demo remains deterministic and River extraction returns unavailable.
+
 Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.`
 
 ## Brief API, 4703
@@ -81,6 +83,8 @@ Demo note: `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg da
 - `POST /v1/clinic/fetch` with `{}` -> `{clinic:{name,hours,phone,address?},sourceUrl,fetchedAt,mode,evidence}`. Fetch only allowlisted 127.0.0.1:4706 site. Actual browser trace if feasible. No real clinic scraping. UFO extension assets may be prepared; do not claim official extension execution unless verified.
 - `POST /v1/reset` with `{}` -> `{ok:true}` clears ephemeral local procedure captures and replay state for repeatable demos.
 - 4706 `GET /` synthetic clinic website and `/health` returning `{ok:true,service:"sponsors-clinic"}`. The 4705 health identity is `sponsors`. Clinic and pharmacy details are visibly fictional. External sponsor SDK interactions remain gated on approval.
+
+Emre declined remote Memorable submission at 15:34 Pacific. The prepared request is an unsent artifact; no approval record, credential read, account, or remote extraction is authorized. Local CLI and SDK proofs remain authorized.
 
 ## Web, runtime, and acceptance
 
