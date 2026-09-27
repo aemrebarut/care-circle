@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
+import net from 'node:net';
 import { DEMO_NOTE, IDS } from '../../../contract/index.mjs';
 import { createIngestServer } from '../server.mjs';
 import { extractDeterministic } from '../extract.mjs';
@@ -114,5 +115,22 @@ test('River may label verified identical extraction; normalized source metadata 
     const result = await post('/v1/extract', { note: DEMO_NOTE });
     assert.equal(result.data.method, 'river');
     assert.deepEqual(result.data.extraction, good.extraction);
+  });
+});
+
+
+test('unfinished body gets bounded JSON 408 without touching upstream', async () => {
+  await withServer({ requestBodyTimeoutMs: 25, fetchImpl: () => assert.fail('No upstream call allowed') }, async () => {
+    const socket = net.createConnection({ host: '127.0.0.1', port: 4713 });
+    await once(socket, 'connect');
+    const chunks = [];
+    socket.on('data', chunk => chunks.push(chunk));
+    socket.write('POST /v1/ingest HTTP/1.1\r\nHost: 127.0.0.1:4713\r\nContent-Type: application/json\r\nContent-Length: 100\r\n\r\n{');
+    await once(socket, 'end');
+    const response = Buffer.concat(chunks).toString();
+    assert.match(response, /^HTTP\/1\.1 408/);
+    const body = JSON.parse(response.split('\r\n\r\n')[1]);
+    assert.equal(body.error.code, 'request_timeout');
+    socket.destroy();
   });
 });

@@ -56,7 +56,7 @@ function encounter(note, parts, requestedDate, warnings) {
   const opening = parts[0] ?? '';
   const doctors = DOCTORS.filter(doctor => doctor.pattern.test(opening));
   const completedOpening = /^(?:(?:saw|visited)\s+(?:the\s+)?)?(?:cardiology|cardiologist|nephrology|nephrologist|primary care|primary-care|pcp|endocrinology|endocrinologist)(?:\s+(?:visit|appointment))?(?:\s+(?:today|(?:on\s+)?\d{4}-\d{2}-\d{2}))?(?:\s+with\s+(?:Ana|Ben|Celia)(?:\s*(?:,|and|&)\s*(?:Ana|Ben|Celia)){0,2})?[.!]?$/i;
-  if (doctors.length !== 1 || !completedOpening.test(opening)) {
+  if (doctors.length !== 1 || !completedOpening.test(opening) || !/\b(?:today|saw|visited)\b|\b\d{4}-\d{2}-\d{2}\b/i.test(opening)) {
     unsupported('Start with one explicit completed visit specialty and date, such as "Cardiology today with Ana." Unsupported visit wording needs review.');
   }
   const dates = opening.match(/\b\d{4}-\d{2}-\d{2}\b/g) ?? [];
@@ -112,6 +112,7 @@ export function extractDeterministic(input) {
   const changes = medicationChanges(parts, visit.doctorId);
   const questions = [];
   const followUps = [];
+  const unrecognized = [];
   for (const part of parts.slice(1)) {
     if (/^ask\b/i.test(part)) {
       const target = part.match(/^Ask\s+(?:the\s+)?(cardiologist|nephrologist|primary care doctor|endocrinologist)\s+about\s+.+[.!?]?$/i)?.[1];
@@ -123,11 +124,12 @@ export function extractDeterministic(input) {
       if (date && (!validDate(date) || date < visit.date)) unsupported('A requested follow-up date is invalid or earlier than the visit.');
       followUps.push({ text: part, ...(date ? { dueDate: date } : {}) });
     } else if (!/\blisinopril\b/i.test(part)) {
-      if (changes.length) unsupported('Additional source wording could qualify a medication change. Review it before recording.');
-      warnings.push('Unrecognized wording was retained only in the original source note.');
+      unrecognized.push(part);
     }
   }
 
+  if (unrecognized.length && (changes.length || questions.length || followUps.length)) unsupported('Additional source wording could qualify a structured claim. Review the complete note before recording.');
+  if (unrecognized.length) warnings.push('Unrecognized wording was retained only in the original source note.');
   if (!changes.length) warnings.push('No supported medication change was extracted; the complete note remains the source record.');
   if (/\b(?:tuesday|monday|wednesday|thursday|friday|saturday|sunday|tomorrow|next week)\b/i.test(note)) warnings.push('Relative follow-up wording is preserved verbatim; no due date was inferred.');
   return { extraction: { visit, medicationChanges: changes, questions, followUps }, method: 'deterministic', warnings };

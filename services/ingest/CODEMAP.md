@@ -27,10 +27,10 @@ GET /health. POST /v1/extract {note,authorId?,date?} returns {extraction,method,
 
 ## Gotchas
 
-Strict deterministic baseline recognizes a completed visit and one explicit lisinopril change. It rejects historical, uncertain, negated, planned, refused or qualified changes, including qualifiers split across statements. Unknown contextual text around a medication change fails closed. Source-only notes can retain unrecognized text with warnings. Author is not an attendee. Relative due dates stay in source text. Original note is preserved verbatim.
+Strict deterministic baseline recognizes a completed visit and one explicit lisinopril change. It rejects historical, uncertain, negated, planned, refused or qualified changes, including qualifiers split across statements. Unknown contextual text around any structured claim fails closed. Source-only notes can retain unrecognized text with warnings. Author is not an attendee. Relative due dates stay in source text. Original note is preserved verbatim.
 
 No credentials or external APIs. INGEST_USE_RIVER=1 only enables loopback River; output must exactly match validated deterministic evidence or fall back honestly. No local success cache, so brain reset and restart stay authoritative. Request/read/response limits and upstream timeouts are bounded. All data is synthetic. Not medical advice.
 
 ## Milestone evidence
 
-M1: 46 unit and HTTP tests pass. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime handover ready; no persistent development PID was started.
+M1: 52 unit and HTTP tests pass. Exact demo extraction, scoped attendees, context/schedule/history rejection, upstream uncertainty, stable retry keys and optional model fallback covered. Runtime owns the live service; read-only smoke passed. Added JSON 408 for incomplete body uploads and split-qualifier guards for questions and follow-ups.

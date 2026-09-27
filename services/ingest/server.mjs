@@ -20,23 +20,42 @@ function json(response, status, body) {
   response.end(bytes);
 }
 
-async function bodyJson(request) {
+async function bodyJson(request, timeoutMs) {
   if (!/^application\/json(?:\s*;|$)/i.test(request.headers['content-type'] ?? '')) throw new IngestError(415, 'unsupported_media_type', 'Use application/json.');
   if (request.headers['content-encoding'] && request.headers['content-encoding'] !== 'identity') throw new IngestError(415, 'unsupported_encoding', 'Compressed request bodies are not supported.');
   if (Number(request.headers['content-length']) > MAX_BODY_BYTES) throw new IngestError(413, 'body_too_large', 'Request body exceeds 64 KiB.');
-  const chunks = [];
-  let size = 0;
-  const timer = setTimeout(() => request.destroy(), 10000);
-  timer.unref();
-  try {
-    for await (const chunk of request) {
+  const bytes = await new Promise((resolve, reject) => {
+    const chunks = [];
+    let size = 0;
+    let settled = false;
+    const finish = (error) => {
+      if (settled) return;
+      settled = true;
+      clearTimeout(timer);
+      request.off('data', onData);
+      request.off('end', onEnd);
+      request.off('error', onError);
+      request.off('aborted', onAborted);
+      if (error) { request.resume(); reject(error); }
+      else resolve(Buffer.concat(chunks));
+    };
+    const onData = chunk => {
       size += chunk.length;
-      if (size > MAX_BODY_BYTES) throw new IngestError(413, 'body_too_large', 'Request body exceeds 64 KiB.');
-      chunks.push(chunk);
-    }
-    try { return JSON.parse(Buffer.concat(chunks).toString('utf8')); }
-    catch { throw new IngestError(400, 'invalid_json', 'Request body must be valid JSON.'); }
-  } finally { clearTimeout(timer); }
+      if (size > MAX_BODY_BYTES) finish(new IngestError(413, 'body_too_large', 'Request body exceeds 64 KiB.'));
+      else chunks.push(chunk);
+    };
+    const onEnd = () => finish();
+    const onError = () => finish(new IngestError(400, 'request_interrupted', 'Request body could not be read.'));
+    const onAborted = () => finish(new IngestError(400, 'request_interrupted', 'Request body was interrupted.'));
+    const timer = setTimeout(() => finish(new IngestError(408, 'request_timeout', 'Request body was not completed within the allowed time.')), timeoutMs);
+    timer.unref();
+    request.on('data', onData);
+    request.once('end', onEnd);
+    request.once('error', onError);
+    request.once('aborted', onAborted);
+  });
+  try { return JSON.parse(new TextDecoder('utf-8', { fatal: true }).decode(bytes)); }
+  catch { throw new IngestError(400, 'invalid_json', 'Request body must be valid UTF-8 JSON.'); }
 }
 
 async function boundedJson(response) {
@@ -78,8 +97,11 @@ function validApplied(value) {
     ((typeof value.revision === 'string' && value.revision.trim().length > 0) || (Number.isSafeInteger(value.revision) && value.revision > 0));
 }
 
-export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstreamTimeoutMs = 90000, riverTimeoutMs = 2500 } = {}) {
+export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstreamTimeoutMs = 90000, riverTimeoutMs = 2500, requestBodyTimeoutMs = 10000 } = {}) {
   const server = http.createServer(async (request, response) => {
+    // A client may disconnect before or after validation. Never let a later
+    // IncomingMessage error turn a bounded request failure into a process crash.
+    request.on('error', () => {});
     try {
       const url = new URL(request.url, `http://${HOST}:${PORTS.ingest}`);
       if (request.method === 'GET' && url.pathname === '/health') {
@@ -88,7 +110,7 @@ export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstre
       }
       if (!['/v1/extract', '/v1/ingest'].includes(url.pathname)) throw new IngestError(404, 'not_found', 'Route not found.');
       if (request.method !== 'POST') throw new IngestError(405, 'method_not_allowed', 'This route requires POST.');
-      const input = await bodyJson(request);
+      const input = await bodyJson(request, requestBodyTimeoutMs);
       const commit = url.pathname === '/v1/ingest';
       const normalized = normalizeInput(input, { commit });
       let result = extractDeterministic(input);
@@ -131,6 +153,7 @@ export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstre
     } catch (error) {
       if (response.headersSent || response.destroyed) return;
       const known = error instanceof IngestError;
+      if (!request.complete) response.setHeader('connection', 'close');
       json(response, known ? error.status : 500, {
         error: { code: known ? error.code : 'internal_error', message: known ? error.message : 'Ingest could not complete this request.', ...(known ? error.details : {}) },
       });

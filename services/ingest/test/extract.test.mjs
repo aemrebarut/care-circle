@@ -30,7 +30,7 @@ test('explicit visit date is recognized and source whitespace retained', () => {
 });
 
 for (const note of [
-  '', 'What did the doctor say?', 'Dermatology today with Ana.',
+  '', 'Cardiology.', 'Cardiology with Ana.', 'What did the doctor say?', 'Dermatology today with Ana.',
   'Cardiology and nephrology today with Ana.', 'Cardiology tomorrow with Ana.',
   'Cardiology yesterday with Ana.', 'Cardiology 2026-02-30 with Ana.',
   'Cardiology today. Dr. Chen did not increase lisinopril to 20 mg daily.',
@@ -45,6 +45,9 @@ for (const note of [
   'Cardiology today. Last week the nephrologist increased lisinopril to 20 mg daily.',
   'Cardiology appointment cancelled today with Ana.',
   'Cardiology referral requested today with Ana.',
+  'Cardiology today. Wants potassium rechecked; if needed.',
+  'Cardiology today. If needed:\nWants potassium rechecked.',
+  'Cardiology today. Ask the nephrologist about potassium. Unless already resolved.',
   'Cardiology today. Ask Ana what the nephrologist said.',
   'Cardiology today. Ask the insurer to cover cardiology.',
   'Cardiology today. Lisinopril up to 20 mg daily; if potassium is normal.',

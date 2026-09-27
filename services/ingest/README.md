@@ -26,7 +26,7 @@ The supported demo note is:
 
 > Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily. Wants potassium rechecked before nephrology Tuesday. Ask the nephrologist about the potassium recheck.
 
-The baseline supports one explicit completed specialty visit opening and one affirmative completed lisinopril change with a single dose in mg and a complete supported frequency. It rejects intent, refusal, negation, uncertainty, historical changes, competing doses, unsupported schedule suffixes, cancelled visits, and unknown qualifying text around a medication change. Other source-only visits can preserve unrecognized text with warnings. Unsupported clinical facts never become invented changes. This is a deliberately limited grammar, not a general medical language model.
+The baseline supports one explicit completed specialty visit opening and one affirmative completed lisinopril change with a single dose in mg and a complete supported frequency. It rejects intent, refusal, negation, uncertainty, historical changes, competing doses, unsupported schedule suffixes, cancelled visits, and unknown qualifying text around any structured claim. Other source-only visits can preserve unrecognized text with warnings. Unsupported clinical facts never become invented changes. This is a deliberately limited grammar, not a general medical language model.
 
 Questions keep their source statement. Potassium follow-ups require explicit request wording. Relative wording such as Tuesday is preserved without inventing a due date. An explicit supported `on` or `by` calendar date may become `dueDate`. Changes attributed to another specialist require separate review.
 
@@ -36,7 +36,7 @@ All mutation goes through loopback HTTP to brain `127.0.0.1:4701/v1/ingest`. Bra
 
 Without a supplied key, ingest derives a stable SHA-256 key from the exact note, effective author and event date. Repeat the same key and same source to recover a timed-out or disconnected attempt. The error response includes the key and an `outcome` of `unknown` when a commit may have happened. A changed payload using an existing key receives HTTP 409. Success is returned only after a valid brain commit receipt.
 
-Request bodies are bounded to 64 KiB, notes to 12000 characters, and upstream bodies to 1 MiB. Request reads have a 10-second bound, brain calls a 90-second bound and optional River calls a 2.5-second bound. Redirects are forbidden. Errors use `{error:{code,message,...}}`, including 400 invalid input, 413 oversized bodies, 415 unsupported media, 422 unsupported note, and 502/504 unconfirmed upstream results.
+Request bodies are bounded to 64 KiB, notes to 12000 characters, and upstream bodies to 1 MiB. Request reads have a 10-second bound, brain calls a 90-second bound and optional River calls a 2.5-second bound. Redirects are forbidden. Errors use `{error:{code,message,...}}`, including 400 invalid input, 408 incomplete request, 413 oversized bodies, 415 unsupported media, 422 unsupported note, and 502/504 unconfirmed upstream results.
 
 ## River reality
 
