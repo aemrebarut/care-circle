@@ -1,0 +1,9 @@
+{
+  "name": "@care-circle/runtime",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Loopback service lifecycle and repeatable demo commands",
+  "scripts": {"test": "node --test *.test.mjs", "smoke": "node cli.mjs smoke"},
+  "engines": {"node": ">=22"}
+}
