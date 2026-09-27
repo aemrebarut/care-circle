@@ -1,0 +1,19 @@
+# Brief lane review evidence
+
+Date: 2026-09-27. Owner: cc-brief. All planner and reviewer work used gpt-6-astra with xhigh reasoning. Reviews were read-only; the lane owner applied all changes in services/brief/.
+
+## Planner
+
+Recommended one revision-consistent brain HTTP snapshot, bidirectional persisted graph traversal, strict event-date filtering, explicit source provenance and separate handling of historical changes versus unresolved source discrepancies. Cases informed the focused fixture suite. The lead clarified that v1 has no reconciliation action, including when a later visit reverts to a matching dose.
+
+## Reviewer
+
+Targeted clean receipt for bb3cda8: 21 tests and independent assertions pass. Verified medication-specific source selection, numeric dose boundaries, long source-line excerpts, meaningful source citation preservation, explicit foreign-patient exclusion, future-only dose suppression, question origin reachability and historical discrepancy labels. No remaining findings in that review scope.
+
+The track reviewer separately reproduced and verified: acetaminophen 500 mg cites its own line; pharmacy 10 mg then visit 20 mg then visit 10 mg remains unresolved with the original unequal sources; older visit 5 mg then visit 10 mg before matching pharmacy 10 mg does not create a false discrepancy. The world seed contains the equivalent amlodipine 2.5 mg to 5 mg historical case.
+
+## Verification boundary
+
+`npm test --prefix services/brief` runs the domain fixtures and bounded loopback HTTP checks. It does not prove the live GBrain path. `node services/brief/smoke.mjs` separately verifies live endpoints, source resolution and exact source-quote inclusion once runtime confirms brain readiness. Runtime owns all persistent service PIDs. Full demo mutation and reset windows belong to runtime and QA.
+
+No sponsor SDK is used in the brief service. No external submissions, credentials or actual patient data were used.
