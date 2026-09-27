@@ -30,7 +30,7 @@ function busy(button, isBusy, label) { if (isBusy) { button.dataset.originalLabe
 async function api(path, { method = 'GET', body, timeout = 135000 } = {}) {
   let response;
   try { response = await fetch(`/api/${path}`, { method, headers: body ? { 'Content-Type': 'application/json' } : {}, body: body ? JSON.stringify(body) : undefined, signal: AbortSignal.timeout(timeout), cache: 'no-store' }); }
-  catch (error) { throw new Error(error.name === 'TimeoutError' ? 'This is taking longer than expected. The family brain may still be working. Refresh to check before trying again.' : 'The local service is not reachable. Please try again when it is available.'); }
+  catch (error) { throw new Error(error.name === 'TimeoutError' ? 'The local service did not respond in time. The request may still be running.' : 'The local service is not reachable. Please try again when it is available.'); }
   let payload;
   try { payload = await response.json(); } catch { throw new Error('The service returned an unreadable response. Nothing has been confirmed.'); }
   if (!response.ok || payload?.error) {
@@ -160,6 +160,25 @@ function renderAlerts() {
   replace('#alerts', state.contradictions.map(item=>el('article',{class:'alert-item'},el('h3',{},item.title || 'Medication sources disagree'),el('p',{},item.description || 'These source records show different doses. The difference remains unresolved.'),el('p',{class:'tiny'},'A newer visit does not resolve a different pharmacy record.'),citationChips((item.claims || []).map(claim=>({...claim.citation,pageId:claim.citation?.pageId || claim.sourceId,title:claim.citation?.title || titleFor(claim.sourceId)}))))));
 }
 
+function sourceInline(text) {
+  const pieces = []; const pattern = /\[\[([a-z0-9_/-]+)(?:\|([^\]]+))?\]\]/gi; let cursor = 0;
+  for (const match of text.matchAll(pattern)) { pieces.push(text.slice(cursor,match.index),sourceButton(match[1],match[2] || titleFor(match[1]))); cursor = match.index + match[0].length; }
+  pieces.push(text.slice(cursor)); return pieces;
+}
+function sourceNarrative(body) {
+  const blocks = String(body || '').split(/\n\s*\n/).filter(Boolean);
+  return el('div',{class:'source-body'},blocks.map((block,index)=>{
+    if (index === 0 && /^# /.test(block)) return null;
+    const heading = block.match(/^#{1,6} (.+)$/);
+    if (heading) return el('h3',{},heading[1]);
+    if (block.split('\n').every(line=>/^[-*] /.test(line))) return el('ul',{},block.split('\n').map(line=>el('li',{},sourceInline(line.slice(2)))));
+    return el('p',{},sourceInline(block));
+  }));
+}
+function sourceField(key,value) {
+  if (/Id$/.test(key)) return sourceButton(String(value),titleFor(String(value)));
+  return String(value);
+}
 let sourceRequest = 0;
 async function openSource(id, citation) {
   const request = ++sourceRequest;
@@ -172,11 +191,11 @@ async function openSource(id, citation) {
     const page = data.page; if (!page) throw new Error('This source record was not returned.');
     const sourceDate = citation?.date || page.fields?.date;
     const attendees = citation?.attendeeIds || page.fields?.attendeeIds || [];
-    const fields = Object.entries(page.fields || {}).filter(([key,value])=>!['claims','summary','medicationChanges','followUps'].includes(key) && ['string','number','boolean'].includes(typeof value));
-    replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},String(value))])),el('h3',{},'Original source'),el('div',{class:'source-body'},page.body || 'This source has no narrative text.'),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
+    const fields = Object.entries(page.fields || {}).filter(([key,value])=>!['claims','summary','medicationChanges','followUps','synthetic'].includes(key) && ['string','number','boolean'].includes(typeof value));
+    replace('#source-content',el('span',{class:'pill'},typeLabels[page.type] || page.type),el('h2',{id:'source-title'},page.title),el('p',{class:'source-meta'},sourceDate ? `Recorded ${dateLabel(sourceDate, true)}` : 'Date not specified in this record'),attendees.length && el('p',{class:'source-meta'},`Present: ${attendees.map(titleFor).join(', ')}`),citation?.quote && el('blockquote',{class:'source-quote'},citation.quote),fields.length && el('dl',{class:'source-fields'},fields.map(([key,value])=>[el('dt',{},key.replace(/Id$/,'').replace(/([A-Z])/g,' $1').replace(/^./,letter=>letter.toUpperCase())),el('dd',{},sourceField(key,value))])),el('h3',{},'Source record'),page.body ? sourceNarrative(page.body) : el('p',{class:'source-body'},'This source has no narrative text.'),page.body && el('details',{},el('summary',{},'View original source Markdown'),el('pre',{},page.body)),page.links?.length && el('section',{},el('h3',{},'Connected records'),el('div',{class:'source-chips'},page.links.map(link=>sourceButton(link.target,titleFor(link.target))))),el('details',{},el('summary',{},'View structured source fields'),el('pre',{},JSON.stringify(page.fields || {},null,2))),el('p',{class:'source-meta'},`Source ID: ${page.id}`));
   } catch(error) { if (request === sourceRequest) replace('#source-content',el('h2',{id:'source-title'},'Source unavailable'),errorBlock(error,()=>openSource(id,citation))); }
 }
-function invalidateNote() { state.pendingAuthorId = null; try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
+function invalidateNote() { state.pendingSave = false; state.pendingAuthorId = null; try { sessionStorage.removeItem('care-circle-pending-note'); } catch {} state.preview = null; state.noteKey = null; state.noteSnapshot = null; $('#note-preview').hidden = true; replace('#note-preview'); setStatus('#note-status',''); }
 function notePayload() { return {note:$('#note-input').value.trim(),authorId:$('#note-author').disabled ? state.pendingAuthorId || undefined : $('#note-author').value || undefined,date:'2026-09-27'}; }
 function renderPreview(result) {
   const extraction = result.extraction; if (!extraction?.visit) throw new Error('The extractor did not return a reviewable visit. Nothing has been saved.');
@@ -187,19 +206,21 @@ function renderPreview(result) {
 }
 async function reviewNote(event) {
   event.preventDefault(); const payload = notePayload(); if (!payload.note) return;
-  const button = $('#review-note'); busy(button,true,'Reading your note...'); $('#note-preview').hidden = true; setStatus('#note-status','Extracting details for your review. Nothing has been saved yet.');
-  try { const result = await api('ingest/extract',{method:'POST',body:payload}); if (JSON.stringify(payload) !== JSON.stringify(notePayload())) { setStatus('#note-status','The note changed while it was being read. Review it again to see the latest details.'); return; } state.preview = result; state.noteSnapshot = payload; state.noteKey ||= crypto.randomUUID(); renderPreview(result); setStatus('#note-status','Review the extracted details below. The family record is unchanged.'); }
-  catch(error) { setStatus('#note-status',errorMessage(error),'error'); }
+  const button = $('#review-note'); busy(button,true,'Reading your note...'); $('#note-preview').hidden = true; setStatus('#note-status',state.pendingSave ? 'Reading the pending note again. Its earlier save is still unconfirmed.' : 'Extracting details for your review. This review does not save a note.');
+  try { const result = await api('ingest/extract',{method:'POST',body:payload}); if (JSON.stringify(payload) !== JSON.stringify(notePayload())) { setStatus('#note-status','The note changed while it was being read. Review it again to see the latest details.'); return; } state.preview = result; state.noteSnapshot = payload; state.noteKey ||= crypto.randomUUID(); renderPreview(result); setStatus('#note-status',state.pendingSave ? 'Review the extracted details below. The earlier save is still unconfirmed; you can retry this same note.' : 'Review the extracted details below. Save is a separate step.'); }
+  catch(error) { setStatus('#note-status',`${errorMessage(error)}${state.pendingSave ? ' The earlier save is still unconfirmed.' : ''}`,'error'); }
   finally { busy(button,false); }
 }
 async function saveNote() {
   if (!state.preview || !state.noteSnapshot || JSON.stringify(state.noteSnapshot) !== JSON.stringify(notePayload())) { invalidateNote(); setStatus('#note-status','The note changed. Review it again before saving.','error'); return; }
   const button = $('#save-note'); busy(button,true,'Saving the source and its links...'); $('#review-note').disabled = true; $('#note-input').disabled = true; $('#note-author').disabled = true; $('#sample-note').disabled = true; setStatus('#note-status','Saving to the family brain. This may take a moment.');
   try {
+    state.pendingSave = true;
     try { sessionStorage.setItem('care-circle-pending-note',JSON.stringify({payload:state.noteSnapshot,key:state.noteKey})); } catch {}
     const result = await api('ingest/ingest',{method:'POST',body:{...state.noteSnapshot,idempotencyKey:state.noteKey}});
     if (!result.applied?.ok || !result.applied?.visitId) throw new Error('The service has not confirmed this note was saved. Check the record before retrying.');
     try { sessionStorage.removeItem('care-circle-pending-note'); } catch {}
+    state.pendingSave = false;
     state.preview = null; $('#note-preview').hidden = true;
     setStatus('#note-status','Note saved. Refreshing the connected family record...','success');
     const refreshed = await refreshData();
@@ -315,7 +336,7 @@ try {
   if (pending?.payload?.note && typeof pending.payload.note === 'string' && pending.payload.note.length <= 12000 && typeof pending.key === 'string' && pending.key.length <= 160) {
     $('#note-input').value = pending.payload.note;
     if ($$('#note-author option').some(option=>option.value === pending.payload.authorId)) $('#note-author').value = pending.payload.authorId;
-    state.noteKey = pending.key; state.noteSnapshot = pending.payload; state.pendingAuthorId = pending.payload.authorId;
+    state.pendingSave = true; state.noteKey = pending.key; state.noteSnapshot = pending.payload; state.pendingAuthorId = pending.payload.authorId;
     setStatus('#note-status','A previous save was not confirmed in this browser. Check the family record, or review this same note to retry safely.');
   }
 } catch {}

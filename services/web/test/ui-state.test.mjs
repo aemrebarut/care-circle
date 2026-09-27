@@ -154,8 +154,11 @@ test('an unknown save is restored before initial requests settle and retains its
   await harness.boot;
   assert.equal(harness.document.querySelector('#note-author').value, pending.payload.authorId);
   const review = harness.document.querySelector('#note-form').dispatch('submit');
+  assert.match(harness.document.querySelector('#note-status').textContent, /earlier save is still unconfirmed/);
   harness.reply('ingest/extract', { extraction: { visit: { summary: 'Synthetic reviewed visit.' }, medicationChanges: [], questions: [], followUps: [] }, method: 'deterministic', warnings: [] });
   await review;
+  assert.match(harness.document.querySelector('#note-status').textContent, /earlier save is still unconfirmed/);
+  assert.doesNotMatch(harness.document.querySelector('#note-status').textContent, /Nothing has been saved|family record is unchanged/);
   const save = harness.document.querySelector('#save-note').dispatch('click');
   const request = harness.reply('ingest/ingest', failure('Synthetic uncertain save.'), 503);
   const payload = JSON.parse(request.options.body);
@@ -262,4 +265,25 @@ test('late startup replies cannot overwrite records refreshed after a confirmed 
   assert.match(harness.document.querySelector('#medication-list').textContent, /20 mg/);
   assert.doesNotMatch(harness.document.querySelector('#medication-list').textContent, /10 mg/);
   assert.match(harness.document.querySelector('#note-status').textContent, /Saved to the family brain/);
+});
+
+test('source narrative keeps source HTML inert and preserves the original Markdown', async () => {
+  const harness = createHarness();
+  const sourceId = 'visits/synthetic-source';
+  harness.reply('brain/state', family);
+  harness.reply('brain/medications', { medications: [{ ...medications.medications[0], citations: [{ pageId: sourceId, title: 'Synthetic source', quote: 'Recorded source quote.' }] }] });
+  harness.reply('brief/contradictions', { contradictions: [] });
+  harness.reply('river/status', { mode: 'deterministic', limitations: [] });
+  harness.reply('sponsors/status', { memorable: { mode: 'local-simulation' }, ufo: { mode: 'local-http-fetch' } });
+  await harness.boot;
+  const opening = harness.document.querySelector('#medication-list').querySelector('button').dispatch('click');
+  const body = '# Synthetic source\n\n<script>untrustedSource()</script>\n\nRecorded by [[people/ana-alvarez]].\n\n[[javascript:unsafe]]';
+  harness.reply(`brain/pages/${encodeURIComponent(sourceId)}`, { page: { id: sourceId, type: 'visit', title: 'Synthetic source', body, fields: {}, links: [] } });
+  await opening;
+  const drawer = harness.document.querySelector('#source-content');
+  assert.match(drawer.textContent, /<script>untrustedSource\(\)<\/script>/);
+  assert.equal(drawer.querySelectorAll('script').length, 0);
+  assert.ok(drawer.querySelectorAll('pre').some(node => node.textContent === body));
+  assert.ok(drawer.querySelectorAll('button').some(node => node.textContent === 'Ana Alvarez'));
+  assert.match(drawer.textContent, /\[\[javascript:unsafe\]\]/);
 });
