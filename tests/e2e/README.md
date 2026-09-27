@@ -35,7 +35,7 @@ If a full-cycle check fails, the runner skips later checks and stops further cyc
 - Nephrology brief starts at the September 15 visit, includes every subsequent visit to other doctors, the demo medication change and potassium question, and source citations.
 - Procedure replay uses a different sibling, and clinic fetch identifies the local synthetic source.
 - River and sponsor status expose actual modes and limitations; measured score provenance is also independently reviewed.
-- If River exposes cached replay, exact-input hashes, recorded request/checkpoint provenance and no-live-inference warnings must survive extraction and ingest. Different inputs cannot silently reuse the cached prediction.
+- The final demo explicitly uses deterministic extraction and River extract returns 503. Two invalid trained demo predictions were rejected; no cached or live River inference ships.
 
 The temporal regression visits run before the second clean reset in each cycle. The canonical demo follows that reset, so regression fixtures do not contaminate the final demo state. Doctor last-visit fields and displayed source text must agree after the temporal checks.
 

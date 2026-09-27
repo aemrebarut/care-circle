@@ -106,15 +106,6 @@ const fingerprint = (s) => JSON.stringify(stable({
   }
 }));
 const unchanged = (before, after, label) => assert.deepEqual(stable(after), stable(before), `${label}: state, revision and timestamps must remain unchanged`);
-function validateCachedProvenance(result, input = { note: DEMO_NOTE, authorId: IDS.ana, date: '2026-09-27' }) {
-  assert.equal(result.method, 'river');
-  assert.equal(result.provenance?.mode, 'cached-replay', 'Saved River output must retain its cached-replay label');
-  assert.equal(result.provenance.liveInference, false, 'Saved River output must not claim live inference');
-  for (const key of ['model', 'checkpoint', 'requestId', 'sampledAt']) nonempty(result.provenance[key], `Replay ${key}`);
-  for (const key of ['inputSha256', 'promptSha256', 'outputSha256']) assert.match(result.provenance[key], /^[a-f0-9]{64}$/);
-  assert.equal(result.provenance.inputSha256, createHash('sha256').update(JSON.stringify(stable(input))).digest('hex'), 'Replay must identify the exact synthetic input');
-  assert(result.warnings.some((warning) => /cached replay/i.test(warning) && /no live inference/i.test(warning)), 'Replay warning must disclose no live inference');
-}
 
 async function page(id) {
   if (!sourceCache.has(id)) {
@@ -270,7 +261,9 @@ async function validateBrief(s, expectedVisitId) {
 async function statusChecks() {
   await check('River mode and metric provenance are explicit', async () => {
     const data = await request('river', '/v1/status');
-    assert(['deterministic', 'river'].includes(data.mode), 'River mode must be deterministic or river');
+    assert.equal(data.mode, 'deterministic', 'Final demo must disclose deterministic fallback; no cached or live River inference ships');
+    assert.equal(data.extractionAvailable, false);
+    assert(data.extractionMode === undefined || data.extractionMode === 'unavailable', 'River extraction must remain explicitly unavailable');
     assert(data.trainingStatus !== undefined && data.trainingStatus !== null, 'River trainingStatus missing');
     assert.equal(data.externalSubmissionAuthorized, true);
     assert(Array.isArray(data.limitations) && data.limitations.length && data.limitations.every((item) => typeof item === 'string' && item), 'River limitations missing');
@@ -292,16 +285,6 @@ async function statusChecks() {
       const extraction = await post('river', '/v1/extract', { note: DEMO_NOTE }, { raw: true });
       assert.equal(extraction.status, 503, 'Unavailable River extractor must report failure honestly');
       nonempty(extraction.data.error?.code, 'River unavailable error code');
-    }
-    if (data.extractionMode === 'cached-replay') {
-      assert.equal(data.mode, 'river'); assert.equal(data.extractionAvailable, true);
-      assert.equal(data.replay?.mode, 'cached-replay'); assert.equal(data.replay.liveInference, false);
-      const replay = await post('river', '/v1/extract', { note: DEMO_NOTE, authorId: IDS.ana, date: '2026-09-27' });
-      validateCachedProvenance(replay);
-      for (const input of [{ note: DEMO_NOTE, authorId: IDS.ben }, { note: DEMO_NOTE.replace('20 mg', '30 mg'), authorId: IDS.ana }]) {
-        const uncached = await post('river', '/v1/extract', input, { raw: true });
-        assert.equal(uncached.status, 503, 'Different input must not reuse a cached River prediction');
-      }
     }
     const validateScore = (score, label) => {
       const counts = score?.counts;
@@ -426,9 +409,8 @@ async function fullCycle(cycle) {
   await check('Demo extraction is supported and nonmutating', async () => {
     const before = await state();
     const result = await post('ingest', '/v1/extract', { note: DEMO_NOTE, authorId: IDS.ana });
-    assert(['river', 'deterministic'].includes(result.method));
+    assert.equal(result.method, 'deterministic', 'Final demo note uses the explicitly disclosed deterministic extractor');
     array(result.warnings, 'extraction warnings');
-    if (result.method === 'river') validateCachedProvenance(result);
     assert.equal(result.extraction?.visit?.doctorId, IDS.cardiologist);
     assert.equal(result.extraction.visit.date, '2026-09-27');
     assert.deepEqual(result.extraction.visit.attendeeIds, [IDS.ana]);
@@ -512,7 +494,7 @@ async function fullCycle(cycle) {
   const ingested = await check('Ingest demo records 20 mg and retains 10 mg pharmacy source', async () => {
     const [result, concurrent] = await Promise.all([post('ingest', '/v1/ingest', payload), post('ingest', '/v1/ingest', payload)]);
     assert.equal(result.applied?.ok, true); applied = result.applied;
-    if (result.method === 'river') validateCachedProvenance(result);
+    assert.equal(result.method, 'deterministic', 'Saved demo note must not claim River inference or replay');
     assert.equal(concurrent.applied?.ok, true);
     assert.equal(concurrent.applied?.visitId, applied.visitId, 'Concurrent first writes must share one visit');
     nonempty(applied.visitId, 'applied visitId'); array(applied.changedPageIds, 'changedPageIds');
