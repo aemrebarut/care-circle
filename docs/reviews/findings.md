@@ -54,7 +54,7 @@ Evidence: independent Astra xhigh subreviewer pure extractDeterministic imports.
 
 ## R7: Detached qualifier or correction does not block a change
 
-Priority P1. Owner cc-ingest. Open, reported 15:01 Pacific.
+Priority P1. Owner cc-ingest. Fixed and independently reverified at 15:04 Pacific.
 
 The anchored medication grammar fixes R1, R4 and R5 within a statement, but the note splitter separates semicolon and newline clauses first. `Cardiology today with Ana. Dr. Chen increased lisinopril to 20 mg daily; as needed.` and a newline before `as needed` still produce a confirmed daily claim. A following `Correction: that did not happen.` also leaves the claim intact. Check context outside the matched medication sentence and fail closed for unconsumed qualifiers or corrections.
 
@@ -62,7 +62,7 @@ Evidence: independent pure-function regression after the 31-test owner suite pas
 
 ## R8: Interrupted runtime operation can strand its lock
 
-Priority P2. Owner cc-runtime. Open, reported 15:00 Pacific.
+Priority P2. Owner cc-runtime. Fix passes independent static review; 55 owner-reported synthetic lifecycle/hook tests pass, including lock recovery and cancellation.
 
 Initial packages/runtime/lifecycle.mjs retried an existing operation.lock without verifying the owner. Cleanup lived only in async finally, with no CLI signal handling. Process interruption could leave start, stop and reset permanently timing out. Recovery must verify that the recorded owner is dead and must never delete a lock held by a live unknown process.
 
@@ -70,7 +70,7 @@ Evidence: independent static control-flow review. No lifecycle interruption test
 
 ## R9: Missing River output counted as valid JSON
 
-Priority P2. Owner cc-river. Owner reports fix; independent reverification pending.
+Priority P2. Owner cc-river. Fixed and directly reverified at 15:04 Pacific. Missing output and null transport result receive no JSON-valid credit; literal model text null receives JSON-valid credit but fails schema validation.
 
 Initial eval.mjs classified absent output as jsonValid true. A pure score call with one synthetic gold record and zero predictions yielded predictions 0 and JSON validity 1.0. Schema and exactness metrics still failed. Missing or failed transport results must not count as parsed model JSON.
 
@@ -81,6 +81,42 @@ Evidence: independent pure score() reproduction. No external request or training
 At 15:00, `node --test services/ingest/test/extract.test.mjs` passed 31 of 31 tests, including the exact demo and all original intent/refusal, suffix, historical, cancelled/referral cases. Independent checks also passed attendance negatives and two/three-attendee positives.
 
 Direct brief assertions passed: same-dose acetaminophen quote selects the correct source line; the lead's pharmacy10 / visit20 / later visit10 regression preserves both original sources and uses temporalStatus past-discrepancy-unreconciled; an old visit5 / latest visit10 / pharmacy10 control returns no contradiction.
+
+At 15:04, the independent extractor recheck passed 40 pure unit tests and 24 additional in-memory assertions. R7 semicolon/newline qualifiers and correction cases now reject, while the complete demo extraction is unchanged. The owner subsequently reported a 52-test extraction/HTTP suite after additional request handling hardening. That larger total is owner-reported rather than a reviewer execution receipt.
+
+## R10: Paired evaluation verifier accepts incompatible run metadata
+
+Priority P2. Owner cc-river. Open, reported 15:04 Pacific.
+
+The initial compare() verifier accepted paired true with base temperature 0, seed 1 and trained temperature 1, seed 99, plus a trained checkpoint different from the protocol. Prompt/input hashes alone did not validate generation settings and checkpoint provenance. The training runner itself uses matching settings; this finding concerns the verifier and is not evidence that an actual model run was mismatched.
+
+Evidence: independent pure comparison with fabricated review-only rows and matching input hashes. No held-out data was submitted or altered.
+
+## R11: Training protocol handoff and evaluation CLI disagree
+
+Priority P2. Owner cc-river. Open, reported 15:04 Pacific.
+
+The initial training runner wrote a payload-manifest-shaped protocol.json, while eval.mjs expected top-level testSha256, promptSha256 and trainedCheckpoint fields. No emitted conversion was present at that snapshot. The advertised CLI path needs a compatible protocol artifact and an offline handoff test.
+
+Evidence: independent static producer/consumer inspection. Training was not invoked.
+
+## R12: Future visit changes current dose and source chronology diverges
+
+Priority P1 for future-date inconsistency, P2 for stale doctor prose. Owner cc-brain, with extraction guard owned by cc-ingest. Open implementation; contract resolved in f2c881a.
+
+A direct in-memory brain ingestion dated October 1 produced lisinopril dose 20 mg in medications(), although the demo as-of date is September 27 and brief excludes future claims. It also updated doctor.fields.lastVisitDate to October 1 while the doctor body still said September 23.
+
+Lead decision: reject future visits with 422 before mutation at extraction and brain boundaries. Future follow-up due dates remain valid. A doctor's lastVisitDate body text must stay consistent with fields and cite the causing visit. QA received regression requirements; reviewer will verify owner code directly.
+
+Evidence: applyIngest() with a cloned synthetic seed, followed by medications() and doctor page inspection. No shared GBrain or HTTP mutation.
+
+## R13: Printable warnings and past discrepancy labels
+
+Priority P2. Owner cc-web. Open, reported 15:06 Pacific.
+
+Initial renderBrief omitted brief.warnings, losing record-gap caveats in the printable view. Medication rows always used Sources disagree even when temporalStatus was past-discrepancy-unreconciled and the latest records agreed. Preserve warnings in the print artifact and distinguish an earlier unresolved discrepancy.
+
+Static UI review otherwise found stable same-page retry keys, disabled editing while saving, success receipt checks, text-node source rendering and truthful local sponsor labels. Pending-key persistence across browser reload was suggested as resilience improvement, not a release blocker.
 
 ## Positive observations
 

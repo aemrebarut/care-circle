@@ -4,7 +4,9 @@ Owner: cc-review. Scope: docs/reviews/ only. Date: 2026-09-27.
 
 ## Current verdict
 
-14:55 Pacific: contract and build plan are implementable. Service implementation and runtime evidence are pending, so this is not a release sign-off. No P0 defect is established. The P1 contract clarification is resolved in docs/CONTRACT.md: displaying the newest recorded visit dose must not resolve an unequal pharmacy claim. The v1 API has no reconciliation action, so that discrepancy remains unresolved and retains both source citations. The additive sponsor reset endpoint is also documented.
+15:07 Pacific: contract and build plan are implementable. No P0 defect is established. Initial extractor, citation and persistent-discrepancy defects are fixed and directly verified; see findings.md for receipts and remaining issues. Future-visit rejection is now specified in the contract and implementation verification is pending. Runtime lock recovery passes independent static review. Real GBrain startup, restart and reset-to-demo evidence is still pending, so this is not a release sign-off.
+
+Recorded dose is a source claim, never conflict resolution or a treatment instruction. Each pharmacy claim is compared with the latest visit at or before its date and all subsequent visits. Unequal evidence persists even after a later matching visit. V1 has no reconciliation action. Future visits after the fixed September 27 reference date must reject before mutation; future follow-up dates remain allowed.
 
 ## Review gates
 
