@@ -151,6 +151,7 @@ async function validateState(s) {
     for (const link of p.links) assert(ids.has(link.target), `${p.id} links to missing ${link.target}`);
   }
   array(s.graph.nodes, 'graph nodes'); array(s.graph.edges, 'graph edges');
+  assert.equal(new Set(s.graph.edges.map((edge) => JSON.stringify(stable(edge)))).size, s.graph.edges.length, 'Graph edges must be unique');
   const nodes = new Set(s.graph.nodes.map((node) => node.id));
   assert.equal(nodes.size, s.graph.nodes.length, 'Graph node IDs must be unique');
   for (const id of nodes) assert(ids.has(id), `Graph node ${id} must resolve`);
@@ -296,6 +297,7 @@ async function statusChecks() {
       }
       assert(counts.schemaValid <= counts.jsonValid, 'Schema validity cannot exceed JSON validity');
       assert(counts.taskExact <= counts.extractionExact && counts.extractionExact <= counts.structuredExact, 'Exactness metrics must be nested');
+      for (const key of ['unsupportedMedicationClaims', 'predictedMedicationClaims']) assert(Number.isSafeInteger(counts[key]) && counts[key] >= 0, `${label}/${key} invalid count`);
       assert(counts.unsupportedMedicationClaims <= counts.predictedMedicationClaims, 'Unsupported claim count exceeds predictions');
       assert.equal(score.failures.length, counts.examples - counts.taskExact, 'Failure count must cover every failed example');
     };
@@ -497,10 +499,15 @@ async function fullCycle(cycle) {
     assert.equal(result.method, 'deterministic', 'Saved demo note must not claim River inference or replay');
     assert.equal(concurrent.applied?.ok, true);
     assert.equal(concurrent.applied?.visitId, applied.visitId, 'Concurrent first writes must share one visit');
+    assert.deepEqual(concurrent.applied, applied, 'Concurrent first writes must return the same committed receipt');
     nonempty(applied.visitId, 'applied visitId'); array(applied.changedPageIds, 'changedPageIds');
     assert(applied.changedPageIds.includes(IDS.lisinopril));
     sourceCache.clear();
     after = await state();
+    await validateState(after);
+    assert.equal(after.revision, second.revision + 1, 'Concurrent first writes must advance revision exactly once');
+    assert.equal(after.pages.length, second.pages.length + 2, 'Demo must add only one visit and one question');
+    assert.equal(after.pages.filter((p) => p.type === 'question').length, second.pages.filter((p) => p.type === 'question').length + 1, 'Concurrent first writes must create exactly one question');
     assert.equal(after.pages.filter((p) => p.type === 'visit').length, second.pages.filter((p) => p.type === 'visit').length + 1, 'Concurrent first writes must create exactly one visit');
     const meds = await validateMedications();
     const lisinopril = medication(meds);
@@ -512,7 +519,7 @@ async function fullCycle(cycle) {
     const visit = await page(applied.visitId);
     assert.equal(visit.fields.doctorId, IDS.cardiologist);
     assert.equal(visit.fields.date, '2026-09-27');
-    assert(visit.fields.attendeeIds.includes(IDS.ana));
+    assert.deepEqual(visit.fields.attendeeIds, [IDS.ana]);
     return { method: result.method, visitId: applied.visitId, changedPageIds: applied.changedPageIds };
   }, resetAgain);
   await check('Duplicate and concurrent same-key requests are idempotent', async () => {
@@ -543,6 +550,11 @@ async function fullCycle(cycle) {
     nonempty(replay.mode, 'replay mode'); assert(replay.evidence, 'Replay needs evidence'); assert(replay.result, 'Replay needs result');
     assert.equal(captured.mode, 'local-simulation');
     assert.equal(replay.mode, 'local-simulation');
+    assert.equal(captured.evidence.capturedBy, IDS.ana);
+    assert.equal(captured.evidence.executedBy, IDS.ana);
+    assert.equal(captured.evidence.procedureReuse, false);
+    assert.match(captured.evidence.planSha256, /^[a-f0-9]{64}$/);
+    nonempty(captured.evidence.traceId, 'capture traceId');
     assert.equal(replay.evidence.captureTraceId, captured.evidence.traceId);
     assert.equal(replay.evidence.planSha256, captured.evidence.planSha256);
     assert.equal(replay.evidence.capturedBy, IDS.ana);
@@ -553,9 +565,16 @@ async function fullCycle(cycle) {
       assert.equal(execution.evidence.memorableExecuted, false);
       assert.equal(execution.evidence.insurerContacted, false);
       assert.equal(execution.evidence.synthetic, true);
+      assert.equal(execution.evidence.simulation, true);
       assert.equal(execution.evidence.recordedToolCount, execution.steps.length);
     }
-    assert.deepEqual(replay.steps.map((step) => step.tool), captured.steps.map((step) => step.tool), 'Replay must reuse captured procedure steps');
+    const plan = (steps) => steps.map(({ tool, precondition, postcondition, sourceIds }) => {
+      for (const [key, value] of Object.entries({ tool, precondition, postcondition })) nonempty(value, `procedure ${key}`);
+      array(sourceIds, 'procedure sourceIds'); assert(sourceIds.length);
+      return { tool, precondition, postcondition, sourceIds };
+    });
+    assert.deepEqual(plan(replay.steps), plan(captured.steps), 'Replay must reuse captured ordered tools, conditions and sources');
+    assert.equal(replay.result.simulation, true);
     assert.equal(replay.result.submittedToInsurer, false);
     return { procedureId: captured.procedureId, captureMode: captured.mode, replayMode: replay.mode, actorId: replay.actorId };
   }, resetAgain);
