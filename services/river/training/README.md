@@ -73,3 +73,16 @@ services/river/.venv/bin/python services/river/training/demo.py run \
 ```
 
 Preparation is local only and writes `payload.json`, `plan.json`, and `plan.sha256`. Execution creates one session and submits exactly one checkpoint sample, with bounded result polling and no submission retry. It writes `prediction.json` containing the raw output, fixed input, provenance hashes, model/checkpoint, generation settings, seed, request/session IDs, sample time, and `validationStatus: "unvalidated-raw"`. The parent validates the output before publishing an exact-input cache. A cache hit must be described as a replay of the recorded River sample, never as a fresh request or general live inference. Other input receives an unavailable response so the existing fallback can take over. Demo progress stays separate from completed training status.
+
+The optional `prepare --product-protocol` selects the separate static `product-prompt.txt` template, labeled `product-relative-date-v1`. It clarifies that relative weekday text stays in the follow-up text, and an optional `dueDate` requires a literal ISO date in that same source task. It supplies no gold answer. The fixed demo input, checkpoint, generation settings, and seed stay identical. This is a product prompt experiment and does not change the frozen benchmark prompt, predictions, weights, or reported metrics. Its plan and artifact carry separate product and benchmark template hashes. The original first demo artifact is retained unchanged.
+
+```sh
+services/river/.venv/bin/python services/river/training/demo.py prepare \
+  --product-protocol \
+  --paired-run services/river/training/runs/experiment-1 \
+  --output services/river/training/demo-prepared-product
+```
+
+After review, use the ordinary `run` command with this plan directory and digest, and a fresh output such as `training/demo-runs/product-relative-date-1`. Exactly one additional sample attempt is authorized for this protocol. The runner reserves `training/artifacts/product-relative-date-v1-attempt.json` immediately before the sample RPC and refuses a repeated attempt, including after an uncertain outcome. Do not remove that receipt to retry. If the raw result fails source validation, keep the deterministic fallback and publish no accepted cached result. Validators are unchanged.
+
+Recorded demo outcome: the first fixed-note sample invented a due date absent from the source and was rejected by the source guard. The one authorized product-protocol sample returned invalid JSON and was rejected. Both raw artifacts and receipts are preserved; neither is an accepted cached extraction. The authorized product attempt is exhausted. The product retains its deterministic fallback, while the separately completed frozen training and paired evaluation remain unchanged. No further sample, prompt tuning, or training is authorized by this protocol.

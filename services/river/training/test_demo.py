@@ -104,6 +104,54 @@ class DemoTests(unittest.TestCase):
         self.assertNotIn("promptTokenIds", artifact)
         self.assertEqual(artifact["generationSha256"], demo.sha(demo.canonical(self.generation)))
 
+    def product_plan(self):
+        directory = self.root / "product-plan"
+        with demo.quiet_vendor():
+            demo.prepare(argparse.Namespace(paired_run=self.paired, output=directory, product_protocol=True))
+        self.args.plan_directory = directory
+        self.args.plan_sha256 = (directory / "plan.sha256").read_text().strip()
+        return directory
+
+    def test_product_plan_is_separate_and_preserves_frozen_evidence(self):
+        frozen = [*self.paired.glob("*"), *self.plan_directory.glob("*"), demo.RIVER_ROOT / "dataset/prompt.txt"]
+        before = {path: demo.sha(path.read_bytes()) for path in frozen if path.is_file()}
+        directory = self.product_plan()
+        plan, payload, _ = demo.verify_plan(self.args)
+        self.assertEqual(plan["promptProtocol"], "product-relative-date-v1")
+        self.assertEqual(plan["singleProductAttemptLimit"], 1)
+        self.assertEqual(plan["trainingCalls"], 0)
+        self.assertEqual(plan["heldOutEvaluationCalls"], 0)
+        self.assertNotEqual(plan["promptTemplateSha256"], plan["benchmarkPromptTemplateSha256"])
+        self.assertEqual(payload["input"], demo.DEMO_INPUT)
+        self.assertEqual(payload["generation"], self.generation)
+        self.assertIn("Preserve relative weekday wording", payload["prompt"])
+        self.assertIn("omit dueDate entirely", payload["prompt"])
+        self.assertEqual(before, {path: demo.sha(path.read_bytes()) for path in before})
+        self.assertEqual(directory / "plan.json", Path(self.args.plan_directory) / "plan.json")
+
+    def test_product_protocol_still_rejects_arbitrary_note(self):
+        directory = self.product_plan()
+        payload_path = directory / "payload.json"
+        payload = json.loads(payload_path.read_text())
+        payload["input"]["note"] = "unapproved different input"
+        demo.write_json(payload_path, payload)
+        plan_path = directory / "plan.json"
+        plan = json.loads(plan_path.read_text())
+        plan["payloadSha256"] = demo.sha(payload_path.read_bytes())
+        demo.write_json(plan_path, plan)
+        self.args.plan_sha256 = demo.sha(plan_path.read_bytes())
+        with self.assertRaisesRegex(demo.SafeError, "only_fixed_demo_input"):
+            demo.verify_plan(self.args)
+
+    def test_product_attempt_latch_refuses_repeated_sampling(self):
+        self.product_plan()
+        latch = self.root / "product-attempt.json"
+        latch.write_text('{"state":"reserved"}\n')
+        with patch.object(demo, "PRODUCT_ATTEMPT_PATH", latch), patch.object(demo, "make_client") as client:
+            with self.assertRaisesRegex(demo.SafeError, "single_product_sample_attempt_already_reserved"):
+                demo.execute(self.args)
+            client.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

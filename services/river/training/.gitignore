@@ -5,4 +5,5 @@ capabilities.json
 tokenizer-cache/
 .tmp/
 demo-prepared/
+demo-prepared-product/
 demo-runs/
