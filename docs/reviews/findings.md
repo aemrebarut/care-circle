@@ -132,4 +132,14 @@ The fix adds a print-visible Record limitations section and the Earlier discrepa
 - Sponsor initial README explicitly identifies local simulation and local HTTP fetching without claiming live Memorable/UFO execution.
 - Current contract now explicitly separates recorded dose, actual use, and unresolved discrepancies.
 
-These observations do not establish end-to-end acceptance, training success, or durable persistence. Those gates remain pending.
+These initial observations alone do not establish end-to-end acceptance, training success, or durable persistence. Later evidence is recorded in milestones.md.
+
+## R14: Replay cache does not verify its claimed sample provenance
+
+Priority P2. Owner cc-river. Open at 15:25 Pacific, before an accepted production artifact exists.
+
+services/river/demo-cache.mjs checks exact input, model, checkpoint and source facts, but only requires truthy requestId, promptSha256 and sampledAt. An independent in-memory fixture with a handwritten expected extraction and values not-a-river-request, not-a-hash and not-a-date is accepted and labeled an actual trained prediction. Bind the published cache to the unchanged archived raw output and completed sample receipt, validate all contract provenance fields, and retain the actual product prompt hash separately from the frozen benchmark prompt.
+
+This is a provenance-verification gap, not evidence that a fabricated sample was served. The production demo cache was absent. The real first attempt is archived and correctly rejected because it inferred dueDate 2026-09-30. Its raw output must remain unchanged. A bounded second product-only prompt attempt is separately approved and does not alter benchmark metrics.
+
+Ingest now requires complete cached-replay provenance, liveInference false and an exact canonical input hash, then preserves those fields in preview and save responses. Web renders the distinction and provenance. Direct inspection confirms the source-equality gate remains intact. Metadata shape validation in ingest does not replace the River owner's actual receipt binding.

@@ -34,3 +34,13 @@ All other R1 through R13 findings are closed by the stated direct tests or sourc
 ### M1 follow-up, 15:16 Pacific
 
 R8 is closed after direct review of both absent-PID checks and the corrected fixtures. cc-runtime reports 17/17 lifecycle tests passing. A post-ingest restart and identical retry are now coordinated by runtime and ingest before QA resets. No reviewer mutation is involved.
+
+### Follow-up, 15:25 Pacific
+
+- cc-runtime reports exact post-ingest state surviving PID 95456 to 19257: revision 2, 32 pages and 132 edges. cc-ingest then reports the original visit/revision returned by retry with deep-equal before/after state. These executions are owner receipts, not reviewer-operated restarts.
+- Root README review found the reported River results and caveats consistent with comparison.json, paired-proof.json and the independent native audit. Both arms have 72 rows. Trained structured extraction is 72/72 and full task 71/72; base strict success is 0/72, with 54 token-cap truncations. The same prompt/settings and 1,024-token raw-completion budget are disclosed. No general or clinical capability conclusion is supported or claimed.
+- The separate first canonical demo sample added an unsupported due date and remains rejected. The frozen benchmark is unchanged. R14 records a pre-publication provenance check gap in the new exact-input cache; no accepted production artifact was observed.
+- Ingest and web preserve and display validated cached replay provenance, including the explicit no-live-inference distinction. Source equality remains mandatory.
+- Independent sponsor review verified the official Memorable offline local recall receipts and their manually seeded fixture binding. They do not prove trace learning or official replay. Remote extraction remains approval-gated.
+- The fresh-machine brain README includes guarded initialization commands and explicitly says the existing demo brain was not reinitialized to test them. The reviewer did not execute initialization.
+- QA retains the coordinated mutation and UI window. Reviewer activity remains source inspection and isolated pure checks only.
