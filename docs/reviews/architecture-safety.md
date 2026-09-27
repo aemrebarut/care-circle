@@ -4,7 +4,7 @@ Owner: cc-review. Scope: docs/reviews/ only. Date: 2026-09-27.
 
 ## Current verdict
 
-15:30 Pacific: R1 through R13 and R15 are closed. The R14 River cache prototype was withdrawn without enablement; receipt binding remains required for any later replay. R16's main unknown-save wording path is fixed, with one malformed-preview error sentence still pending. Independent offline review of the second River sample found a one-brace structural repair possible, but it fails the unchanged ingest equality guard because of medication-name case. Product extraction remains deterministic. Runtime and ingest report a successful post-ingest restart and identical retry. Repeated reset-to-demo and browser/print evidence remain release gates, so this is not final release sign-off.
+All R1 through R16 findings are closed. R1 through R13, R15 and R16 are fixed and verified; R14 is closed by removal of the unshipped River cache path. Lead rejected structural repair and content normalization. Product extraction remains deterministic and the benchmark is unchanged. Runtime and ingest report a successful post-ingest restart and identical retry, and the first full QA cycle passed 32 checks. Two consecutive reset-to-demo cycles and rendered browser/print evidence remain release gates, so this is not final release sign-off.
 
 The root README accurately describes the reviewed River comparison: 72/72 structured extractions and 71/72 full tasks for the trained checkpoint, versus 0/72 strict base outputs with 54/72 reaching the token cap. Raw completion mode, the fixed synthetic benchmark, and lack of clinical or general capability evidence are disclosed. The separate demo prediction is not part of that score. Official Memorable offline recall used a manually seeded procedure; remote learning and official UFO execution remain unclaimed.
 
@@ -29,7 +29,7 @@ Recorded dose is a source claim, never conflict resolution or a treatment instru
 
 ## Authorization interpretation
 
-Synthetic River note/JSON uploads for training and evaluation are authorized. Only the River lane may load the single named RIVER_API_KEY variable from the approved forge environment file. Reviewers never read that file or other credentials. Memorable/UFO remote submission and account creation remain unapproved. Package installation and public technical documentation reads do not prove an integration ran.
+Synthetic River note/JSON uploads for training and evaluation are authorized. Only the River lane may load the single named RIVER_API_KEY variable from the approved forge environment file. Reviewers never read that file or other credentials. Emre explicitly declined remote Memorable submission; that request is closed. UFO remote submission and account creation remain unapproved. Package installation and public technical documentation reads do not prove an integration ran.
 
 ## Initial observations
 

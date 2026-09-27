@@ -4,6 +4,8 @@ Reviewer: cc-review. Date: 2026-09-27. Scope: the archived second canonical demo
 
 ## Decision
 
+Final lead disposition: no structural repair, derived artifact or content normalization will ship. Product extraction remains deterministic, the strict guard is unchanged, and the benchmark stays frozen. The invariants below document the offline assessment rather than a proposed implementation task.
+
 No-go for product replay under the unchanged strict ingest guard. A single structural edit can recover a valid extraction without changing any scalar value, but that extraction does not pass the existing source-equality check. The model emitted medication name `Lisinopril`; the deterministic extractor emits `lisinopril`. Every other extraction field matches. Changing case or substituting the deterministic object would exceed the proposed structure-only operation.
 
 The product remains deterministic. This decision does not imply a new medical fact error in the second sample; it identifies a failed invariant of the current implementation. Any later policy for display-name normalization requires a separate explicit review and contract decision. It must not be introduced silently as JSON repair.

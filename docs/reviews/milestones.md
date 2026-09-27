@@ -44,3 +44,22 @@ R8 is closed after direct review of both absent-PID checks and the corrected fix
 - Independent sponsor review verified the official Memorable offline local recall receipts and their manually seeded fixture binding. They do not prove trace learning or official replay. Remote extraction remains approval-gated.
 - The fresh-machine brain README includes guarded initialization commands and explicitly says the existing demo brain was not reinitialized to test them. The reviewer did not execute initialization.
 - QA retains the coordinated mutation and UI window. Reviewer activity remains source inspection and isolated pure checks only.
+
+## M2, 15:35 Pacific
+
+All R1 through R16 findings are closed. R14 closed by removal of the unshipped cache path; no receipt-verifier fix or successful replay is claimed. The lead rejected structural repair and content normalization. Both failed actual demo samples remain archived, and the frozen benchmark and deterministic product path are unchanged.
+
+### Direct and independent review evidence
+
+- R15 malformed storage metadata rejects before native import. Independent pure adapter/domain/storage tests passed 37/37, including absent identities, nonzero/invalid counters and a normal import control. HTTP listener tests were excluded.
+- R16 now preserves unknown-save wording during initial restoration, re-review, malformed preview and retry. The parent reviewer directly ran the latest UI suite: 10/10 passed. Pending note, author, date and retry key remain intact. Print DOM includes each unresolved claim's dose, frequency, date and source, plus prior-discrepancy wording and record limitations.
+- Two independent offline checks found that removing one brace from River demo attempt 2 recovers a valid schema but still fails the unchanged ingest equality guard on medication display-name case. No implementation was edited. Exact hashes and the no-go decision are in river-structural-repair.md.
+- Root README now states that both canonical model predictions failed and neither live nor cached extraction is claimed. Its comparison numbers and raw-completion/truncation caveats match the reviewed receipts.
+- Independent sponsor delta review found no new issue. Official Memorable recall is explicitly a local selection of a serialized capture followed by Care Circle simulation, not learned trace extraction. UFO evidence distinguishes official SDK discovery/direct-handler testing from full or hosted execution. Eight bridge tests and three fake-transport tests passed without network calls or listeners.
+- Emre explicitly declined remote Memorable submission. The request is closed and no submission is claimed.
+
+### Acceptance receipts and remaining gates
+
+- The reviewer inspected QA's first complete live receipt: 32 passes, no failures or skips, web-proxy transport, 15:17:32 to 15:18:24. It includes sticky historical discrepancies, future-date/no-mutation checks, future follow-up acceptance, source citations, concurrent retries, key conflicts, full brief, local procedure and clinic evidence. This is QA execution evidence, not a second reviewer-operated run.
+- Brain reports the latest guarded adapter reloaded successfully and passed read-only smoke at revision 10, 32 pages, seven medications and 132 edges. Runtime still owns the final maintenance equality receipt.
+- Two consecutive final reset-to-demo cycles and rendered browser/PDF verification remain pending. All shared mutations, restarts and their timing remain with runtime and QA. No review sign-off substitutes for those gates.
