@@ -1,6 +1,7 @@
 {
   "mode": "official-sdk-local-tool-proof",
-  "observedAt": "2026-09-27T22:31:14.621098+00:00",
+  "observedAt": "2026-09-27T22:33:41.920868+00:00",
+  "pythonVersion": "3.14.7",
   "sdk": {
     "distribution": "ufo",
     "version": "0.1.0",

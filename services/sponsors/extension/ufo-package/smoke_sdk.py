@@ -97,6 +97,7 @@ def worker(live=False):
     proof = {
         "mode": "official-sdk-local-tool-proof",
         "observedAt": datetime.now(UTC).isoformat(),
+        "pythonVersion": sys.version.split()[0],
         "sdk": {"distribution": "ufo", "version": distribution.version, "commit": SDK_COMMIT, "sourceUrl": source["url"]},
         "officialSdkRegistration": True,
         "registrationMethod": "Installed Python entry-point discovery, official Manifest/ToolDef construction and official tool schema generation",
