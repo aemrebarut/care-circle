@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { once } from 'node:events';
 import net from 'node:net';
+import { createHash } from 'node:crypto';
 import { DEMO_NOTE, IDS } from '../../../contract/index.mjs';
 import { createIngestServer } from '../server.mjs';
 import { extractDeterministic } from '../extract.mjs';
@@ -141,4 +142,33 @@ test('unfinished body gets bounded JSON 408 without touching upstream', async ()
     assert.equal(body.error.code, 'request_timeout');
     socket.destroy();
   });
+});
+
+
+test('validated cached provenance survives preview and save without a live-inference claim', async () => {
+  const input = { authorId: IDS.ana, date: '2026-09-27', note: DEMO_NOTE };
+  const provenance = {
+    mode: 'cached-replay', liveInference: false,
+    model: 'synthetic-test-model', checkpoint: 'river://synthetic-test-checkpoint', requestId: 'synthetic-request',
+    sampledAt: '2026-09-27T22:17:26.724780+00:00',
+    inputSha256: createHash('sha256').update(JSON.stringify(input)).digest('hex'),
+    promptSha256: 'a'.repeat(64), outputSha256: 'b'.repeat(64),
+  };
+  const good = { ...extractDeterministic(input), method: 'river', provenance };
+  await withServer({ useRiver: true, fetchImpl: async url => url.includes(':4704/') ? reply(good) : reply(receipt) }, async () => {
+    for (const path of ['/v1/extract', '/v1/ingest']) {
+      const result = await post(path, input);
+      assert.equal(result.status, 200);
+      assert.equal(result.data.method, 'river');
+      assert.deepEqual(result.data.provenance, provenance);
+      assert.ok(result.data.warnings.some(value => value.includes('No live inference occurred')));
+    }
+  });
+  for (const invalid of [{ ...provenance, liveInference: true }, { ...provenance, inputSha256: '0'.repeat(64) }, { ...provenance, requestId: '' }]) {
+    await withServer({ useRiver: true, fetchImpl: async () => reply({ ...good, provenance: invalid }) }, async () => {
+      const result = await post('/v1/extract', input);
+      assert.equal(result.data.method, 'deterministic');
+      assert.equal(result.data.provenance, undefined);
+    });
+  }
 });

@@ -22,7 +22,7 @@ The ingest lane used an independent gpt-6-astra reviewer with xhigh reasoning fo
 
 ## Evidence
 
-`npm --prefix services/ingest test` passes 53 tests, including the exact contract demo, adversarial source cases, full source preservation, effective authorship, stable retry keys, mutation-free preview, upstream 409/422/503, timeouts, disconnects, invalid or oversized upstream bodies, River fallback, and incomplete uploads.
+`npm --prefix services/ingest test` passes 54 tests, including the exact contract demo, adversarial source cases, full source preservation, effective authorship, stable retry keys, mutation-free preview, upstream 409/422/503, timeouts, disconnects, invalid or oversized upstream bodies, River fallback, and incomplete uploads.
 
 Track review independently reported all then-current extractor cases passing, including semicolon/newline qualifiers and separate corrections. That bounded recheck found no further material issue. Later as-of date guards have dedicated unit and HTTP regressions.
 
@@ -40,3 +40,6 @@ This is a narrow deterministic parser. Passing tests do not establish general la
 ## River demo source check
 
 The River lane retained a real trained canonical-demo prediction that added `dueDate: "2026-09-30"` despite no explicit ISO date in the note. Ingest's existing strict evidence match rejects that addition. A focused HTTP regression confirms deterministic fallback keeps dueDate absent. The raw response was not rewritten into a successful model extraction, and no validation rule was weakened. This finding concerns the separately sampled demo output, not a change to the frozen held-out evaluation.
+
+
+Accepted source-equal cached responses now retain validated replay provenance for both preview and committed-ingest responses. The metadata check enforces cached-replay mode, liveInference false, bounded model/request metadata and matching canonical input SHA-256. Tests cover preservation, required no-live-inference wording, wrong-input rejection and false execution-mode rejection. This does not accept the rejected inferred-date output or enable River attempts by itself.

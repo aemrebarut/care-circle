@@ -42,7 +42,7 @@ Request bodies are bounded to 64 KiB, notes to 12000 characters, and upstream bo
 
 ## River reality
 
-Default extraction is deterministic. No River training, remote inference, SDK execution or external submission occurs here. Optional `INGEST_USE_RIVER=1` enables calls only to local `127.0.0.1:4704/v1/extract`. River receives the exact note plus effective author and date. The deterministic source validator runs first, and model output must exactly match its Extraction before it is eligible for `method: "river"`. Malformed, unavailable, unsupported or differing output falls back with an explicit warning and `method: "deterministic"`. Schema-valid model output cannot bypass source evidence checks.
+Default extraction is deterministic. No River training, remote inference, SDK execution or external submission occurs here. Optional `INGEST_USE_RIVER=1` enables calls only to local `127.0.0.1:4704/v1/extract`. River receives the exact note plus effective author and date. The deterministic source validator runs first, and model output must exactly match its Extraction before it is eligible for `method: "river"`. Malformed, unavailable, unsupported or differing output falls back with an explicit warning and `method: "deterministic"`. Schema-valid model output cannot bypass source evidence checks. If an accepted response carries cached-replay provenance, ingest validates the mode, false liveInference flag, bounded metadata, digests and exact input digest before preserving it in preview and save responses. An explicit saved-prediction warning always accompanies that provenance. Invalid provenance triggers deterministic fallback.
 
 ## Files
 

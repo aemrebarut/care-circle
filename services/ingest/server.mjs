@@ -1,4 +1,5 @@
 import http from 'node:http';
+import { createHash } from 'node:crypto';
 import { pathToFileURL } from 'node:url';
 import { isDeepStrictEqual } from 'node:util';
 import { HOST, PORTS } from '../../contract/index.mjs';
@@ -97,6 +98,20 @@ function validApplied(value) {
     ((typeof value.revision === 'string' && value.revision.trim().length > 0) || (Number.isSafeInteger(value.revision) && value.revision > 0));
 }
 
+function validatedProvenance(value, input) {
+  if (value === undefined) return undefined;
+  if (!value || typeof value !== 'object' || Array.isArray(value) || value.mode !== 'cached-replay' || value.liveInference !== false) throw new Error('Invalid River replay provenance');
+  const textKeys = ['model', 'checkpoint', 'requestId', 'sampledAt'];
+  const hashKeys = ['inputSha256', 'promptSha256', 'outputSha256'];
+  if (textKeys.some(key => typeof value[key] !== 'string' || !value[key].trim() || value[key].length > 256 || /[\u0000-\u001f]/.test(value[key]))) throw new Error('Invalid River provenance field');
+  if (hashKeys.some(key => !/^[a-f0-9]{64}$/.test(value[key] ?? ''))) throw new Error('Invalid River provenance digest');
+  if (!Number.isFinite(Date.parse(value.sampledAt)) || !value.checkpoint.startsWith('river://')) throw new Error('Invalid River model provenance');
+  // River's provenance uses sorted keys for this flat canonical input object.
+  const expectedInput = createHash('sha256').update(JSON.stringify({ authorId: input.authorId, date: input.date, note: input.note })).digest('hex');
+  if (value.inputSha256 !== expectedInput) throw new Error('River provenance belongs to another source input');
+  return Object.fromEntries(['mode', 'liveInference', ...textKeys, ...hashKeys].map(key => [key, value[key]]));
+}
+
 export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstreamTimeoutMs = 90000, riverTimeoutMs = 2500, requestBodyTimeoutMs = 10000 } = {}) {
   const server = http.createServer(async (request, response) => {
     // A client may disconnect before or after validation. Never let a later
@@ -116,12 +131,16 @@ export function createIngestServer({ fetchImpl = fetch, useRiver = false, upstre
       let result = extractDeterministic(input);
       if (useRiver) {
         try {
-          const river = await post(fetchImpl, RIVER_URL, { note: normalized.note, authorId: normalized.authorId, date: result.extraction.visit.date }, riverTimeoutMs);
+          const riverInput = { note: normalized.note, authorId: normalized.authorId, date: result.extraction.visit.date };
+          const river = await post(fetchImpl, RIVER_URL, riverInput, riverTimeoutMs);
           // The local baseline is deliberately the acceptance boundary until a
           // broader source-evidence validator is reviewed. A model cannot expand
           // the set of supported facts by returning well-formed JSON alone.
           if (!river.ok || river.data.method !== 'river' || !isDeepStrictEqual(river.data.extraction, result.extraction) || !Array.isArray(river.data.warnings) || !river.data.warnings.every(warning => typeof warning === 'string')) throw new Error('Unverified River extraction');
-          result = { extraction: result.extraction, method: 'river', warnings: [...result.warnings, ...river.data.warnings] };
+          const provenance = validatedProvenance(river.data.provenance, riverInput);
+          const warnings = [...result.warnings, ...river.data.warnings];
+          if (provenance) warnings.push('This is a saved River prediction for the exact synthetic input. No live inference occurred.');
+          result = { extraction: result.extraction, method: 'river', warnings, ...(provenance ? { provenance } : {}) };
         } catch {
           result.warnings.push('River was unavailable or its output could not be verified against the source. Used deterministic extraction.');
         }
